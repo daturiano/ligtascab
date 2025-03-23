@@ -1,0 +1,72 @@
+{
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "plugins": ["check-file"],
+  "rules": {
+    "check-file/filename-naming-convention": [
+      "error",
+      {
+        "**/*.{ts,tsx}": "KEBAB_CASE"
+      },
+      {
+        "ignoreMiddleExtensions": true
+      }
+    ],
+    "check-file/folder-naming-convention": [
+      "error",
+      {
+        "src/**/!(__tests__)": "KEBAB_CASE"
+      }
+    ],
+    "import/no-restricted-paths": [
+      "error",
+      {
+        "zones": [
+          {
+            "target": "./src/features/account-setup",
+            "from": "./src/features",
+            "except": ["./account-setup"]
+          },
+          {
+            "target": "./src/features/authentication",
+            "from": "./src/features",
+            "except": ["./authentication"]
+          },
+          {
+            "target": "./src/features/dashboard",
+            "from": "./src/features",
+            "except": ["./dashboard"]
+          },
+          {
+            "target": "./src/features/drivers",
+            "from": "./src/features",
+            "except": ["./drivers"]
+          },
+          {
+            "target": "./src/features/logs",
+            "from": "./src/features",
+            "except": ["./logs"]
+          },
+          {
+            "target": "./src/features/vehicles",
+            "from": "./src/features",
+            "except": ["./vehicles"]
+          },
+          {
+            "target": "./src/features",
+            "from": "./src/app"
+          },
+          {
+            "target": [
+              "./src/components",
+              "./src/hooks",
+              "./src/lib",
+              "./src/types",
+              "./src/utils"
+            ],
+            "from": ["./src/features", "./src/app"]
+          }
+        ]
+      }
+    ]
+  }
+}

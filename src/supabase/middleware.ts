@@ -30,43 +30,43 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser();
 
-  const publicRoutes = ["/sign-in", "/sign-up", "/"];
+  // const publicRoutes = ["/sign-in", "/sign-up", "/"];
 
-  const { pathname } = request.nextUrl;
+  // const { pathname } = request.nextUrl;
 
-  if (
-    !user &&
-    (pathname.startsWith("/dashboard") || pathname.startsWith("/account-setup"))
-  ) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/sign-in";
-    return NextResponse.redirect(url);
-  }
+  // if (
+  //   !user &&
+  //   (pathname.startsWith("/dashboard") || pathname.startsWith("/account-setup"))
+  // ) {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = "/sign-in";
+  //   return NextResponse.redirect(url);
+  // }
 
-  if (user?.user_metadata?.is_new_user && pathname.startsWith("/dashboard")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/account-setup";
-    return NextResponse.redirect(url);
-  }
+  // if (user?.user_metadata?.is_new_user && pathname.startsWith("/dashboard")) {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = "/account-setup";
+  //   return NextResponse.redirect(url);
+  // }
 
-  if (
-    !user?.user_metadata?.is_new_user &&
-    pathname.startsWith("/account-setup")
-  ) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
-  }
-  if (user && publicRoutes.includes(pathname)) {
-    // Authenticated users should not access public pages
-    const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
-  }
+  // if (
+  //   !user?.user_metadata?.is_new_user &&
+  //   pathname.startsWith("/account-setup")
+  // ) {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = "/dashboard";
+  //   return NextResponse.redirect(url);
+  // }
+  // if (user && publicRoutes.includes(pathname)) {
+  //   // Authenticated users should not access public pages
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = "/dashboard";
+  //   return NextResponse.redirect(url);
+  // }
 
   return supabaseResponse;
 }
