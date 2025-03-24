@@ -1,8 +1,13 @@
 "use server";
 
-import { UserSchema } from "@/features/authentication/schemas/authentication";
+import {
+  CredentialsSchema,
+  UserSchema,
+} from "@/features/authentication/schemas/authentication";
 import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
+
+type AuthResponse = { error?: string; message?: string };
 
 export const signInWithGoogle = async () => {
   const supabase = await createClient();
@@ -12,10 +17,8 @@ export const signInWithGoogle = async () => {
     options: { redirectTo: "http://localhost:3000/auth/callback" },
   });
 
-  console.log(data);
-
   if (error) {
-    console.log(error);
+    return { error: error.message };
   }
 
   if (data.url) {
@@ -28,7 +31,40 @@ export const signOut = async () => {
   await supabase.auth.signOut();
 };
 
-export async function registerUser(User: unknown) {
+export const signInWithCredentials = async (
+  User: unknown
+): Promise<AuthResponse> => {
+  const result = CredentialsSchema.safeParse(User);
+
+  if (!result.success) {
+    let errorMessage = "";
+
+    result.error.issues.forEach((issue) => {
+      errorMessage = errorMessage + issue.path[0] + ": " + issue.message + ". ";
+    });
+
+    return {
+      error: errorMessage,
+    };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({
+    email: result.data.email,
+    password: result.data.password,
+  });
+
+  if (error) {
+    console.error("Authentication Error:", error.message);
+    return { error: error.message };
+  }
+
+  return { message: "Log in successful" };
+};
+
+export const registerWithCredentials = async (
+  User: unknown
+): Promise<AuthResponse> => {
   const result = UserSchema.safeParse(User);
   if (!result.success) {
     let errorMessage = "";
@@ -63,5 +99,5 @@ export async function registerUser(User: unknown) {
     return { error: signUpError.message };
   }
 
-  return { success: true };
-}
+  return { message: "Sign up successful" };
+};

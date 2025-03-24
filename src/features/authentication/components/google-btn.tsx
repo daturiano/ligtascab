@@ -5,7 +5,13 @@ import { signInWithGoogle } from "../actions/authentication";
 import Image from "next/image";
 import logoo from "@/app/public/google.png";
 
-export default function GoogleButton() {
+type option = "sign-in" | "sign-up";
+
+export default function GoogleButton({
+  option = "sign-up",
+}: {
+  option?: option;
+}) {
   return (
     <Button
       onClick={signInWithGoogle}
@@ -13,7 +19,7 @@ export default function GoogleButton() {
       variant={"outline"}
     >
       <Image src={logoo} alt="google logo" height={24} width={24} />
-      Sign up with Google
+      {option === "sign-up" ? "Sign up with Google" : "Log in using Google"}
     </Button>
   );
 }

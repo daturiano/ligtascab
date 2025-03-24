@@ -10,21 +10,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Spinner from "@/components/ui/spinner";
-import { UserSchema } from "@/features/authentication/schemas/authentication";
+import { getFormattedDate } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { WarningCircle } from "@phosphor-icons/react";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { getFormattedDate } from "@/lib/utils";
-import { WarningCircle } from "@phosphor-icons/react";
-import { registerWithCredentials } from "../actions/authentication";
+import { CredentialsSchema } from "../schemas/authentication";
+import { signInWithCredentials } from "../actions/authentication";
 
-export default function SignUpForm() {
+export default function SignInForm() {
   const [isPending, startTransition] = useTransition();
 
-  const registerCredentials = async (data: z.infer<typeof UserSchema>) => {
-    const response = await registerWithCredentials(data);
+  const loginCredentials = async (data: z.infer<typeof CredentialsSchema>) => {
+    const response = await signInWithCredentials(data);
     if (response?.error) {
       toast.error(response.error, {
         description: getFormattedDate(),
@@ -39,19 +39,18 @@ export default function SignUpForm() {
     }
   };
 
-  function onSubmit(data: z.infer<typeof UserSchema>) {
+  function onSubmit(data: z.infer<typeof CredentialsSchema>) {
     startTransition(() => {
-      registerCredentials(data);
+      loginCredentials(data);
     });
   }
 
-  const form = useForm<z.infer<typeof UserSchema>>({
-    resolver: zodResolver(UserSchema),
+  const form = useForm<z.infer<typeof CredentialsSchema>>({
+    resolver: zodResolver(CredentialsSchema),
     mode: "onBlur",
     defaultValues: {
       email: "",
       password: "",
-      confirm_password: "",
     },
   });
 
@@ -66,9 +65,14 @@ export default function SignUpForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email address*</FormLabel>
+              <FormLabel>Email address</FormLabel>
               <FormControl>
-                <Input placeholder="example@example.com" type="text" {...field}>
+                <Input
+                  placeholder="example@example.com"
+                  type="text"
+                  {...field}
+                  className="h-12"
+                >
                   {form.formState.errors.email?.message && (
                     <WarningCircle size={24} color="#fb2c36" />
                   )}
@@ -84,9 +88,14 @@ export default function SignUpForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password*</FormLabel>
+              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="Password" type="password" {...field}>
+                <Input
+                  placeholder="Password"
+                  type="password"
+                  {...field}
+                  className="h-12"
+                >
                   {form.formState.errors.password?.message && (
                     <WarningCircle size={24} color="#fb2c36" />
                   )}
@@ -94,26 +103,6 @@ export default function SignUpForm() {
               </FormControl>
               <FormMessage>
                 {form.formState.errors.password?.message}
-              </FormMessage>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="confirm_password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm password*</FormLabel>
-              <FormControl>
-                <Input placeholder="Password" type="password" {...field}>
-                  {form.formState.errors.confirm_password?.message && (
-                    <WarningCircle size={24} color="#fb2c36" />
-                  )}
-                </Input>
-              </FormControl>
-              <FormMessage>
-                {form.formState.errors.confirm_password?.message}
               </FormMessage>
             </FormItem>
           )}
@@ -129,7 +118,7 @@ export default function SignUpForm() {
           className="w-full"
           disabled={!form.formState.isValid || isPending}
         >
-          {!isPending ? "Continue" : <Spinner />}
+          {!isPending ? "Log in" : <Spinner />}
         </Button>
       </form>
     </Form>

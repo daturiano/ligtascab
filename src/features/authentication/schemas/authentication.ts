@@ -2,11 +2,6 @@ import { z } from "zod";
 
 export const UserSchema = z.object({
   id: z.string().uuid().optional(),
-  // phone_number: z
-  //   .string()
-  //   .startsWith("+63", { message: "phone number must start with +63" })
-  //   .min(13)
-  //   .max(13),
   email: z.string().email("Invalid email format"),
   password: z
     .string()
@@ -20,4 +15,11 @@ export const UserSchema = z.object({
       message: "password must be at least 6 characters",
     })
     .max(30),
+});
+
+export const CredentialsSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(6, {
+    message: "password must be at least 6 characters",
+  }),
 });
