@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Spinner from "@/components/ui/spinner";
 import { UserSchema } from "@/features/authentication/schemas/authentication";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
@@ -16,7 +17,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { registerUser } from "../actions/authentication";
-import Spinner from "@/components/ui/spinner";
+import { getFormattedDate } from "@/lib/utils";
+import { WarningCircle } from "@phosphor-icons/react";
 
 export default function SignUpForm() {
   const [isPending, startTransition] = useTransition();
@@ -24,12 +26,8 @@ export default function SignUpForm() {
   const registerCredentials = async (data: z.infer<typeof UserSchema>) => {
     const response = await registerUser(data);
     if (response?.error) {
-      toast(response.error);
-      return;
-    }
-    if (response?.message) {
-      toast(response.message, {
-        description: "",
+      toast.error(response.error, {
+        description: getFormattedDate(),
       });
       return;
     }
@@ -43,11 +41,11 @@ export default function SignUpForm() {
 
   const form = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
+    mode: "onBlur",
     defaultValues: {
-      phone_number: "",
-      first_name: "",
-      last_name: "",
+      email: "",
       password: "",
+      confirm_password: "",
     },
   });
 
@@ -59,14 +57,18 @@ export default function SignUpForm() {
       >
         <FormField
           control={form.control}
-          name="phone_number"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone number*</FormLabel>
+              <FormLabel>Email address*</FormLabel>
               <FormControl>
-                <Input placeholder="Phone number" type="text" {...field} />
+                <Input placeholder="example@example.com" type="text" {...field}>
+                  {form.formState.errors.email?.message && (
+                    <WarningCircle size={24} color="#fb2c36" />
+                  )}
+                </Input>
               </FormControl>
-              <FormMessage />
+              <FormMessage>{form.formState.errors.email?.message}</FormMessage>
             </FormItem>
           )}
         />
@@ -78,49 +80,50 @@ export default function SignUpForm() {
             <FormItem>
               <FormLabel>Password*</FormLabel>
               <FormControl>
-                <Input placeholder="Password*" type="password" {...field} />
+                <Input placeholder="Password" type="password" {...field}>
+                  {form.formState.errors.password?.message && (
+                    <WarningCircle size={24} color="#fb2c36" />
+                  )}
+                </Input>
               </FormControl>
-
-              <FormMessage />
+              <FormMessage>
+                {form.formState.errors.password?.message}
+              </FormMessage>
             </FormItem>
           )}
         />
 
         <FormField
           control={form.control}
-          name="first_name"
+          name="confirm_password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Legal first name*</FormLabel>
+              <FormLabel>Confirm password*</FormLabel>
               <FormControl>
-                <Input placeholder="Legal first name" type="text" {...field} />
+                <Input placeholder="Password" type="password" {...field}>
+                  {form.formState.errors.confirm_password?.message && (
+                    <WarningCircle size={24} color="#fb2c36" />
+                  )}
+                </Input>
               </FormControl>
-
-              <FormMessage />
+              <FormMessage>
+                {form.formState.errors.confirm_password?.message}
+              </FormMessage>
             </FormItem>
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="last_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Legal last name*</FormLabel>
-              <FormControl>
-                <Input placeholder="Legal last name" type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         {form.formState.errors.root && (
           <div className="text-sm font-medium text-red-500">
             <p>{form.formState.errors.root.message}</p>
           </div>
         )}
-        <Button type="submit" className="w-full" disabled={isPending}>
-          {`${isPending ? <Spinner /> : "Continue"}`}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={!form.formState.isValid || isPending}
+        >
+          {!isPending ? "Continue" : <Spinner />}
         </Button>
       </form>
     </Form>

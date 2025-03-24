@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardContent,
@@ -7,6 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Seperator from "@/components/ui/seperator";
+import GoogleButton from "@/features/authentication/components/google-btn";
 import SignUpForm from "@/features/authentication/components/sign-up-form";
 
 export default function SignUpPage() {
@@ -15,10 +16,16 @@ export default function SignUpPage() {
       <CardHeader>
         <CardTitle className="text-2xl">Create operator account</CardTitle>
         <CardDescription className="lg:text-lg">
-          Sign up using the form to create your account
+          Sign up using the form, or with Google account
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <GoogleButton />
+        <div className="my-8 flex items-center gap-6">
+          <Seperator />
+          <p className="text-muted-foreground">or</p>
+          <Seperator />
+        </div>
         <SignUpForm />
       </CardContent>
       <CardFooter>
