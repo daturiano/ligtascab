@@ -1,4 +1,5 @@
-import React from "react";
+import NavigationBar from '@/features/authentication/components/navigation-bar';
+import React from 'react';
 
 export default function AuthenticationLayout({
   children,
@@ -6,8 +7,11 @@ export default function AuthenticationLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      {children}
+    <div className="min-h-screen flex flex-col overflow-y-hidden">
+      <NavigationBar />
+      <div className="flex flex-grow items-center justify-center">
+        {children}
+      </div>
     </div>
   );
 }
