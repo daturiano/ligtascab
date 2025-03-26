@@ -30,13 +30,13 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // const publicRoutes = ["/sign-in", "/sign-up", "/"];
 
-  // const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
   // if (
   //   !user &&
@@ -47,11 +47,11 @@ export async function updateSession(request: NextRequest) {
   //   return NextResponse.redirect(url);
   // }
 
-  // if (user?.user_metadata?.is_new_user && pathname.startsWith("/dashboard")) {
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = "/account-setup";
-  //   return NextResponse.redirect(url);
-  // }
+  if (user?.user_metadata?.is_new_user && pathname.startsWith("/dashboard")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/account-setup";
+    return NextResponse.redirect(url);
+  }
 
   // if (
   //   !user?.user_metadata?.is_new_user &&
