@@ -1,8 +1,10 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
-
+.rdp-vhidden {
+  @apply hidden;
+}
 @theme inline {
   --font-nunito: var(--font-nunito);
   --color-background: var(--background);

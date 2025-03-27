@@ -7,7 +7,7 @@ export default function AuthenticationLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col overflow-y-hidden">
+    <div className="min-h-screen flex flex-col">
       <NavigationBar />
       <div className="flex flex-grow items-center justify-center">
         {children}

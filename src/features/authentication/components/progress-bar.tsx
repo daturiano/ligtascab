@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function ProgressBar() {
   return (
-    <div className="absolute bottom-0 h-20 w-full flex-col">
+    <div className="h-16 w-full flex-col">
       <Progress value={33} className="h-1" />
       <div className="flex h-full items-center justify-between px-4 lg:px-24">
         <Button variant={'outline'}>Back</Button>
