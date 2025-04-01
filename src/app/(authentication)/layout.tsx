@@ -1,4 +1,5 @@
 import NavigationBar from '@/features/authentication/components/navigation-bar';
+import ProgressProvider from '@/features/authentication/components/progress-provider';
 import React from 'react';
 
 export default function AuthenticationLayout({
@@ -10,7 +11,7 @@ export default function AuthenticationLayout({
     <div className="min-h-screen flex flex-col">
       <NavigationBar />
       <div className="flex flex-grow items-center justify-center">
-        {children}
+        <ProgressProvider>{children}</ProgressProvider>
       </div>
     </div>
   );

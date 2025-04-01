@@ -24,24 +24,61 @@ import {
 import { citiesAndMunicipalities, province } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { WarningCircle } from '@phosphor-icons/react';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { PersonalDetailsSchema } from '../schemas/authentication';
+import { useProgress } from './progress-provider';
 
 export default function PersonalDetailsForm() {
+  const { formData, updateData, setFormValid } = useProgress();
+  const [isReady, setIsReady] = useState(false);
+
   const form = useForm<z.infer<typeof PersonalDetailsSchema>>({
     resolver: zodResolver(PersonalDetailsSchema),
-    mode: 'onBlur',
-    defaultValues: {
-      province: '',
-      municipality: '',
-      address: '',
-      phone_number: '',
-    },
+    mode: 'onChange',
   });
+
+  useEffect(() => {
+    const personalDetails = formData.personalDetails || {};
+
+    form.reset({
+      province: personalDetails.province || '',
+      municipality: personalDetails.municipality || '',
+      address: personalDetails.address || '',
+      birth_date: personalDetails.birth_date,
+      phone_number: personalDetails.phone_number || '',
+    });
+
+    setTimeout(() => {
+      form.trigger().then(() => {
+        setFormValid(form.formState.isValid);
+        setIsReady(true);
+      });
+    }, 0);
+  }, [formData, form, setFormValid]);
+
+  // Second useEffect to sync form changes back to context, but only after initial load
+  useEffect(() => {
+    if (!isReady) return;
+
+    const subscription = form.watch((values) => {
+      if (
+        values &&
+        Object.keys(values).some((key) => values[key] !== undefined)
+      ) {
+        updateData({ personalDetails: values as any });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form, updateData, setFormValid, isReady]);
+
+  useEffect(() => {
+    setFormValid(form.formState.isValid);
+  }, [form.formState.isValid, setFormValid]);
 
   return (
     <Form {...form}>
@@ -51,7 +88,10 @@ export default function PersonalDetailsForm() {
           name="province"
           render={({ field }) => (
             <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                value={formData.personalDetails?.province || ''}
+              >
                 <FormControl>
                   <SelectTrigger className="w-full py-6">
                     <SelectValue placeholder="Province" />
@@ -75,7 +115,10 @@ export default function PersonalDetailsForm() {
           name="municipality"
           render={({ field }) => (
             <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                value={formData.personalDetails?.municipality || ''}
+              >
                 <FormControl>
                   <SelectTrigger className="w-full py-6">
                     <SelectValue placeholder="I'm a citizen of" />
@@ -106,12 +149,9 @@ export default function PersonalDetailsForm() {
                   placeholder="Street name, building, barangay"
                   type="text"
                   {...field}
+                  value={field.value || ''}
                   className="h-12 placeholder:text-sm"
-                >
-                  {form.formState.errors.address?.message && (
-                    <WarningCircle size={24} color="#fb2c36" />
-                  )}
-                </Input>
+                />
               </FormControl>
               <FormMessage>
                 {form.formState.errors.address?.message}
@@ -172,12 +212,9 @@ export default function PersonalDetailsForm() {
                   placeholder="Phone number"
                   type="text"
                   {...field}
+                  value={field.value || ''}
                   className="h-12 placeholder:text-sm"
-                >
-                  {form.formState.errors.phone_number?.message && (
-                    <WarningCircle size={24} color="#fb2c36" />
-                  )}
-                </Input>
+                />
               </FormControl>
               <FormMessage>
                 {form.formState.errors.phone_number?.message}

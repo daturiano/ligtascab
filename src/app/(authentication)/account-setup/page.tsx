@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -7,8 +9,11 @@ import {
 } from '@/components/ui/card';
 import PersonalDetailsForm from '@/features/authentication/components/personal-details-form';
 import ProgressBar from '@/features/authentication/components/progress-bar';
+import { useProgress } from '@/features/authentication/components/progress-provider';
 
 export default function AccountSetupPage() {
+  const { step } = useProgress();
+
   return (
     <div className="w-full h-[90dvh] flex flex-col">
       <div className="flex flex-grow items-center justify-evenly px-4">
@@ -20,9 +25,7 @@ export default function AccountSetupPage() {
               complete your profile on ligtascab.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <PersonalDetailsForm />
-          </CardContent>
+          <CardContent>{step === 1 && <PersonalDetailsForm />}</CardContent>
         </Card>
       </div>
       <ProgressBar />
