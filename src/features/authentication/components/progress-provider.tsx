@@ -2,16 +2,23 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type PersonalDetails = {
+  first_name?: string;
+  last_name?: string;
+  birth_date?: Date;
+  dial_code?: string;
+  phone_number?: string;
+};
+
+type AddressDetails = {
   province?: string;
   municipality?: string;
   address?: string;
-  birth_date?: Date;
-  phone_number?: string;
+  postal_code?: string;
 };
 
 type FormData = {
   personalDetails?: PersonalDetails;
-  // Add other form types when expand
+  addressDetails?: AddressDetails;
 };
 
 type ProgressContextType = {
@@ -91,6 +98,13 @@ export default function ProgressProvider({
         updated.personalDetails = {
           ...(prev.personalDetails || {}),
           ...newData.personalDetails,
+        };
+      }
+
+      if (newData.addressDetails) {
+        updated.addressDetails = {
+          ...(prev.addressDetails || {}),
+          ...newData.addressDetails,
         };
       }
 

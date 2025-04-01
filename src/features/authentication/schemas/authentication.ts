@@ -18,11 +18,11 @@ export const UserSchema = z.object({
 });
 
 export const PersonalDetailsSchema = z.object({
-  province: z.string(),
-  municipality: z.string(),
-  address: z.string(),
+  first_name: z.string(),
+  last_name: z.string(),
   birth_date: z.date(),
-  phone_number: z.string().max(12),
+  phone_number: z.string().max(10).min(10),
+  dial_code: z.string(),
 });
 
 export const CredentialsSchema = z.object({

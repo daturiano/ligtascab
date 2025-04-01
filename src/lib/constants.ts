@@ -39,3 +39,4 @@ export const citiesAndMunicipalities = [
 ];
 
 export const province = ['Camarines Sur'];
+export const dial_code = ['+63'];
