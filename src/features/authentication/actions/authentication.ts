@@ -1,21 +1,28 @@
-"use server";
+'use server';
 
 import {
   CredentialsSchema,
   UserSchema,
-} from "@/features/authentication/schemas/authentication";
-import { createClient } from "@/supabase/server";
-import { redirect } from "next/navigation";
+} from '@/features/authentication/schemas/authentication';
+import { createClient } from '@/supabase/server';
+import { redirect } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 type AuthResponse = { error?: string; message?: string };
+
+type UploadProps = {
+  file: File;
+  bucket: string;
+  documentId: string;
+};
 
 export const signInWithGoogle = async () => {
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
+    provider: 'google',
     options: {
-      redirectTo: "http://localhost:3000/auth/callback",
+      redirectTo: 'http://localhost:3000/auth/callback',
     },
   });
 
@@ -39,10 +46,10 @@ export const signInWithCredentials = async (
   const result = CredentialsSchema.safeParse(User);
 
   if (!result.success) {
-    let errorMessage = "";
+    let errorMessage = '';
 
     result.error.issues.forEach((issue) => {
-      errorMessage = errorMessage + issue.path[0] + ": " + issue.message + ". ";
+      errorMessage = errorMessage + issue.path[0] + ': ' + issue.message + '. ';
     });
 
     return {
@@ -57,11 +64,11 @@ export const signInWithCredentials = async (
   });
 
   if (error) {
-    console.error("Authentication Error:", error.message);
+    console.error('Authentication Error:', error.message);
     return { error: error.message };
   }
 
-  return { message: "Log in successful" };
+  return { message: 'Log in successful' };
 };
 
 export const registerWithCredentials = async (
@@ -69,9 +76,9 @@ export const registerWithCredentials = async (
 ): Promise<AuthResponse> => {
   const result = UserSchema.safeParse(User);
   if (!result.success) {
-    let errorMessage = "";
+    let errorMessage = '';
     result.error.issues.forEach((issue) => {
-      errorMessage = errorMessage + issue.path[0] + ": " + issue.message + ". ";
+      errorMessage = errorMessage + issue.path[0] + ': ' + issue.message + '. ';
     });
     return {
       error: errorMessage,
@@ -79,10 +86,10 @@ export const registerWithCredentials = async (
   }
 
   if (result.data.password !== result.data.confirm_password) {
-    return { error: "Password does not match." };
+    return { error: 'Password does not match.' };
   }
 
-  console.log("Attempting to register with email:", result.data.email);
+  console.log('Attempting to register with email:', result.data.email);
 
   const supabase = await createClient();
   const { data, error: signUpError } = await supabase.auth.signUp({
@@ -95,11 +102,42 @@ export const registerWithCredentials = async (
     },
   });
 
-  console.log("Supabase signUp response:", data);
+  console.log('Supabase signUp response:', data);
   if (signUpError) {
-    console.error("Supabase signUp error:", signUpError);
+    console.error('Supabase signUp error:', signUpError);
     return { error: signUpError.message };
   }
 
-  return { message: "Sign up successful" };
+  return { message: 'Sign up successful' };
+};
+
+export const uploadImage = async ({
+  file,
+  bucket,
+  documentId,
+}: UploadProps) => {
+  const fileName = file.name;
+  const fileExtension = fileName.slice(fileName.lastIndexOf('.') + 1);
+
+  const uniqueFilename = `${documentId}_${uuidv4()}.${fileExtension}`;
+
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const path = `${user?.id}/${uniqueFilename}`;
+
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .upload(path, file);
+
+  if (error) {
+    console.error('Upload error:', error);
+    return { imageUrl: '', error: `Upload failed: ${error.message}` };
+  }
+
+  const imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${data?.path}`;
+  return { imageUrl, error: '', filename: uniqueFilename };
 };
