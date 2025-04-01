@@ -25,6 +25,13 @@ export const PersonalDetailsSchema = z.object({
   dial_code: z.string(),
 });
 
+export const AddressSchema = z.object({
+  province: z.string(),
+  municipality: z.string(),
+  address: z.string(),
+  postal_code: z.string(),
+});
+
 export const CredentialsSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z.string().min(6, {
