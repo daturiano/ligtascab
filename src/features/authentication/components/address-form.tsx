@@ -136,9 +136,6 @@ export default function AddressForm() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage>
-                    {form.formState.errors.municipality?.message}
-                  </FormMessage>
                 </FormItem>
               )}
             />
@@ -157,9 +154,6 @@ export default function AddressForm() {
                       className="h-12 placeholder:text-sm"
                     />
                   </FormControl>
-                  <FormMessage>
-                    {form.formState.errors.address?.message}
-                  </FormMessage>
                 </FormItem>
               )}
             />
@@ -172,24 +166,24 @@ export default function AddressForm() {
                   <FormControl>
                     <Input
                       placeholder="Postal code"
-                      type="text"
+                      type="tel"
                       {...field}
                       value={field.value || ''}
                       className="h-12 placeholder:text-sm"
-                      maxLength={5}
+                      maxLength={4}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, ''); // ✅ Remove non-numeric characters
+                        field.onChange(value);
+                      }}
                     />
                   </FormControl>
-                  <FormMessage>
-                    {form.formState.errors.postal_code?.message}
-                  </FormMessage>
                 </FormItem>
               )}
             />
-            {form.formState.errors.root && (
-              <div className="text-sm font-medium text-red-500">
-                <p>{form.formState.errors.root.message}</p>
-              </div>
-            )}
+            <div className="min-h-5 text-sm font-medium text-red-500">
+              {(Object.values(form.formState.errors)[0]?.message as string) ||
+                ' '}
+            </div>
           </form>
         </Form>
       </CardContent>

@@ -2,13 +2,6 @@
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   Card,
   CardContent,
   CardDescription,
@@ -28,6 +21,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { dial_code } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
@@ -37,7 +38,6 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { PersonalDetailsSchema } from '../schemas/authentication';
 import { useProgress } from './progress-provider';
-import { dial_code } from '@/lib/constants';
 
 export default function PersonalDetailsForm() {
   const { formData, updateData, setFormValid } = useProgress();
@@ -61,7 +61,6 @@ export default function PersonalDetailsForm() {
 
     setTimeout(() => {
       form.trigger().then(() => {
-        setFormValid(form.formState.isValid);
         setIsReady(true);
       });
     }, 0);
@@ -113,9 +112,6 @@ export default function PersonalDetailsForm() {
                       className="h-12 placeholder:text-sm"
                     />
                   </FormControl>
-                  <FormMessage>
-                    {form.formState.errors.first_name?.message}
-                  </FormMessage>
                 </FormItem>
               )}
             />
@@ -134,9 +130,6 @@ export default function PersonalDetailsForm() {
                       className="h-12 placeholder:text-sm"
                     />
                   </FormControl>
-                  <FormMessage>
-                    {form.formState.errors.last_name?.message}
-                  </FormMessage>
                 </FormItem>
               )}
             />
@@ -176,14 +169,11 @@ export default function PersonalDetailsForm() {
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormMessage>
-                    {form.formState.errors.birth_date?.message}
-                  </FormMessage>
                 </FormItem>
               )}
             />
 
-            <div className="flex items-center gap-4 w-full">
+            <div className="flex items-center gap-6 w-full">
               <FormField
                 control={form.control}
                 name="dial_code"
@@ -219,25 +209,22 @@ export default function PersonalDetailsForm() {
                       <Input
                         placeholder="Phone number"
                         type="text"
-                        maxLength={10}
                         {...field}
                         value={field.value || ''}
+                        maxLength={10}
+                        minLength={10}
                         className="h-12 placeholder:text-sm"
                       />
                     </FormControl>
-                    <FormMessage>
-                      {form.formState.errors.phone_number?.message}
-                    </FormMessage>
                   </FormItem>
                 )}
               />
             </div>
 
-            {form.formState.errors.root && (
-              <div className="text-sm font-medium text-red-500">
-                <p>{form.formState.errors.root.message}</p>
-              </div>
-            )}
+            <div className="min-h-5 text-sm font-medium text-red-500">
+              {(Object.values(form.formState.errors)[0]?.message as string) ||
+                ' '}
+            </div>
           </form>
         </Form>
       </CardContent>

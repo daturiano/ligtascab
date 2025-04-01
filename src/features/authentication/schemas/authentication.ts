@@ -21,7 +21,7 @@ export const PersonalDetailsSchema = z.object({
   first_name: z.string(),
   last_name: z.string(),
   birth_date: z.date(),
-  phone_number: z.string().max(10).min(10),
+  phone_number: z.string().min(10).max(10),
   dial_code: z.string(),
 });
 
@@ -29,7 +29,11 @@ export const AddressSchema = z.object({
   province: z.string(),
   municipality: z.string(),
   address: z.string(),
-  postal_code: z.string(),
+  postal_code: z
+    .string()
+    .min(4, 'Postal code must be exactly 4 digits')
+    .max(4, 'Postal code must be exactly 4 digits')
+    .regex(/^\d{4}$/, 'Postal code must contain only numbers'),
 });
 
 export const CredentialsSchema = z.object({
