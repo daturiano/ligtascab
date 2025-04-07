@@ -7,6 +7,7 @@ import {
 import { createClient } from '@/supabase/server';
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import { FormData } from '../components/progress-provider';
 
 type AuthResponse = { error?: string; message?: string };
 
@@ -141,3 +142,81 @@ export const uploadImage = async ({
   const imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${data?.path}`;
   return { imageUrl, error: '', filename: uniqueFilename };
 };
+
+export async function submitUserFormData(formData: FormData) {
+  try {
+    const { personalDetails, addressDetails } = formData;
+
+    console.log(personalDetails, addressDetails);
+
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('User not authenticated');
+
+    if (!personalDetails?.dial_code || !personalDetails?.phone_number) {
+      return;
+    }
+
+    const phone_number =
+      personalDetails.dial_code + personalDetails.phone_number;
+
+    const userProfileData = {
+      id: user.id,
+      first_name: personalDetails?.first_name,
+      last_name: personalDetails?.last_name,
+      birth_date: personalDetails?.birth_date
+        ? new Date(personalDetails.birth_date).toISOString()
+        : null,
+      phone_number: phone_number,
+      is_new_user: false,
+    };
+
+    const { error } = await supabase
+      .from('operators')
+      .upsert(
+        [
+          {
+            ...userProfileData,
+            address: {
+              province: addressDetails?.province,
+              municipality: addressDetails?.municipality,
+              address: addressDetails?.address,
+              postal_code: addressDetails?.postal_code,
+            },
+          },
+        ],
+        {
+          onConflict: 'id',
+          ignoreDuplicates: false,
+        }
+      )
+      .select();
+
+    if (error) {
+      throw new Error(`Failed to save profile data: ${error.message}`);
+    }
+
+    const { error: UpdateError } = await supabase.auth.updateUser({
+      data: { is_new_user: false },
+    });
+
+    if (UpdateError) {
+      throw new Error(`Failed to save update data: ${UpdateError.message}`);
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error('Form submission error:', error);
+
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
+    };
+  }
+}

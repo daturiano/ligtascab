@@ -1,5 +1,5 @@
-import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { createServerClient } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -34,39 +34,39 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // const publicRoutes = ["/sign-in", "/sign-up", "/"];
+  const publicRoutes = ['/sign-in', '/sign-up', '/'];
 
   const { pathname } = request.nextUrl;
 
-  // if (
-  //   !user &&
-  //   (pathname.startsWith("/dashboard") || pathname.startsWith("/account-setup"))
-  // ) {
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = "/sign-in";
-  //   return NextResponse.redirect(url);
-  // }
-
-  if (user?.user_metadata?.is_new_user && pathname.startsWith("/dashboard")) {
+  if (
+    !user &&
+    (pathname.startsWith('/dashboard') || pathname.startsWith('/account-setup'))
+  ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/account-setup";
+    url.pathname = '/sign-in';
     return NextResponse.redirect(url);
   }
 
-  // if (
-  //   !user?.user_metadata?.is_new_user &&
-  //   pathname.startsWith("/account-setup")
-  // ) {
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = "/dashboard";
-  //   return NextResponse.redirect(url);
-  // }
-  // if (user && publicRoutes.includes(pathname)) {
-  //   // Authenticated users should not access public pages
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = "/dashboard";
-  //   return NextResponse.redirect(url);
-  // }
+  if (user?.user_metadata?.is_new_user && pathname.startsWith('/dashboard')) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/account-setup';
+    return NextResponse.redirect(url);
+  }
+
+  if (
+    !user?.user_metadata?.is_new_user &&
+    pathname.startsWith('/account-setup')
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/dashboard';
+    return NextResponse.redirect(url);
+  }
+  if (user && publicRoutes.includes(pathname)) {
+    // Authenticated users should not access public pages
+    const url = request.nextUrl.clone();
+    url.pathname = '/dashboard';
+    return NextResponse.redirect(url);
+  }
 
   return supabaseResponse;
 }

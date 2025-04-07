@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { FileIcon, XIcon } from 'lucide-react';
-import Image from 'next/image';
 import { ChangeEvent, useRef } from 'react';
 import { toast } from 'sonner';
 
@@ -30,10 +29,6 @@ export default function DocumentCard({
   selectedFile,
 }: DocumentCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const isImage = (file: File): boolean => {
-    return file?.type.startsWith('image/');
-  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -93,7 +88,7 @@ export default function DocumentCard({
         />
 
         {selectedFile && (
-          <div className="flex items-center p-2 ounded-md w-full">
+          <div className="flex items-center rounded-md w-full justify-between">
             <span className="text-sm truncate max-w-xs">
               {selectedFile.name}
             </span>

@@ -16,9 +16,18 @@ type AddressDetails = {
   postal_code?: string;
 };
 
-type FormData = {
+type AttachmentDetails = {
+  [key: string]: {
+    file: File | null;
+    documentId: string;
+    documentTitle: string;
+  };
+};
+
+export type FormData = {
   personalDetails?: PersonalDetails;
   addressDetails?: AddressDetails;
+  attachmentDetails?: AttachmentDetails;
 };
 
 type ProgressContextType = {
@@ -44,6 +53,8 @@ export default function ProgressProvider({
   const [isFormValid, setFormValid] = useState(false);
   const [formData, setFormData] = useState<FormData>({});
   const [isInitialized, setIsInitialized] = useState(false);
+
+  console.log(formData);
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(1, prev - 1));
@@ -105,6 +116,13 @@ export default function ProgressProvider({
         updated.addressDetails = {
           ...(prev.addressDetails || {}),
           ...newData.addressDetails,
+        };
+      }
+
+      if (newData.attachmentDetails) {
+        updated.attachmentDetails = {
+          ...(prev.attachmentDetails || {}),
+          ...newData.attachmentDetails,
         };
       }
 
