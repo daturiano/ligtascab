@@ -6,7 +6,11 @@ import { ReactNode } from 'react';
 
 const queryClient = new QueryClient();
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default function AuthenticatedLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return (
     <QueryClientProvider client={queryClient}>
       <div>

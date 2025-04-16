@@ -9,19 +9,19 @@ const data = {
   TricycleNav: [
     {
       title: 'Tricycles',
-      url: '/dashboard/tricycles',
+      url: '/tricycles',
       pathname: '/tricycles',
       icon: CarFront,
     },
     {
       title: 'Create Tricycle',
-      url: '/dashboard/create-tricycle',
+      url: '/create-tricycle',
       pathname: '/create-tricycle',
       icon: SquarePlus,
     },
     {
       title: 'Renew Tricycle',
-      url: '/dashboard/renew-tricycle',
+      url: '/renew-tricycle',
       pathname: '/renew-tricycle',
       icon: FilePlus2,
     },
