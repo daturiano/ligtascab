@@ -9,8 +9,11 @@ import { Tricycle } from '@/lib/types';
 import { useQuery } from '@tanstack/react-query';
 import { Search } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 export default function TricyclesPage() {
+  const [search, setSearch] = useState('');
+
   const { data: tricycles, error } = useQuery({
     queryKey: ['tricycles'],
     queryFn: getAllTricycles,
@@ -20,6 +23,10 @@ export default function TricyclesPage() {
     return <div>Error loading tricycles: {error.message}</div>;
   }
 
+  const filteredTricycles = tricycles?.filter((tricycle: Tricycle) =>
+    tricycle.plate_number.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4">
@@ -27,6 +34,8 @@ export default function TricyclesPage() {
         <div className="w-full flex items-center gap-4">
           <Input
             startIcon={Search}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by plate number"
             className="py-6 bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
           />
@@ -35,7 +44,7 @@ export default function TricyclesPage() {
           </div>
         </div>
       </div>
-      <div className="min-w-full border-[0.3px] relative rounded-2xl min-h-96 max-h-[33rem] overflow-auto bg-card flex flex-col items-center justify-center">
+      <div className="min-w-full border-[0.3px] relative rounded-2xl max-h-[33rem] overflow-auto bg-card flex flex-col items-center justify-center">
         {!tricycles ? (
           <>
             <Image src={emptyImage} alt="empty image" className="size-36" />
@@ -51,7 +60,7 @@ export default function TricyclesPage() {
           </>
         ) : (
           <div className="w-full">
-            {tricycles?.map((tricycle: Tricycle) => {
+            {filteredTricycles?.map((tricycle: Tricycle) => {
               return <TricycleCard tricycle={tricycle} key={tricycle.id} />;
             })}
           </div>
