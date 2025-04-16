@@ -11,11 +11,15 @@ export default function TricycleCard({ tricycle }: TricycleProps) {
   return (
     <div className="p-5 flex border-b justify-between items-center">
       <div className="flex items-center gap-16">
-        {tricycle.status === 'active' ? (
-          <Badge>Active</Badge>
-        ) : (
-          <Badge variant={'destructive'}>Inactive</Badge>
-        )}
+        <div className="min-w-[6rem]">
+          {tricycle.status === 'active' && <Badge>Active</Badge>}
+          {tricycle.status === 'inactive' && (
+            <Badge variant={'destructive'}>Inactive</Badge>
+          )}
+          {tricycle.status === 'maintenance' && (
+            <Badge variant={'secondary'}>Maintenance</Badge>
+          )}
+        </div>
         <div className="flex flex-col">
           <p className="tracking-wide font-medium">
             <span className="font-normal text-muted-foreground">

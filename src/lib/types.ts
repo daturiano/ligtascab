@@ -4,7 +4,7 @@ export type Tricycle = {
   plate_number: string;
   registration_expiry: Date;
   registration_number: string;
-  status?: string;
+  status: string;
   model: string;
   year: string;
 };
