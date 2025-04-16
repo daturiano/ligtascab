@@ -1,5 +1,8 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+'use client';
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Logo from '@/components/ui/logo';
+import { useQuery } from '@tanstack/react-query';
 import {
   Bell,
   CarFront,
@@ -11,30 +14,31 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { getOperator } from '../db/dashboard';
 
 const data = {
   navMain: [
     {
-      title: 'dashboard',
-      url: '/dashboard',
-      pathname: '/dashboard',
+      title: 'Home',
+      url: '/home',
+      pathname: '/home',
       icon: House,
     },
     {
       title: 'Shift',
-      url: '/dashboard/driver-logs',
-      pathname: '/driver-logs',
+      url: '/shifts',
+      pathname: '/shifts',
       icon: SquareChartGantt,
     },
     {
       title: 'Tricycles',
-      url: '/dashboard/tricycles',
+      url: '/tricycles',
       pathname: '/tricycles',
       icon: CarFront,
     },
     {
       title: 'Drivers',
-      url: '/dashboard/drivers',
+      url: '/drivers',
       pathname: '/drivers',
       icon: SquareUser,
     },
@@ -45,12 +49,17 @@ export default function DashboardHeader() {
   const pathname = usePathname();
   const path = pathname.substring(pathname.lastIndexOf('/'));
 
+  const { data: operator } = useQuery({
+    queryKey: ['operator'],
+    queryFn: getOperator,
+  });
+
   return (
     <div className="mx-auto w-full max-w-screen-2xl px-2.5 lg:px-20">
       <div className="flex h-16 items-center justify-between py-10">
         <div className="flex items-center">
           <a className="transition-all sm:block" href="/app">
-            <div className="flex max-w-fit items-center gap-2">
+            <div className="flex max-w-fit items-cent er gap-2">
               <Logo />
             </div>
           </a>
@@ -101,12 +110,17 @@ export default function DashboardHeader() {
           </div>
           <div className="relative">
             <Avatar className="size-10 rounded-full">
-              {/* <AvatarImage
-                // src={user.image ?? undefined}
-                // alt={user.first_name ?? undefined}
-                /> */}
+              <AvatarImage
+                src={operator?.image ?? undefined}
+                alt={operator?.first_name ?? undefined}
+              />
               <AvatarFallback className="size-10 border-1 border-white rounded-full bg-gray-300 flex items-center justify-center">
-                <p>DT</p>
+                <p>
+                  {operator?.first_name.charAt(0).toUpperCase() ?? undefined}
+                </p>
+                <p>
+                  {operator?.last_name.charAt(0).toUpperCase() ?? undefined}
+                </p>
               </AvatarFallback>
             </Avatar>
             <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full flex items-center justify-center bg-card">
