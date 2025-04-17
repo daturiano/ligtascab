@@ -1,7 +1,8 @@
+import GenerateQRCode from '@/components/generate-qrcode';
 import { Badge } from '@/components/ui/badge';
 import { Tricycle } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
-import { EllipsisVertical } from 'lucide-react';
+import { Ellipsis, FileText } from 'lucide-react';
 
 type TricycleProps = {
   tricycle: Tricycle;
@@ -54,7 +55,15 @@ export default function TricycleCard({ tricycle }: TricycleProps) {
           </p>
         </div>
       </div>
-      <EllipsisVertical />
+      <div className="flex items-center gap-4">
+        <GenerateQRCode id={tricycle.id} />
+        <button className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
+          <FileText size={20} />
+        </button>
+        <button className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
+          <Ellipsis size={20} />
+        </button>
+      </div>
     </div>
   );
 }

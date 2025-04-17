@@ -1,5 +1,5 @@
 export type Tricycle = {
-  id?: string;
+  id: string;
   operator_id?: string;
   plate_number: string;
   registration_expiry: Date;

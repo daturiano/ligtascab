@@ -15,6 +15,7 @@ import { Tricycle } from '@/lib/types';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Search, SortDesc } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function TricyclesPage() {
@@ -77,7 +78,14 @@ export default function TricyclesPage() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4">
-        <h1 className="text-3xl font-semibold">Tricycles</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-semibold">Tricycles</h1>
+          {tricycles && (
+            <Button>
+              <Link href={'/create-tricycle'}>Create a vehicle</Link>
+            </Button>
+          )}
+        </div>
         <div className="w-full flex items-center gap-4">
           <Input
             startIcon={Search}
@@ -86,7 +94,7 @@ export default function TricyclesPage() {
             placeholder="Search by plate number"
             className="py-6 bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
           />
-          <div className="h-13 p-4 bg-card w-full rounded-xl flex items-center justify-between">
+          <div className="h-13 p-4 bg-card min-w-[50rem] rounded-xl flex items-center justify-between">
             <div className="flex gap-2 items-center">
               <button
                 className={`flex gap-1 py-2 px-4 border shadow-xs rounded-full cursor-pointer bg-card text-xs ${
@@ -156,7 +164,9 @@ export default function TricyclesPage() {
                 After you create a new vehicle, you will see it here.
               </h3>
             </div>
-            <Button className="p-5">Create a vehicle</Button>
+            <Button>
+              <Link href={'/create-tricycle'}>Create a vehicle</Link>
+            </Button>
           </div>
         ) : (
           <div className="w-full">
