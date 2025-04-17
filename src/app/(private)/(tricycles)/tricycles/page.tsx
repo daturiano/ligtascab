@@ -82,7 +82,7 @@ export default function TricyclesPage() {
           <h1 className="text-3xl font-semibold">Tricycles</h1>
           {tricycles && (
             <Button>
-              <Link href={'/create-tricycle'}>Create a vehicle</Link>
+              <Link href={'/create-tricycle'}>Create a tricycle</Link>
             </Button>
           )}
         </div>
