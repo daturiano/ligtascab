@@ -13,10 +13,10 @@ export default function AuthenticatedLayout({
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <div>
+      <div className="flex flex-col min-h-screen">
         <div className="absolute bg-gradient-to-b from-[#1fab89]/20 to-transparent -z-50 w-full h-64"></div>
         <DashboardHeader />
-        <div className="mx-auto pb-10 w-full max-w-screen-2xl px-2.5 lg:px-20 flex flex-col gap-y-3">
+        <div className="mx-auto w-full flex flex-col flex-1 gap-y-3">
           {children}
         </div>
       </div>

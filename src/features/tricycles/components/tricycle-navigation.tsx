@@ -33,7 +33,7 @@ export default function TricycleNavigation() {
   const path = pathname.substring(pathname.lastIndexOf('/'));
 
   return (
-    <div className="w-full items-center flex gap-4">
+    <div className="w-full items-center flex gap-4 lg:px-20 max-w-screen-2xl mx-auto">
       {data.TricycleNav.map((item) => {
         return (
           <Link

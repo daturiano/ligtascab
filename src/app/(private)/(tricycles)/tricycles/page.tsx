@@ -76,7 +76,7 @@ export default function TricyclesPage() {
     });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full gap-4 lg:px-20 max-w-screen-2xl mx-auto">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Tricycles</h1>

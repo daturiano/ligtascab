@@ -5,9 +5,9 @@ import { ReactNode } from 'react';
 
 export default function TricyclesLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="pt-4 space-y-10">
+    <div className="pt-4 space-y-10 flex flex-col flex-1">
       <TricycleNavigation />
-      {children}
+      <div className="flex flex-col flex-1">{children}</div>
     </div>
   );
 }
