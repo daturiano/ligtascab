@@ -17,7 +17,7 @@ export default function CreateTricycleLayout({
               Create a tricycle information for operational use
             </p>
           </div>
-          <div className="flex gap-8">
+          <div className="flex gap-8 items-start">
             {children}
             <FormProgress />
           </div>

@@ -58,7 +58,7 @@ export default function TricycleDetailsForm() {
 
   return (
     <div>
-      <Card className="w-full">
+      <Card className="min-w-[650px] max-w-[650px] w-full">
         <CardHeader>
           <CardTitle className="text-sm font-normal">Triycle Details</CardTitle>
         </CardHeader>
@@ -169,7 +169,7 @@ export default function TricycleDetailsForm() {
                 )}
               />
 
-              <div className="flex items-center gap-4">
+              <div className="flex gap-4">
                 <FormField
                   control={form.control}
                   name="body_number"
