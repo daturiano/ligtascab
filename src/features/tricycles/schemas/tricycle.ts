@@ -27,14 +27,13 @@ export const OperationalInfoSchema = z.object({
 });
 
 export const ComplianceSchema = z.object({
-  or_number: z.string().optional(),
-  cr_number: z.string().optional(),
-  franchise_number: z.string().optional(),
-  franchise_expiry: z.date().optional(),
-  inspection_date: z.date().optional(),
-  compliance_status: z.enum(['compliant', 'non-compliant']).optional(),
-  is_expired: z.boolean().optional(),
+  or_number: z.string().min(1, 'Official Receipt is required'),
+  cr_number: z.string().min(1, 'Certificate of Registration is required'),
+  franchise_number: z.string().min(1, 'Franchise Number is required'),
+  franchise_expiry: z.date(),
 });
+
+export type ComplianceDetails = z.infer<typeof ComplianceSchema>;
 
 export const MaintenanceSchema = z.object({
   last_maintenance_date: z.date().optional(),

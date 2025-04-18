@@ -1,10 +1,11 @@
 'use client';
 
 import { createContext, useContext, useState } from 'react';
-import { TricycleDetails } from '../schemas/tricycle';
+import { ComplianceDetails, TricycleDetails } from '../schemas/tricycle';
 
 export type FormData = {
   tricycleDetails?: TricycleDetails;
+  complianceDetails?: ComplianceDetails;
 };
 
 type CreateTricycleContextType = {
@@ -28,6 +29,8 @@ export default function CreateTricycleProvider({
   const [step, setStep] = useState(1);
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(1, prev - 1));
+
+  console.log(formData);
 
   const setData = (values: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...values }));
