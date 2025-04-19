@@ -48,7 +48,7 @@ export const MaintenanceSchema = z.object({
       message: 'Last maintenance daet is required',
     }),
   maintenance_status: z.enum(['ok', 'due', 'critical']),
-  mileage: z.number().optional(),
+  mileage: z.string().min(1, 'Estimated mileage is required'),
 });
 
 export type MaintenanceDetails = z.infer<typeof MaintenanceSchema>;

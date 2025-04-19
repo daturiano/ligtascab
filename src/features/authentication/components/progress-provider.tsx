@@ -24,7 +24,8 @@ type AttachmentDetails = {
   };
 };
 
-export type FormData = {
+export type AccountSetupFormData = {
+  type: 'account';
   personalDetails?: PersonalDetails;
   addressDetails?: AddressDetails;
   attachmentDetails?: AttachmentDetails;
@@ -34,10 +35,8 @@ type ProgressContextType = {
   step: number;
   nextStep: () => void;
   prevStep: () => void;
-  isFormValid: boolean;
-  setFormValid: (isValid: boolean) => void;
-  formData: FormData;
-  updateData: (newData: Partial<FormData>) => void;
+  formData: AccountSetupFormData;
+  updateData: (newData: Partial<AccountSetupFormData>) => void;
 };
 
 const ProgressContext = createContext<ProgressContextType | undefined>(
@@ -50,8 +49,9 @@ export default function ProgressProvider({
   children: React.ReactNode;
 }) {
   const [step, setStep] = useState(1);
-  const [isFormValid, setFormValid] = useState(false);
-  const [formData, setFormData] = useState<FormData>({});
+  const [formData, setFormData] = useState<AccountSetupFormData>({
+    type: 'account',
+  });
   const [isInitialized, setIsInitialized] = useState(false);
 
   console.log(formData);
@@ -67,7 +67,9 @@ export default function ProgressProvider({
         const parsed = JSON.parse(storedData);
 
         // Create a new object to hold the processed data
-        const processedData: FormData = { ...(parsed.formData || {}) };
+        const processedData: AccountSetupFormData = {
+          ...(parsed.formData || {}),
+        };
 
         // Convert birth_date string back to Date object if it exists
         if (parsed.formData?.personalDetails?.birth_date) {
@@ -101,7 +103,7 @@ export default function ProgressProvider({
     }
   }, [step, formData, isInitialized]);
 
-  const updateData = (newData: Partial<FormData>) => {
+  const updateData = (newData: Partial<AccountSetupFormData>) => {
     setFormData((prev) => {
       const updated = { ...prev };
 
@@ -136,8 +138,6 @@ export default function ProgressProvider({
         step,
         nextStep,
         prevStep,
-        isFormValid,
-        setFormValid,
         formData,
         updateData,
       }}
