@@ -7,18 +7,28 @@ import {
   TricycleDetails,
 } from '../schemas/tricycle';
 
-export type FormData = {
+type AttachmentDetails = {
+  [key: string]: {
+    file: File | null;
+    documentId: string;
+    documentTitle: string;
+  };
+};
+
+export type TricycleFormData = {
+  type: 'tricycle';
   tricycleDetails?: TricycleDetails;
   complianceDetails?: ComplianceDetails;
   maintenanceDetails?: MaintenanceDetails;
+  attachmentDetails?: AttachmentDetails;
 };
 
 type CreateTricycleContextType = {
   step: number;
   nextStep: () => void;
   prevStep: () => void;
-  formData: FormData;
-  setData: (newData: Partial<FormData>) => void;
+  formData: TricycleFormData;
+  setData: (newData: Partial<TricycleFormData>) => void;
 };
 
 const CreateTricycleContext = createContext<
@@ -30,14 +40,16 @@ export default function CreateTricycleProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [formData, setFormData] = useState<FormData>({});
+  const [formData, setFormData] = useState<TricycleFormData>({
+    type: 'tricycle',
+  });
   const [step, setStep] = useState(1);
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(1, prev - 1));
 
   console.log(formData);
 
-  const setData = (values: Partial<FormData>) => {
+  const setData = (values: Partial<TricycleFormData>) => {
     setFormData((prev) => ({ ...prev, ...values }));
   };
 

@@ -28,3 +28,10 @@ type Address = {
   postal_code: string;
   municipality: string;
 };
+
+export interface DocumentType {
+  id: string;
+  title: string;
+  description: string;
+  required: boolean;
+}
