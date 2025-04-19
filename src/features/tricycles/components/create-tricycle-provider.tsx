@@ -1,11 +1,16 @@
 'use client';
 
 import { createContext, useContext, useState } from 'react';
-import { ComplianceDetails, TricycleDetails } from '../schemas/tricycle';
+import {
+  ComplianceDetails,
+  MaintenanceDetails,
+  TricycleDetails,
+} from '../schemas/tricycle';
 
 export type FormData = {
   tricycleDetails?: TricycleDetails;
   complianceDetails?: ComplianceDetails;
+  maintenanceDetails?: MaintenanceDetails;
 };
 
 type CreateTricycleContextType = {

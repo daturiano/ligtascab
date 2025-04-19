@@ -30,17 +30,28 @@ export const ComplianceSchema = z.object({
   or_number: z.string().min(1, 'Official Receipt is required'),
   cr_number: z.string().min(1, 'Certificate of Registration is required'),
   franchise_number: z.string().min(1, 'Franchise Number is required'),
-  franchise_expiry: z.date(),
+  franchise_expiry: z
+    .date()
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Franchise expiry is required',
+    }),
 });
 
 export type ComplianceDetails = z.infer<typeof ComplianceSchema>;
 
 export const MaintenanceSchema = z.object({
-  last_maintenance_date: z.date().optional(),
-  maintenance_status: z.enum(['ok', 'due', 'critical']).optional(),
+  last_maintenance_date: z
+    .date()
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Last maintenance daet is required',
+    }),
+  maintenance_status: z.enum(['ok', 'due', 'critical']),
   mileage: z.number().optional(),
-  accident_history: z.array(z.string()).optional(),
 });
+
+export type MaintenanceDetails = z.infer<typeof MaintenanceSchema>;
 
 export const MediaSchema = z.object({
   documents: z.array(z.string()).optional(), // Or replace with DocumentSchema
