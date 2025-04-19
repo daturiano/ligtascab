@@ -21,12 +21,14 @@ interface DocumentCardProps {
   document: DocumentType;
   onFileSelect: (docId: string, file: File | null) => void;
   selectedFile: File | null;
+  readonly: boolean;
 }
 
 export default function DocumentCard({
   document,
   onFileSelect,
   selectedFile,
+  readonly,
 }: DocumentCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -76,6 +78,7 @@ export default function DocumentCard({
           variant="outline"
           className="w-full"
           onClick={handleAttachClick}
+          disabled={readonly}
         >
           {selectedFile ? 'Change' : 'Attach'}
         </Button>
@@ -97,6 +100,7 @@ export default function DocumentCard({
               className="h-8 w-8 p-0"
               variant={'ghost'}
               onClick={removeFile}
+              disabled={readonly}
             >
               <XIcon className="h-4 w-4" />
             </Button>

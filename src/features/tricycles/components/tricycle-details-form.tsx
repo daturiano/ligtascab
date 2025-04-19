@@ -32,9 +32,7 @@ import { TricycleInfoSchema } from '../schemas/tricycle';
 import { useCreateTricycle } from './create-tricycle-provider';
 
 export default function TricycleDetailsForm() {
-  const { step, nextStep, formData, setData } = useCreateTricycle();
-
-  console.log(formData);
+  const { step, nextStep, formData, setData, readonly } = useCreateTricycle();
 
   const form = useForm<z.infer<typeof TricycleInfoSchema>>({
     resolver: zodResolver(TricycleInfoSchema),
@@ -80,7 +78,7 @@ export default function TricycleDetailsForm() {
                           placeholder="Model*"
                           type="text"
                           {...field}
-                          value={field.value || ''}
+                          readOnly={readonly}
                           className="h-12 placeholder:text-sm"
                         />
                       </FormControl>
@@ -98,7 +96,7 @@ export default function TricycleDetailsForm() {
                           placeholder="Year*"
                           type="text"
                           {...field}
-                          value={field.value || ''}
+                          readOnly={readonly}
                           className="h-12 placeholder:text-sm"
                         />
                       </FormControl>
@@ -118,6 +116,7 @@ export default function TricycleDetailsForm() {
                         placeholder="Registration number*"
                         type="text"
                         {...field}
+                        readOnly={readonly}
                         className="h-12 placeholder:text-sm"
                       />
                     </FormControl>
@@ -135,6 +134,7 @@ export default function TricycleDetailsForm() {
                       <PopoverTrigger
                         asChild
                         className="h-12 bg-transparent rounded-md border shadow-xs outline-none border-muted-foreground/40 hover:bg-transparent"
+                        disabled={readonly}
                       >
                         <FormControl>
                           <Button
@@ -180,7 +180,7 @@ export default function TricycleDetailsForm() {
                           placeholder="Body number* "
                           type="text"
                           {...field}
-                          value={field.value || ''}
+                          readOnly={readonly}
                           className="h-12 placeholder:text-sm"
                         />
                       </FormControl>
@@ -198,7 +198,7 @@ export default function TricycleDetailsForm() {
                           placeholder="Seating capacity*"
                           type="number"
                           {...field}
-                          value={field.value || ''}
+                          readOnly={readonly}
                           className="h-12 placeholder:text-sm"
                         />
                       </FormControl>
@@ -213,6 +213,7 @@ export default function TricycleDetailsForm() {
                     <FormItem className="w-full">
                       <Select
                         onValueChange={field.onChange}
+                        disabled={readonly}
                         defaultValue={formData.tricycleDetails?.fuel_type}
                       >
                         <FormControl>
@@ -234,7 +235,11 @@ export default function TricycleDetailsForm() {
           </Form>
         </CardContent>
       </Card>
-      <div className="w-full bg-card h-16 flex items-center absolute bottom-0 left-0">
+      <div
+        className={`w-full bg-card h-16 flex items-center absolute bottom-0 left-0 ${
+          readonly && 'hidden'
+        }`}
+      >
         <div className="max-w-screen-lg w-full mx-auto flex justify-between">
           <Button variant={'outline'} size={'lg'} disabled={step === 1}>
             <ArrowLeft />

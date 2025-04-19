@@ -27,6 +27,7 @@ type CreateTricycleContextType = {
   step: number;
   nextStep: () => void;
   prevStep: () => void;
+  readonly: boolean;
   formData: TricycleFormData;
   setData: (newData: Partial<TricycleFormData>) => void;
 };
@@ -46,12 +47,17 @@ export default function CreateTricycleProvider({
   const [step, setStep] = useState(1);
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(1, prev - 1));
+  let readonly = false;
 
   console.log(formData);
 
   const setData = (values: Partial<TricycleFormData>) => {
     setFormData((prev) => ({ ...prev, ...values }));
   };
+
+  if (step === 5) {
+    readonly = true;
+  }
 
   return (
     <CreateTricycleContext.Provider
@@ -61,6 +67,7 @@ export default function CreateTricycleProvider({
         step,
         nextStep,
         prevStep,
+        readonly,
       }}
     >
       {children}

@@ -32,7 +32,8 @@ import {
 } from '@/components/ui/select';
 
 export default function TricycleMaintenanceForm() {
-  const { step, nextStep, formData, setData, prevStep } = useCreateTricycle();
+  const { step, nextStep, formData, setData, prevStep, readonly } =
+    useCreateTricycle();
 
   const form = useForm<z.infer<typeof MaintenanceSchema>>({
     resolver: zodResolver(MaintenanceSchema),
@@ -41,7 +42,7 @@ export default function TricycleMaintenanceForm() {
       last_maintenance_date:
         formData.maintenanceDetails?.last_maintenance_date || undefined,
       maintenance_status: formData.maintenanceDetails?.maintenance_status,
-      mileage: formData.maintenanceDetails?.mileage,
+      mileage: formData.maintenanceDetails?.mileage || '',
     },
   });
 
@@ -74,6 +75,7 @@ export default function TricycleMaintenanceForm() {
                       <PopoverTrigger
                         asChild
                         className="h-12 bg-transparent rounded-md border shadow-xs outline-none border-muted-foreground/40 hover:bg-transparent"
+                        disabled={readonly}
                       >
                         <FormControl>
                           <Button
@@ -117,6 +119,7 @@ export default function TricycleMaintenanceForm() {
                       defaultValue={
                         formData.maintenanceDetails?.maintenance_status
                       }
+                      disabled={readonly}
                     >
                       <FormControl>
                         <SelectTrigger className="py-6 w-full">
@@ -143,6 +146,7 @@ export default function TricycleMaintenanceForm() {
                         placeholder="Mileage"
                         type="text"
                         {...field}
+                        readOnly={readonly}
                         className="h-12 placeholder:text-sm"
                       />
                     </FormControl>
@@ -153,7 +157,11 @@ export default function TricycleMaintenanceForm() {
           </Form>
         </CardContent>
       </Card>
-      <div className="w-full bg-card h-16 flex items-center absolute bottom-0 left-0">
+      <div
+        className={`w-full bg-card h-16 flex items-center absolute bottom-0 left-0 ${
+          readonly && 'hidden'
+        }`}
+      >
         <div className="max-w-screen-lg w-full mx-auto flex justify-between">
           <Button
             variant={'outline'}

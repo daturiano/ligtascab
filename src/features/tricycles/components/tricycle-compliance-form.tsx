@@ -25,7 +25,8 @@ import { ComplianceSchema } from '../schemas/tricycle';
 import { useCreateTricycle } from './create-tricycle-provider';
 
 export default function TricycleComplianceForm() {
-  const { step, nextStep, formData, setData, prevStep } = useCreateTricycle();
+  const { step, nextStep, formData, setData, prevStep, readonly } =
+    useCreateTricycle();
 
   const form = useForm<z.infer<typeof ComplianceSchema>>({
     resolver: zodResolver(ComplianceSchema),
@@ -69,6 +70,7 @@ export default function TricycleComplianceForm() {
                         placeholder="Official Receipt number*"
                         type="text"
                         {...field}
+                        readOnly={readonly}
                         className="h-12 placeholder:text-sm"
                       />
                     </FormControl>
@@ -87,6 +89,7 @@ export default function TricycleComplianceForm() {
                         placeholder="Certificate of Registration number*"
                         type="text"
                         {...field}
+                        readOnly={readonly}
                         className="h-12 placeholder:text-sm"
                       />
                     </FormControl>
@@ -105,6 +108,7 @@ export default function TricycleComplianceForm() {
                         placeholder="Franchise number*"
                         type="text"
                         {...field}
+                        readOnly={readonly}
                         className="h-12 placeholder:text-sm"
                       />
                     </FormControl>
@@ -122,6 +126,7 @@ export default function TricycleComplianceForm() {
                       <PopoverTrigger
                         asChild
                         className="h-12 bg-transparent rounded-md border shadow-xs outline-none border-muted-foreground/40 hover:bg-transparent"
+                        disabled={readonly}
                       >
                         <FormControl>
                           <Button
@@ -159,7 +164,11 @@ export default function TricycleComplianceForm() {
           </Form>
         </CardContent>
       </Card>
-      <div className="w-full bg-card h-16 flex items-center absolute bottom-0 left-0">
+      <div
+        className={`w-full bg-card h-16 flex items-center absolute bottom-0 left-0 ${
+          readonly && 'hidden'
+        }`}
+      >
         <div className="max-w-screen-lg w-full mx-auto flex justify-between">
           <Button
             variant={'outline'}

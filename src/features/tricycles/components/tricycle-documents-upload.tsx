@@ -1,7 +1,8 @@
-import { DocumentUpload } from '@/components/document-upload';
 import { Button } from '@/components/ui/button';
+import DocumentCard from '@/features/authentication/components/document-card';
 import { DocumentType } from '@/lib/types';
 import { ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
 import { useCreateTricycle } from './create-tricycle-provider';
 
 const document_type: DocumentType[] = [
@@ -26,18 +27,56 @@ const document_type: DocumentType[] = [
 ];
 
 export default function TricycleDocumentsUpload() {
-  const { step, prevStep, nextStep, formData, setData } = useCreateTricycle();
+  const { step, prevStep, nextStep, formData, setData, readonly } =
+    useCreateTricycle();
+  const [selectedFiles, setSelectedFiles] = useState<{
+    [key: string]: File | null;
+  }>({});
+
+  const handleFileSelect = (docId: string, file: File | null) => {
+    // Update local state
+    setSelectedFiles((prev) => ({
+      ...prev,
+      [docId]: file,
+    }));
+
+    // Update context simultaneously
+    const docType = document_type.find((doc) => doc.id === docId);
+
+    if (formData.type === 'tricycle' && docType) {
+      setData({
+        attachmentDetails: {
+          ...(formData.attachmentDetails || {}),
+          [docId]: {
+            file,
+            documentId: docId,
+            documentTitle: docType.title,
+          },
+        },
+      });
+    }
+  };
 
   return (
     <div>
       <div className="min-w-[650px] max-w-[650px] w-full">
-        <DocumentUpload
-          formData={formData}
-          document_type={document_type}
-          setData={setData}
-        />
+        <div className="flex flex-col gap-4 w-full">
+          {document_type.map((docType) => (
+            <DocumentCard
+              readonly={readonly}
+              key={docType.id}
+              document={docType}
+              onFileSelect={handleFileSelect}
+              selectedFile={selectedFiles[docType.id] || null}
+            />
+          ))}
+        </div>
       </div>
-      <div className="w-full bg-card h-16 flex items-center absolute bottom-0 left-0">
+      <div
+        className={`w-full bg-card h-16 flex items-center absolute bottom-0 left-0 ${
+          readonly && 'hidden'
+        }`}
+      >
         <div className="max-w-screen-lg w-full mx-auto flex justify-between">
           <Button
             variant={'outline'}
