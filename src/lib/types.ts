@@ -22,6 +22,21 @@ export type Operator = {
   birth_date: Date;
 };
 
+export type Driver = {
+  id: string;
+  operator_id: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  license_number: string;
+  license_expiry: string;
+  status: string;
+  email?: string;
+  image?: string;
+  address: Address;
+  birth_date: Date;
+};
+
 type Address = {
   address: string;
   province: string;
