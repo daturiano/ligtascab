@@ -5,6 +5,8 @@ import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useCreateTricycle } from './create-tricycle-provider';
 
+const MAX_FILE_SIZE_MB = 5;
+
 const document_type: DocumentType[] = [
   {
     id: 'certificate-of-registration',
@@ -34,6 +36,10 @@ export default function TricycleDocumentsUpload() {
   }>({});
 
   const handleFileSelect = (docId: string, file: File | null) => {
+    if (file && file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      alert(`"${file.name}" exceeds the 5MB file size limit.`);
+      return; // Reject file immediately
+    }
     // Update local state
     setSelectedFiles((prev) => ({
       ...prev,

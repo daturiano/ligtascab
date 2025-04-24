@@ -7,7 +7,7 @@ import {
   TricycleDetails,
 } from '../schemas/tricycle';
 
-type AttachmentDetails = {
+export type AttachmentDetails = {
   [key: string]: {
     file: File | null;
     documentId: string;

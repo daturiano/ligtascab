@@ -1,14 +1,39 @@
-import React from 'react';
+import { Button } from '@/components/ui/button';
 import TricycleComplianceForm from '@/features/tricycles/components/tricycle-compliance-form';
 import TricycleDetailsForm from '@/features/tricycles/components/tricycle-details-form';
 import TricycleDocumentsUpload from '@/features/tricycles/components/tricycle-documents-upload';
 import TricycleMaintenanceForm from '@/features/tricycles/components/tricycle-maintenance-form';
-import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import {
+  submitUserFormData,
+  uploadDocumentFormData,
+} from '../actions/tricycles';
 import { useCreateTricycle } from './create-tricycle-provider';
 
 export default function FormReview() {
-  const { prevStep } = useCreateTricycle();
+  const { prevStep, formData } = useCreateTricycle();
+
+  const onSubmit = async () => {
+    try {
+      const userResponse = await submitUserFormData(formData);
+
+      if (!userResponse?.success) {
+        console.error('User form submission failed');
+        return;
+      }
+
+      if (!formData.tricycleDetails) return null;
+
+      const uploadResults = await uploadDocumentFormData(
+        formData.tricycleDetails.registration_number,
+        formData.attachmentDetails
+      );
+
+      console.log('Documents uploaded:', uploadResults);
+    } catch (error) {
+      console.error('Submission error:', error);
+    }
+  };
 
   return (
     <div>
@@ -26,7 +51,7 @@ export default function FormReview() {
             <ArrowLeft />
             Back
           </Button>
-          <Button size={'lg'} type="submit">
+          <Button size={'lg'} onClick={onSubmit}>
             Continue
           </Button>
         </div>
