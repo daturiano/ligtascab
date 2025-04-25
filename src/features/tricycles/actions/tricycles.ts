@@ -10,7 +10,15 @@ import { createTricycle, uploadTricycleDocument } from '../db/tricycles';
 export async function submitUserFormData(tricycleFormData: TricycleFormData) {
   try {
     const { tricycleDetails, complianceDetails, maintenanceDetails } =
-      tricycleFormData;
+      tricycleFormData as {
+        tricycleDetails: NonNullable<typeof tricycleFormData.tricycleDetails>;
+        complianceDetails: NonNullable<
+          typeof tricycleFormData.complianceDetails
+        >;
+        maintenanceDetails: NonNullable<
+          typeof tricycleFormData.maintenanceDetails
+        >;
+      };
 
     const supabase = await createClient();
 
@@ -23,23 +31,24 @@ export async function submitUserFormData(tricycleFormData: TricycleFormData) {
     const tricycleData = {
       operator_id: user.id,
       tricycle_details: {
-        model: tricycleDetails?.model,
-        year: tricycleDetails?.year,
-        seating_capacity: tricycleDetails?.seating_capacity,
-        body_number: tricycleDetails?.body_number,
-        fuel_type: tricycleDetails?.fuel_type,
-        mileage: maintenanceDetails?.mileage,
-        maintenance_status: maintenanceDetails?.maintenance_status,
+        model: tricycleDetails.model,
+        year: tricycleDetails.year,
+        seating_capacity: tricycleDetails.seating_capacity,
+        body_number: tricycleDetails.body_number,
+        fuel_type: tricycleDetails.fuel_type,
+        mileage: maintenanceDetails.mileage,
+        maintenance_status: maintenanceDetails.maintenance_status,
       },
       compliance_details: {
-        franchise_number: complianceDetails?.franchise_number,
-        or_number: complianceDetails?.or_number,
-        cr_number: complianceDetails?.cr_number,
+        registration_number: tricycleDetails.registration_number,
+        franchise_number: complianceDetails.franchise_number,
+        or_number: complianceDetails.or_number,
+        cr_number: complianceDetails.cr_number,
       },
-      registration_number: tricycleDetails?.registration_number,
-      registration_expiration: tricycleDetails?.registration_expiry,
-      franchise_expiration: complianceDetails?.franchise_expiry,
-      last_maintenance_date: maintenanceDetails?.last_maintenance_date,
+      plate_number: complianceDetails.plate_number,
+      registration_expiration: tricycleDetails.registration_expiry,
+      franchise_expiration: complianceDetails.franchise_expiry,
+      last_maintenance_date: maintenanceDetails.last_maintenance_date,
     };
 
     const { error } = await createTricycle(tricycleData);
@@ -56,14 +65,14 @@ export async function submitUserFormData(tricycleFormData: TricycleFormData) {
 
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      error: error,
     };
   }
 }
 
 export const uploadDocumentFormData = async (
   registration_number: string,
-  attachmentDetails?: AttachmentDetails
+  attachmentDetails: AttachmentDetails
 ) => {
   const bucket_name = 'documents';
   const { error } = await uploadTricycleDocument(
@@ -75,4 +84,6 @@ export const uploadDocumentFormData = async (
   if (error) {
     throw new Error(`Failed to upload documents tricycle`);
   }
+
+  return error;
 };

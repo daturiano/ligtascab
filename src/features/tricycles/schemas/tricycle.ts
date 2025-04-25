@@ -19,14 +19,8 @@ export const TricycleInfoSchema = z.object({
 
 export type TricycleDetails = z.infer<typeof TricycleInfoSchema>;
 
-export const OperationalInfoSchema = z.object({
-  operational_area: z.string().optional(),
-  status: z.enum(['active', 'inactive', 'maintenance']),
-  status_updated_at: z.date().optional(),
-  added_by_user_id: z.string().optional(),
-});
-
 export const ComplianceSchema = z.object({
+  plate_number: z.string().min(1, 'Plate number is required'),
   or_number: z.string().min(1, 'Official Receipt is required'),
   cr_number: z.string().min(1, 'Certificate of Registration is required'),
   franchise_number: z.string().min(1, 'Franchise Number is required'),
@@ -53,17 +47,8 @@ export const MaintenanceSchema = z.object({
 
 export type MaintenanceDetails = z.infer<typeof MaintenanceSchema>;
 
-export const MediaSchema = z.object({
-  documents: z.array(z.string()).optional(), // Or replace with DocumentSchema
-  images: z.array(z.string()).optional(),
-});
-
-export const TricycleDetailsSchema = TricycleInfoSchema.merge(
-  OperationalInfoSchema
-)
-  .merge(ComplianceSchema)
-  .merge(MaintenanceSchema)
-  .merge(MediaSchema);
+export const TricycleDetailsSchema =
+  TricycleInfoSchema.merge(ComplianceSchema).merge(MaintenanceSchema);
 
 export type Tricycle = z.infer<typeof TricycleDetailsSchema> & {
   id: string;
