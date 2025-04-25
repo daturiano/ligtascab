@@ -32,6 +32,7 @@ export default function TricycleComplianceForm() {
     resolver: zodResolver(ComplianceSchema),
     mode: 'onBlur',
     defaultValues: {
+      plate_number: formData.complianceDetails?.plate_number || '',
       or_number: formData.complianceDetails?.or_number || '',
       cr_number: formData.complianceDetails?.cr_number || '',
       franchise_number: formData.complianceDetails?.franchise_number || '',
@@ -60,6 +61,25 @@ export default function TricycleComplianceForm() {
               onSubmit={form.handleSubmit(onSubmit)}
               id="compliance-form"
             >
+              <FormField
+                control={form.control}
+                name="plate_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Plate number*"
+                        type="text"
+                        {...field}
+                        readOnly={readonly}
+                        className="h-12 placeholder:text-sm"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="or_number"
