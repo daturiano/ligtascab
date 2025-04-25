@@ -32,7 +32,7 @@ export default function TricycleCard({ tricycle }: TricycleProps) {
             <span className="font-normal text-muted-foreground">
               Registration Number:{' '}
             </span>
-            {tricycle.registration_number}
+            {tricycle.compliance_details.registration_number}
           </p>
         </div>
       </div>
@@ -42,8 +42,12 @@ export default function TricycleCard({ tricycle }: TricycleProps) {
             Vehicle Details:
           </p>
           <div className="flex gap-2">
-            <p className="tracking-wide font-medium">{tricycle.year}</p>
-            <p className="tracking-wide font-medium">{tricycle.model}</p>
+            <p className="tracking-wide font-medium">
+              {tricycle.tricycle_details.year}
+            </p>
+            <p className="tracking-wide font-medium">
+              {tricycle.tricycle_details.model}
+            </p>
           </div>
         </div>
         <div className="flex flex-col items-start min-w-56">
@@ -51,12 +55,12 @@ export default function TricycleCard({ tricycle }: TricycleProps) {
             Vehicle Registration Expiration:
           </p>
           <p className="tracking-wide font-medium">
-            {formatDate(tricycle.registration_expiry.toLocaleString())}
+            {formatDate(tricycle.registration_expiration.toLocaleString())}
           </p>
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <GenerateQRCode id={tricycle.id} />
+        {tricycle.id && <GenerateQRCode id={tricycle.id} />}
         <button className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
           <FileText size={20} />
         </button>

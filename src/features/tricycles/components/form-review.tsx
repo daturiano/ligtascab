@@ -22,10 +22,12 @@ export default function FormReview() {
         return;
       }
 
-      if (!formData.tricycleDetails) return null;
+      if (!formData.complianceDetails || !formData.attachmentDetails) {
+        throw new Error('Tricycle form data is incomplete');
+      }
 
       const uploadResults = await uploadDocumentFormData(
-        formData.tricycleDetails.registration_number,
+        formData.complianceDetails.plate_number,
         formData.attachmentDetails
       );
 
