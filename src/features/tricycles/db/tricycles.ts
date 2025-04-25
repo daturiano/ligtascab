@@ -33,6 +33,22 @@ export const getTricycleByPlateNumber = async (
   return tricycle;
 };
 
+export async function deleteTricycle(plate_number: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('tricycles')
+    .delete()
+    .eq('plate_number', plate_number);
+
+  if (error) {
+    console.error(error);
+    return { error };
+  }
+
+  return { data, error };
+}
+
 export const createTricycle = async (tricycleData: Tricycle) => {
   const supabase = await createClient();
 
