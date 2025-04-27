@@ -1,4 +1,5 @@
 import CreateDriverProvider from '@/features/drivers/components/create-driver-provider';
+import DriverFormProgress from '@/features/drivers/components/driver-form-progress';
 import React, { ReactNode } from 'react';
 
 export default function CreateDriverLayout({
@@ -16,7 +17,10 @@ export default function CreateDriverLayout({
               Create a driver information for operational use
             </p>
           </div>
-          <div className="flex gap-8 items-start">{children}</div>
+          <div className="flex gap-8 items-start">
+            {children}
+            <DriverFormProgress />
+          </div>
         </div>
       </div>
     </CreateDriverProvider>

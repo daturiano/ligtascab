@@ -25,7 +25,7 @@ export const DriverInfoSchema = z.object({
 
 export type DriverDetails = z.infer<typeof DriverInfoSchema>;
 
-export const DriverComplianceoSchema = z.object({
+export const DriverComplianceSchema = z.object({
   license_number: z.string().min(1, 'License number is required'),
   license_expiration: z
     .date()
@@ -35,7 +35,7 @@ export const DriverComplianceoSchema = z.object({
     }),
 });
 
-export type DriverComplianceDetails = z.infer<typeof DriverComplianceoSchema>;
+export type DriverComplianceDetails = z.infer<typeof DriverComplianceSchema>;
 
 export type Driver = {
   id?: string;

@@ -59,7 +59,7 @@ export default function DriverDetailsForm() {
             <form
               className="space-y-6 w-full"
               onSubmit={form.handleSubmit(onSubmit)}
-              id="driver-form"
+              id="driver-details-form"
             >
               <div className="flex gap-4">
                 <FormField
@@ -234,7 +234,7 @@ export default function DriverDetailsForm() {
             <ArrowLeft />
             Back
           </Button>
-          <Button size={'lg'} type="submit" form="Driver-form">
+          <Button size={'lg'} type="submit" form="driver-details-form">
             Continue
           </Button>
         </div>
