@@ -39,7 +39,7 @@ export default function CreateDriverProvider({
   const [formData, setFormData] = useState<DriverFormData>({
     type: 'Driver',
   });
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(1, prev - 1));
   let readonly = false;

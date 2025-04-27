@@ -19,10 +19,12 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { ArrowLeft, CalendarIcon } from 'lucide-react';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { useCreateDriver } from './create-driver-provider';
 import { DriverComplianceSchema } from '../schemas/drivers';
+import { useCreateDriver } from './create-driver-provider';
+import DriverDocumentsUpload from './driver-documents-upload';
 
 export default function DriverLicenseForm() {
   const { step, nextStep, formData, setData, readonly } = useCreateDriver();
@@ -37,16 +39,29 @@ export default function DriverLicenseForm() {
     },
   });
 
+  // Check if both required documents are uploaded
+  const canContinue = useMemo(() => {
+    const attachmentDetails = formData.attachmentDetails || {};
+    const hasLicenseFront =
+      attachmentDetails['license-front']?.file instanceof File;
+    const hasLicenseBack =
+      attachmentDetails['license-back']?.file instanceof File;
+    return hasLicenseFront && hasLicenseBack;
+  }, [formData.attachmentDetails]);
+
   const onSubmit = (values: z.infer<typeof DriverComplianceSchema>) => {
+    if (!canContinue) return;
     setData({ complianceDetails: values });
     nextStep();
   };
 
   return (
     <div>
-      <Card className="min-w-[650px] max-w-[650px] w-full">
+      <Card className="min-w-[650px] max-w-[650px] w-full mb-24">
         <CardHeader>
-          <CardTitle className="text-sm font-normal">Driver Details</CardTitle>
+          <CardTitle className="text-sm font-normal">
+            Driver&apos;s License Details
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -120,11 +135,10 @@ export default function DriverLicenseForm() {
             </form>
           </Form>
         </CardContent>
+        <DriverDocumentsUpload />
       </Card>
       <div
-        className={`w-full bg-card h-16 flex items-center absolute bottom-0 left-0 ${
-          readonly && 'hidden'
-        }`}
+        className={`w-full bg-card h-16 flex items-center fixed bottom-0 left-0`}
       >
         <div className="max-w-screen-lg w-full mx-auto flex justify-between">
           <Button variant={'outline'} size={'lg'} disabled={step === 1}>
