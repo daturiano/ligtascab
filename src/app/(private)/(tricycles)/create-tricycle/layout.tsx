@@ -1,6 +1,6 @@
 import CreateTricycleProvider from '@/features/tricycles/components/create-tricycle-provider';
-import FormProgress from '@/features/tricycles/components/form-progress';
-import React, { ReactNode } from 'react';
+import TricycleFormProgress from '@/features/tricycles/components/tricycle-form-progress';
+import { ReactNode } from 'react';
 
 export default function CreateTricycleLayout({
   children,
@@ -19,7 +19,7 @@ export default function CreateTricycleLayout({
           </div>
           <div className="flex gap-8 items-start">
             {children}
-            <FormProgress />
+            <TricycleFormProgress />
           </div>
         </div>
       </div>

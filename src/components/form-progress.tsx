@@ -1,19 +1,13 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { useCreateTricycle } from './create-tricycle-provider';
 
-const stepsData = [
-  'Operational & Tricycle Details',
-  'Regulatory & Compliance',
-  'Maintenance & Usage',
-  'Documents',
-  'Review',
-];
+type FormProgressProps = {
+  stepsData: string[];
+  step: number;
+};
 
-export default function FormProgress() {
-  const { step } = useCreateTricycle();
-
+export default function FormProgress({ stepsData, step }: FormProgressProps) {
   return (
     <Card>
       <CardContent className="flex flex-col gap-4">
