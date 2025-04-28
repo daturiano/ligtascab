@@ -49,21 +49,21 @@ export default function DriverCard({ driver }: DriversProps) {
       <div className="text-sm min-w-[350px]">
         <p className="tracking-wide text-start">
           <span className="text-muted-foreground">Address: </span>
-          {driver.address.address} {driver.address.municipality}
+          {driver.address}
         </p>
       </div>
 
       <div className="flex flex-col text-sm min-w-[250px]">
         <p className="tracking-wide text-muted-foreground">
-          Vehicle Registration Expiration:
+          Driver&apos;s License Expiration:
         </p>
         <p className="tracking-wide font-medium">
-          {formatDate(driver.license_expiry.toLocaleString())}
+          {formatDate(driver.license_expiration.toLocaleString())}
         </p>
       </div>
 
       <div className="flex items-center gap-4">
-        <GenerateQRCode id={driver.id} />
+        <GenerateQRCode id={driver.license_number} />
         <button className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
           <FileText size={20} />
         </button>
