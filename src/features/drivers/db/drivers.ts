@@ -3,6 +3,7 @@
 import { Driver } from '@/lib/types';
 import { createClient } from '@/supabase/server';
 import { cache } from 'react';
+import { AttachmentDetails } from '../components/create-driver-provider';
 
 export const getAllDrivers = cache(async (): Promise<Driver[]> => {
   const supabase = await createClient();
@@ -17,3 +18,77 @@ export const getAllDrivers = cache(async (): Promise<Driver[]> => {
 
   return drivers ?? [];
 });
+
+export const createDriver = async (driverData: Driver) => {
+  console.log(driverData);
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('drivers')
+    .upsert([driverData])
+    .select();
+
+  if (error) {
+    console.log(error);
+    throw new Error('Unable to create new driver', error);
+  }
+
+  return { error, data };
+};
+
+export const getDriverByLicenseNumber = async (
+  license_number: string
+): Promise<Driver> => {
+  const supabase = await createClient();
+
+  const { data: driver } = await supabase
+    .from('drivers')
+    .select('*')
+    .eq('license_number', license_number)
+    .single();
+
+  return driver;
+};
+
+export const uploadDriverDocument = async (
+  attachmentDetails: AttachmentDetails,
+  bucketName: string = 'documents',
+  license_number: string
+) => {
+  const results: Record<string, string | null> = {};
+
+  const driver = await getDriverByLicenseNumber(license_number);
+
+  for (const key in attachmentDetails) {
+    const { file, documentId, documentTitle } = attachmentDetails[key];
+
+    if (!file) {
+      results[documentId] = null;
+      continue;
+    }
+
+    const sanitizedTitle = documentTitle
+      .replace(/[^a-z0-9]/gi, '_')
+      .toLowerCase();
+    const fileExtension = file.name.split('.').pop();
+
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const path = `${user?.id}/drivers/${driver.id}/${documentId}/${sanitizedTitle}.${fileExtension}`;
+
+    const { error } = await supabase.storage
+      .from(bucketName)
+      .upload(path, file, {
+        cacheControl: '3600',
+        upsert: true,
+      });
+
+    results[documentId] = error ? null : path;
+  }
+
+  return results;
+};
