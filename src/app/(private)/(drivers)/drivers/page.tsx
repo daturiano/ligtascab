@@ -23,7 +23,7 @@ export default function DriverPage() {
   const [isSorted, setIsSorted] = useState(false);
   const [statusSort, setStatusSort] = useState<string[]>(['all']);
 
-  const statusOptions = ['active', 'inactive', 'maintenance'];
+  const statusOptions = ['active', 'inactive'];
 
   const toggleStatus = (status: string) => {
     if (status === 'all') {
@@ -58,7 +58,7 @@ export default function DriverPage() {
   });
 
   if (error) {
-    return <div>Error loading tricycles: {error.message}</div>;
+    return <div>Error loading drivers: {error.message}</div>;
   }
 
   const filteredDrivers = drivers
@@ -68,11 +68,12 @@ export default function DriverPage() {
     })
     ?.filter((driver: Driver) => {
       if (statusSort.includes('all')) return true;
+      if (!driver.status) return null;
       return statusSort.includes(driver.status?.toLowerCase());
     })
     ?.sort((a: Driver, b: Driver) => {
-      const dateA = new Date(a.license_expiry).getTime();
-      const dateB = new Date(b.license_expiry).getTime();
+      const dateA = new Date(a.license_expiration).getTime();
+      const dateB = new Date(b.license_expiration).getTime();
       return isSorted ? dateA - dateB : 0;
     });
 
