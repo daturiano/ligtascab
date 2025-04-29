@@ -1,40 +1,30 @@
 'use client';
 
-import { CarFront, FilePlus2, SquarePlus } from 'lucide-react';
+import { LucideProps } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
-const data = {
-  TricycleNav: [
-    {
-      title: 'Tricycles',
-      url: '/tricycles',
-      pathname: '/tricycles',
-      icon: CarFront,
-    },
-    {
-      title: 'Create Tricycle',
-      url: '/create-tricycle',
-      pathname: '/create-tricycle',
-      icon: SquarePlus,
-    },
-    {
-      title: 'Renew Tricycle',
-      url: '/renew-tricycle',
-      pathname: '/renew-tricycle',
-      icon: FilePlus2,
-    },
-  ],
+type NavItem = {
+  title: string;
+  url: string;
+  pathname: string;
+  icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>
+  >;
 };
 
-export default function TricycleNavigation() {
+type InnerNavigationProps = {
+  data: NavItem[];
+};
+
+export default function SecondaryNavigation({ data }: InnerNavigationProps) {
   const pathname = usePathname();
   const path = pathname.substring(pathname.lastIndexOf('/'));
 
   return (
     <div className="w-full items-center flex gap-4 lg:px-20 max-w-screen-2xl mx-auto">
-      {data.TricycleNav.map((item) => {
+      {data.map((item) => {
         return (
           <Link
             key={item.title}
