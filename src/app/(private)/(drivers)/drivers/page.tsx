@@ -84,7 +84,7 @@ export default function DriverPage() {
           <h1 className="text-3xl font-semibold">Drivers</h1>
           {drivers && (
             <Button>
-              <Link href={'/create-tricycle'}>Create a driver</Link>
+              <Link href={'/create-driver'}>Create a driver</Link>
             </Button>
           )}
         </div>

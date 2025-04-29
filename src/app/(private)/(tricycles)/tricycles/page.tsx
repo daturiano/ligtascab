@@ -67,11 +67,12 @@ export default function TricyclesPage() {
     )
     ?.filter((tricycle: Tricycle) => {
       if (statusSort.includes('all')) return true;
-      return statusSort.includes(tricycle.status?.toLowerCase());
+      if (!tricycle.status) return null;
+      return statusSort.includes(tricycle.status.toLowerCase());
     })
     ?.sort((a: Tricycle, b: Tricycle) => {
-      const dateA = new Date(a.registration_expiry).getTime();
-      const dateB = new Date(b.registration_expiry).getTime();
+      const dateA = new Date(a.registration_expiration).getTime();
+      const dateB = new Date(b.registration_expiration).getTime();
       return isSorted ? dateA - dateB : 0;
     });
 
