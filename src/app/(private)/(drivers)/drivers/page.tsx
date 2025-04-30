@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/popover';
 import DriverCard from '@/features/drivers/components/driver-card';
 import { getAllDrivers } from '@/features/drivers/db/drivers';
-import { Driver } from '@/lib/types';
+import { Driver } from '@/features/drivers/schemas/drivers';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Search, SortDesc } from 'lucide-react';
 import Image from 'next/image';

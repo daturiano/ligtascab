@@ -1,9 +1,9 @@
 'use server';
 
-import { Driver } from '@/lib/types';
 import { createClient } from '@/supabase/server';
 import { cache } from 'react';
 import { AttachmentDetails } from '../components/create-driver-provider';
+import { Driver } from '../schemas/drivers';
 
 export const getAllDrivers = cache(async (): Promise<Driver[]> => {
   const supabase = await createClient();
@@ -18,6 +18,17 @@ export const getAllDrivers = cache(async (): Promise<Driver[]> => {
 
   return drivers ?? [];
 });
+
+export const deleteDriver = async (license_number: string) => {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from('drivers')
+    .delete()
+    .eq('license_number', license_number);
+
+  if (error) throw new Error('Unable to delete driver', error);
+};
 
 export const createDriver = async (driverData: Driver) => {
   console.log(driverData);

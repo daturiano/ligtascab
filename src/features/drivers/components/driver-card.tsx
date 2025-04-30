@@ -1,23 +1,69 @@
 import GenerateQRCode from '@/components/generate-qrcode';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Driver } from '@/lib/types';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { formatDate } from '@/lib/utils';
-import { Ellipsis, FileText } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Ellipsis, FileText, Trash } from 'lucide-react';
+import { useTransition } from 'react';
+import { toast } from 'sonner';
+import { deleteDriver } from '../db/drivers';
+import { Driver } from '../schemas/drivers';
 
 type DriversProps = {
   driver: Driver;
 };
 
 export default function DriverCard({ driver }: DriversProps) {
+  const [isPending, startTransition] = useTransition();
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteDriver,
+  });
+
+  const onDeleteHandler = async () => {
+    startTransition(() => {
+      deleteMutation.mutate(driver.license_number, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['drivers'],
+          });
+          toast.success('Driver deleted successfully!');
+        },
+        onError: () => {
+          toast.error('Error deleting driver.');
+        },
+      });
+    });
+  };
+
   return (
     <div className="p-5 flex border-b justify-between items-start">
       <div className="flex items-start gap-4 min-w-[250px]">
         <div className="relative">
           <Avatar className="size-10 rounded-full">
-            <AvatarImage
+            {/* <AvatarImage
               src={driver?.image ?? undefined}
               alt={driver?.first_name ?? undefined}
-            />
+            /> */}
             <AvatarFallback className="size-10 border-1 border-white rounded-full bg-gray-300 flex items-center justify-center text-md font-medium">
               <p>
                 {driver?.first_name.charAt(0).toUpperCase()}
@@ -41,7 +87,7 @@ export default function DriverCard({ driver }: DriversProps) {
             <span className="font-normal text-muted-foreground">
               Phone Number:{' '}
             </span>
-            {driver.phone_number}
+            {driver.contact_number}
           </p>
         </div>
       </div>
@@ -67,9 +113,48 @@ export default function DriverCard({ driver }: DriversProps) {
         <button className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
           <FileText size={20} />
         </button>
-        <button className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
-          <Ellipsis size={20} />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
+            <Ellipsis size={20} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-36">
+            <DropdownMenuLabel>Tricycle Options</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <AlertDialog>
+                <AlertDialogTrigger
+                  asChild
+                  className="p-2 hover:bg-destructive/10 cursor-pointer"
+                >
+                  <div className="flex gap-2 items-center">
+                    <Trash size={16} />
+                    <p className="text-sm">Delete</p>
+                  </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your driver and remove the data from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={onDeleteHandler}
+                      disabled={isPending}
+                    >
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
