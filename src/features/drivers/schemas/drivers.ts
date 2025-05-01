@@ -3,13 +3,13 @@ import { z } from 'zod';
 export const DriverInfoSchema = z.object({
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
-  date_of_birth: z
+  birth_date: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
       message: 'Date of birth is required',
     }),
-  contact_number: z
+  phone_number: z
     .string()
     .min(10, 'Contact number must be at least 10 digits')
     .max(11, 'Contact number must not exceed 11 digits'), // typical PH numbers
@@ -37,10 +37,14 @@ export const DriverComplianceSchema = z.object({
 
 export type DriverComplianceDetails = z.infer<typeof DriverComplianceSchema>;
 
-export type Driver = {
-  id?: string;
-  operator_id?: string;
-  status?: 'active' | 'inactive' | 'suspended';
-  created_at?: Date;
-  updated_at?: Date;
-};
+export const DriverSchema = DriverInfoSchema.merge(
+  DriverComplianceSchema
+).extend({
+  id: z.string(),
+  operator_id: z.string(),
+  status: z.enum(['active', 'inactive']).optional(),
+  created_at: z.date().optional(),
+  updated_at: z.date().optional(),
+});
+
+export type Driver = z.infer<typeof DriverSchema>;

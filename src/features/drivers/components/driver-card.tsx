@@ -21,7 +21,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { formatDate } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Ellipsis, FileText, Trash } from 'lucide-react';
+import { Ellipsis, FileText, Trash, User } from 'lucide-react';
+import Link from 'next/link';
 import { useTransition } from 'react';
 import { toast } from 'sonner';
 import { deleteDriver } from '../db/drivers';
@@ -87,7 +88,7 @@ export default function DriverCard({ driver }: DriversProps) {
             <span className="font-normal text-muted-foreground">
               Phone Number:{' '}
             </span>
-            {driver.contact_number}
+            {driver.phone_number}
           </p>
         </div>
       </div>
@@ -118,7 +119,7 @@ export default function DriverCard({ driver }: DriversProps) {
             <Ellipsis size={20} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-36">
-            <DropdownMenuLabel>Tricycle Options</DropdownMenuLabel>
+            <DropdownMenuLabel>Driver Options</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <AlertDialog>
@@ -152,6 +153,15 @@ export default function DriverCard({ driver }: DriversProps) {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                href={`/drivers/${driver.id}`}
+                className="flex gap-2 items-center"
+              >
+                <User size={16} strokeWidth={2} />
+                <p className="text-sm">View Profile</p>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
