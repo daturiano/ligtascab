@@ -41,7 +41,7 @@ export const DriverSchema = DriverInfoSchema.merge(
   DriverComplianceSchema
 ).extend({
   id: z.string(),
-  operator_id: z.string(),
+  operator_id: z.string().optional(),
   status: z.enum(['active', 'inactive']).optional(),
   created_at: z.date().optional(),
   updated_at: z.date().optional(),

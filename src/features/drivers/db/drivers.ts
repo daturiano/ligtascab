@@ -75,6 +75,20 @@ export const getDriverById = async (driver_id: string): Promise<Driver> => {
   return driver;
 };
 
+export async function updateDriverById(id: string, updatedData: Driver) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('drivers')
+    .update([updatedData])
+    .eq('id', id)
+    .select()
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 export const uploadDriverDocument = async (
   attachmentDetails: AttachmentDetails,
   bucketName: string = 'documents',
