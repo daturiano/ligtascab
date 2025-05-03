@@ -1,5 +1,6 @@
 'use server';
 
+import { createLog } from '@/db/db';
 import { createClient } from '@/supabase/server';
 import {
   AttachmentDetails,
@@ -26,19 +27,32 @@ export async function submitUserFormData(driverFormData: DriverFormData) {
       operator_id: user.id,
       first_name: driverDetails.first_name,
       last_name: driverDetails.last_name,
-      birth_date: driverDetails.date_of_birth,
+      birth_date: driverDetails.birth_date,
       address: driverDetails.address,
       emergency_contact_name: driverDetails.emergency_contact_name,
       emergency_contact_number: driverDetails.emergency_contact_number,
       license_number: complianceDetails.license_number,
       license_expiration: complianceDetails.license_expiration,
-      phone_number: driverDetails.contact_number,
+      phone_number: driverDetails.phone_number,
     };
 
-    const { error } = await createDriver(driverData);
+    const { data: driver, error } = await createDriver(driverData);
 
     if (error) {
       throw new Error(`Failed to create new driver`);
+    }
+
+    const logData = {
+      data: driverData,
+      operator_id: user.id,
+      driver_id: driver?.id,
+      log_event: 'create_driver',
+    };
+
+    const { error: LogError } = await createLog(logData);
+
+    if (LogError) {
+      throw new Error(`Failed to create log`);
     }
 
     return {

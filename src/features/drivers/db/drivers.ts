@@ -4,6 +4,7 @@ import { createClient } from '@/supabase/server';
 import { cache } from 'react';
 import { AttachmentDetails } from '../components/create-driver-provider';
 import { Driver } from '../schemas/drivers';
+import { PostgrestError } from '@supabase/supabase-js';
 
 export const getAllDrivers = cache(async (): Promise<Driver[]> => {
   const supabase = await createClient();
@@ -30,21 +31,18 @@ export const deleteDriver = async (license_number: string) => {
   if (error) throw new Error('Unable to delete driver', error);
 };
 
-export const createDriver = async (driverData: Driver) => {
-  console.log(driverData);
+export const createDriver = async (
+  driverData: Driver
+): Promise<{ data: Driver | null; error: PostgrestError | null }> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('drivers')
     .upsert([driverData])
-    .select();
+    .select()
+    .single();
 
-  if (error) {
-    console.log(error);
-    throw new Error('Unable to create new driver', error);
-  }
-
-  return { error, data };
+  return { data, error };
 };
 
 export const getDriverByLicenseNumber = async (

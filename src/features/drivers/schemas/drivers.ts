@@ -40,7 +40,7 @@ export type DriverComplianceDetails = z.infer<typeof DriverComplianceSchema>;
 export const DriverSchema = DriverInfoSchema.merge(
   DriverComplianceSchema
 ).extend({
-  id: z.string(),
+  id: z.string().optional(),
   operator_id: z.string().optional(),
   status: z.enum(['active', 'inactive']).optional(),
   created_at: z.date().optional(),
