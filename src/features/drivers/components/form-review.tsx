@@ -4,29 +4,27 @@ import { submitUserFormData, uploadDocumentFormData } from '../actions/drivers';
 import { useCreateDriver } from './create-driver-provider';
 import DriverDetailsForm from './driver-details-form';
 import DriverLicenseForm from './driver-license-form';
+import { toast } from 'sonner';
 
 export default function FormReview() {
   const { prevStep, formData } = useCreateDriver();
 
   const onSubmit = async () => {
     try {
-      const userResponse = await submitUserFormData(formData);
+      const result = await submitUserFormData(formData);
 
-      if (!userResponse?.success) {
-        console.error('User form submission failed');
+      if (!result.success) {
+        toast.error(result.error || 'Unknown error');
         return;
       }
 
-      if (!formData.complianceDetails || !formData.attachmentDetails) {
-        throw new Error('Driver form data is incomplete');
-      }
-
       const uploadResults = await uploadDocumentFormData(
-        formData.complianceDetails.license_number,
-        formData.attachmentDetails
+        formData.complianceDetails!.license_number,
+        formData.attachmentDetails!
       );
 
       console.log('Documents uploaded:', uploadResults);
+      toast.success('Driver created successfully!');
     } catch (error) {
       console.error('Submission error:', error);
     }

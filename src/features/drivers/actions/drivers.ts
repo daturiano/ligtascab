@@ -6,7 +6,11 @@ import {
   AttachmentDetails,
   DriverFormData,
 } from '../components/create-driver-provider';
-import { createDriver, uploadDriverDocument } from '../db/drivers';
+import {
+  createDriver,
+  getDriverByLicenseNumber,
+  uploadDriverDocument,
+} from '../db/drivers';
 
 export async function submitUserFormData(driverFormData: DriverFormData) {
   try {
@@ -21,7 +25,9 @@ export async function submitUserFormData(driverFormData: DriverFormData) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) throw new Error('User not authenticated');
+    if (!user) {
+      return { success: false, error: 'User not authenticated.' };
+    }
 
     const driverData = {
       operator_id: user.id,
@@ -38,8 +44,8 @@ export async function submitUserFormData(driverFormData: DriverFormData) {
 
     const { data: driver, error } = await createDriver(driverData);
 
-    if (error) {
-      throw new Error(`Failed to create new driver`);
+    if (error || !driver) {
+      return { success: false, error: 'Failed to create driver.' };
     }
 
     const logData = {
@@ -49,22 +55,16 @@ export async function submitUserFormData(driverFormData: DriverFormData) {
       log_event: 'create_driver',
     };
 
-    const { error: LogError } = await createLog(logData);
+    const { error: logError } = await createLog(logData);
 
-    if (LogError) {
-      throw new Error(`Failed to create log`);
+    if (logError) {
+      return { success: false, error: 'Failed to log event.' };
     }
 
-    return {
-      success: true,
-    };
-  } catch (error) {
-    console.error('Form submission error:', error);
-
-    return {
-      success: false,
-      error: error,
-    };
+    return { success: true };
+  } catch (err) {
+    console.error('submitUserFormData error:', err);
+    return { success: false, error: 'An unexpected error occurred.' };
   }
 }
 
@@ -72,16 +72,45 @@ export const uploadDocumentFormData = async (
   license_number: string,
   attachmentDetails: AttachmentDetails
 ) => {
-  const bucket_name = 'documents';
-  const { error } = await uploadDriverDocument(
-    attachmentDetails,
-    bucket_name,
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: 'User not authenticated.' };
+  }
+
+  const { data: driver, error } = await getDriverByLicenseNumber(
     license_number
   );
 
   if (error) {
-    throw new Error(`Failed to upload documents tricycle`);
+    return { success: false, error: 'Failed to retrieve driver.' };
   }
 
-  return error;
+  if (!driver.id) return null;
+
+  const bucket_name = 'documents';
+  const results = await uploadDriverDocument(
+    attachmentDetails,
+    bucket_name,
+    driver.id
+  );
+
+  const logData = {
+    data: results,
+    operator_id: user.id,
+    driver_id: driver.id,
+    log_event: 'driver_documents',
+  };
+
+  const { error: LogError } = await createLog(logData);
+
+  if (LogError) {
+    return { success: false, error: 'Failed to create audit log.' };
+  }
+
+  return { success: true };
 };

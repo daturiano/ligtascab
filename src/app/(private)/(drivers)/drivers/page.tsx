@@ -52,7 +52,7 @@ export default function DriverPage() {
     setSearch('');
   };
 
-  const { data: drivers, error } = useQuery({
+  const { data, error } = useQuery({
     queryKey: ['drivers'],
     queryFn: getAllDrivers,
   });
@@ -61,7 +61,11 @@ export default function DriverPage() {
     return <div>Error loading drivers: {error.message}</div>;
   }
 
-  const filteredDrivers = drivers
+  if (data?.error) return <div>Error: {data.error.message}</div>;
+
+  if (!data) return null;
+
+  const filteredDrivers = data.data
     ?.filter((driver: Driver) => {
       const full_name = driver.first_name + ' ' + driver.last_name;
       return full_name.toLowerCase().includes(search.toLowerCase());
@@ -82,7 +86,7 @@ export default function DriverPage() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Drivers</h1>
-          {drivers && (
+          {data.data && (
             <Button>
               <Link href={'/create-driver'}>Create a driver</Link>
             </Button>
@@ -155,7 +159,7 @@ export default function DriverPage() {
         </div>
       </div>
       <div className="min-w-full border-[0.3px] rounded-2xl max-h-[33rem] overflow-y-auto bg-card">
-        {!drivers ? (
+        {!data ? (
           <div className="flex items-center justify-center flex-col py-12">
             <Image src={emptyImage} alt="empty image" className="size-36" />
             <div className="flex flex-col space-y-4 text-center mb-8">

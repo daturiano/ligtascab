@@ -73,14 +73,14 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
   const onSubmit = async (values: z.infer<typeof DriverSchema>) => {
     if (!driver.id) return null;
     const { error } = await updateDriverById(driver.id, values);
-    queryClient.invalidateQueries({
-      queryKey: ['drivers'],
-    });
-    setIsEditable(false);
     if (!error) {
+      setIsEditable(false);
+      queryClient.invalidateQueries({
+        queryKey: ['drivers'],
+      });
       return toast.success('Driver updated successfully.');
     }
-    toast.error('Error updating driver', error);
+    toast.error('Error updating driver');
   };
 
   const toogleIsEditable = () => {

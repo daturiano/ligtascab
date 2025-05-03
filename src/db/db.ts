@@ -5,9 +5,5 @@ export const createLog = async (data: unknown) => {
 
   const { error } = await supabase.from('logs').insert([data]).select();
 
-  if (error) {
-    throw new Error('Error creating log', error);
-  }
-
   return { error };
 };

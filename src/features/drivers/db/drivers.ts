@@ -1,24 +1,25 @@
 'use server';
 
 import { createClient } from '@/supabase/server';
+import { PostgrestError } from '@supabase/supabase-js';
 import { cache } from 'react';
 import { AttachmentDetails } from '../components/create-driver-provider';
 import { Driver } from '../schemas/drivers';
-import { PostgrestError } from '@supabase/supabase-js';
 
-export const getAllDrivers = cache(async (): Promise<Driver[]> => {
-  const supabase = await createClient();
-  const { data: drivers, error } = await supabase
-    .from('drivers')
-    .select('*', { count: 'exact' })
-    .order('status', { ascending: true });
+export const getAllDrivers = cache(
+  async (): Promise<{ data: Driver[]; error: PostgrestError | null }> => {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('drivers')
+      .select('*', { count: 'exact' })
+      .order('status', { ascending: true });
 
-  if (error) {
-    throw new Error('Error fetching drivers:', error);
+    return {
+      data: data ?? [],
+      error,
+    };
   }
-
-  return drivers ?? [];
-});
+);
 
 export const deleteDriver = async (license_number: string) => {
   const supabase = await createClient();
@@ -28,12 +29,12 @@ export const deleteDriver = async (license_number: string) => {
     .delete()
     .eq('license_number', license_number);
 
-  if (error) throw new Error('Unable to delete driver', error);
+  return { error };
 };
 
 export const createDriver = async (
   driverData: Driver
-): Promise<{ data: Driver | null; error: PostgrestError | null }> => {
+): Promise<{ data: Driver; error: PostgrestError | null }> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -47,33 +48,36 @@ export const createDriver = async (
 
 export const getDriverByLicenseNumber = async (
   license_number: string
-): Promise<Driver> => {
+): Promise<{ data: Driver; error: PostgrestError | null }> => {
   const supabase = await createClient();
 
-  const { data: driver } = await supabase
+  const { data, error } = await supabase
     .from('drivers')
     .select('*')
     .eq('license_number', license_number)
     .single();
 
-  return driver;
+  return { data, error };
 };
 
-export const getDriverById = async (driver_id: string): Promise<Driver> => {
+export const getDriverById = async (
+  driver_id: string
+): Promise<{ data: Driver; error: PostgrestError | null }> => {
   const supabase = await createClient();
 
-  const { data: driver, error } = await supabase
+  const { data, error } = await supabase
     .from('drivers')
     .select('*')
     .eq('id', driver_id)
     .single();
 
-  if (error) throw new Error('Cannot get driver', error);
-
-  return driver;
+  return { data, error };
 };
 
-export async function updateDriverById(id: string, updatedData: Driver) {
+export async function updateDriverById(
+  id: string,
+  updatedData: Driver
+): Promise<{ data: Driver; error: PostgrestError | null }> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -83,18 +87,15 @@ export async function updateDriverById(id: string, updatedData: Driver) {
     .select()
     .maybeSingle();
 
-  if (error) throw new Error(error.message);
   return { data, error };
 }
 
 export const uploadDriverDocument = async (
   attachmentDetails: AttachmentDetails,
   bucketName: string = 'documents',
-  license_number: string
+  driver_id: string
 ) => {
   const results: Record<string, string | null> = {};
-
-  const driver = await getDriverByLicenseNumber(license_number);
 
   for (const key in attachmentDetails) {
     const { file, documentId, documentTitle } = attachmentDetails[key];
@@ -115,7 +116,7 @@ export const uploadDriverDocument = async (
       data: { user },
     } = await supabase.auth.getUser();
 
-    const path = `${user?.id}/drivers/${driver.id}/${documentId}/${sanitizedTitle}.${fileExtension}`;
+    const path = `${user?.id}/drivers/${driver_id}/${documentId}/${sanitizedTitle}.${fileExtension}`;
 
     const { error } = await supabase.storage
       .from(bucketName)
