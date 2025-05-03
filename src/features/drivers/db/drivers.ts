@@ -86,7 +86,7 @@ export async function updateDriverById(id: string, updatedData: Driver) {
     .maybeSingle();
 
   if (error) throw new Error(error.message);
-  return data;
+  return { data, error };
 }
 
 export const uploadDriverDocument = async (

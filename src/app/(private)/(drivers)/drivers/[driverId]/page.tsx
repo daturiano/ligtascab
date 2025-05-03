@@ -13,9 +13,6 @@ export default async function page({
   return (
     <div className="space-y-4 w-full lg:px-20 max-w-screen-2xl mx-auto flex">
       <DriverProfileCard driver={driver} />
-      <div className="w-full">
-        <p></p>
-      </div>
     </div>
   );
 }

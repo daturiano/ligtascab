@@ -71,28 +71,30 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof DriverSchema>) => {
-    try {
-      await updateDriverById(driver.id, values); // your DB logic
-      queryClient.invalidateQueries({
-        queryKey: ['drivers'],
-      });
-      setIsEditable(false);
-      toast.success('Driver updated successfully.');
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      toast.error('Failed to update driver.');
+    const { error } = await updateDriverById(driver.id, values);
+    queryClient.invalidateQueries({
+      queryKey: ['drivers'],
+    });
+    setIsEditable(false);
+    if (!error) {
+      return toast.success('Driver updated successfully.');
     }
+    toast.error('Error updating driver', error);
+  };
+
+  const toogleIsEditable = () => {
+    setIsEditable((prev) => !prev);
   };
 
   return (
     <Form {...form}>
       <form
-        className="w-full space-y-4"
+        className="w-full max-w-[500px] space-y-4 relative"
         id="driver-profile-form"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Card
-          className="w-full max-w-[500px] py-0"
+          className="py-0"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -102,7 +104,10 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
                 <PencilOff
                   className="text-muted-foreground cursor-pointer hover:text-foreground"
                   size={22}
-                  onClick={() => setIsEditable(true)}
+                  onClick={() => {
+                    form.reset();
+                    toogleIsEditable();
+                  }}
                 />
               </div>
             )}
@@ -133,7 +138,7 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
               </p>
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <div className="flex flex-col gap-2">
               <h1 className="font-semibold">Driver Details</h1>
               <FormField
@@ -227,7 +232,6 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
                 )}
               />
             </div>
-
             <div className="flex flex-col gap-2">
               <h1 className="font-semibold">License Details</h1>
               <FormField
@@ -349,23 +353,11 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
               />
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="pb-4">
             {isEditable && (
-              <div className="w-full justify-between flex items-center">
-                <Button
-                  onClick={() => {
-                    form.reset();
-                    setIsEditable(false);
-                  }}
-                  type="button"
-                  id="driver-profile-form"
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" id="driver-profile-form">
-                  Submit
-                </Button>
-              </div>
+              <Button type="submit" id="driver-profile-form" className="w-full">
+                Update Driver Profile
+              </Button>
             )}
           </CardFooter>
         </Card>
