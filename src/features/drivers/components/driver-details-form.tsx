@@ -33,8 +33,8 @@ export default function DriverDetailsForm() {
     defaultValues: {
       first_name: formData.driverDetails?.first_name || '',
       last_name: formData.driverDetails?.last_name || '',
-      date_of_birth: formData.driverDetails?.date_of_birth || undefined,
-      contact_number: formData.driverDetails?.contact_number || '',
+      birth_date: formData.driverDetails?.birth_date || undefined,
+      phone_number: formData.driverDetails?.phone_number || '',
       address: formData.driverDetails?.address || '',
       emergency_contact_name:
         formData.driverDetails?.emergency_contact_name || '',
@@ -102,7 +102,7 @@ export default function DriverDetailsForm() {
 
               <FormField
                 control={form.control}
-                name="contact_number"
+                name="phone_number"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -140,7 +140,7 @@ export default function DriverDetailsForm() {
 
               <FormField
                 control={form.control}
-                name="date_of_birth"
+                name="birth_date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <Popover>

@@ -71,6 +71,7 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof DriverSchema>) => {
+    if (!driver.id) return null;
     const { error } = await updateDriverById(driver.id, values);
     queryClient.invalidateQueries({
       queryKey: ['drivers'],
