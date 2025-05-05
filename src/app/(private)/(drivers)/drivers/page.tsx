@@ -9,8 +9,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { fetchAllDriversFromOperator } from '@/features/drivers/actions/drivers';
 import DriverCard from '@/features/drivers/components/driver-card';
-import { getAllDrivers } from '@/features/drivers/db/drivers';
 import { Driver } from '@/features/drivers/schemas/drivers';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Search, SortDesc } from 'lucide-react';
@@ -54,14 +54,12 @@ export default function DriverPage() {
 
   const { data, error } = useQuery({
     queryKey: ['drivers'],
-    queryFn: getAllDrivers,
+    queryFn: fetchAllDriversFromOperator,
   });
 
   if (error) {
     return <div>Error loading drivers: {error.message}</div>;
   }
-
-  if (data?.error) return <div>Error: {data.error.message}</div>;
 
   if (!data) return null;
 

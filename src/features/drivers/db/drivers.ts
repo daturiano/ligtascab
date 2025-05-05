@@ -90,7 +90,7 @@ export async function updateDriverById(
   return { data, error };
 }
 
-export const uploadDriverDocument = async (
+export const uploadDocument = async (
   attachmentDetails: AttachmentDetails,
   bucketName: string = 'documents',
   driver_id: string

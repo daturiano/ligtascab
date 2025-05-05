@@ -8,11 +8,30 @@ import {
 } from '../components/create-driver-provider';
 import {
   createDriver,
+  deleteDriver,
+  getAllDrivers,
+  getDriverById,
   getDriverByLicenseNumber,
-  uploadDriverDocument,
+  uploadDocument,
 } from '../db/drivers';
 
-export async function submitUserFormData(driverFormData: DriverFormData) {
+export const fetchDriverDetails = async (id: string) => {
+  const { data, error } = await getDriverById(id);
+
+  if (error) throw new Error('Driver not found');
+
+  return { data };
+};
+
+export const fetchAllDriversFromOperator = async () => {
+  const { data, error } = await getAllDrivers();
+
+  if (error) throw new Error('Unable to fetch all drivers');
+
+  return { data, error };
+};
+
+export async function createNewDriver(driverFormData: DriverFormData) {
   try {
     const { driverDetails, complianceDetails } = driverFormData as {
       driverDetails: NonNullable<typeof driverFormData.driverDetails>;
@@ -51,7 +70,7 @@ export async function submitUserFormData(driverFormData: DriverFormData) {
     const logData = {
       data: driverData,
       operator_id: user.id,
-      driver_id: driver?.id,
+      driver_id: driver.id,
       log_event: 'create_driver',
     };
 
@@ -68,7 +87,13 @@ export async function submitUserFormData(driverFormData: DriverFormData) {
   }
 }
 
-export const uploadDocumentFormData = async (
+export const removeDriverFromOperator = async (id: string) => {
+  const { error } = await deleteDriver(id);
+
+  if (error) throw new Error('Failed to delete driver');
+};
+
+export const uploadDriverDocument = async (
   license_number: string,
   attachmentDetails: AttachmentDetails
 ) => {
@@ -93,7 +118,7 @@ export const uploadDocumentFormData = async (
   if (!driver.id) return null;
 
   const bucket_name = 'documents';
-  const results = await uploadDriverDocument(
+  const results = await uploadDocument(
     attachmentDetails,
     bucket_name,
     driver.id

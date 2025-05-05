@@ -25,7 +25,7 @@ import { Ellipsis, FileText, Trash, User } from 'lucide-react';
 import Link from 'next/link';
 import { useTransition } from 'react';
 import { toast } from 'sonner';
-import { deleteDriver } from '../db/drivers';
+import { removeDriverFromOperator } from '../actions/drivers';
 import { Driver } from '../schemas/drivers';
 
 type DriversProps = {
@@ -37,7 +37,7 @@ export default function DriverCard({ driver }: DriversProps) {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: deleteDriver,
+    mutationFn: removeDriverFromOperator,
   });
 
   const onDeleteHandler = async () => {

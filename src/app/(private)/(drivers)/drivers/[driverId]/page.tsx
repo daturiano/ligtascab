@@ -1,5 +1,5 @@
+import { fetchDriverDetails } from '@/features/drivers/actions/drivers';
 import DriverProfileCard from '@/features/drivers/components/driver-profile-card';
-import { getDriverById } from '@/features/drivers/db/drivers';
 
 export default async function page({
   params,
@@ -7,7 +7,7 @@ export default async function page({
   params: Promise<{ driverId: string }>;
 }) {
   const driverId = (await params).driverId;
-  const driver = await getDriverById(driverId);
+  const { data: driver } = await fetchDriverDetails(driverId);
   if (!driver) return null;
 
   return (

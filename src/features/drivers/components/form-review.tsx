@@ -1,24 +1,24 @@
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { submitUserFormData, uploadDocumentFormData } from '../actions/drivers';
+import { toast } from 'sonner';
+import { createNewDriver, uploadDriverDocument } from '../actions/drivers';
 import { useCreateDriver } from './create-driver-provider';
 import DriverDetailsForm from './driver-details-form';
 import DriverLicenseForm from './driver-license-form';
-import { toast } from 'sonner';
 
 export default function FormReview() {
   const { prevStep, formData } = useCreateDriver();
 
   const onSubmit = async () => {
     try {
-      const result = await submitUserFormData(formData);
+      const result = await createNewDriver(formData);
 
       if (!result.success) {
         toast.error(result.error || 'Unknown error');
         return;
       }
 
-      const uploadResults = await uploadDocumentFormData(
+      const uploadResults = await uploadDriverDocument(
         formData.complianceDetails!.license_number,
         formData.attachmentDetails!
       );
