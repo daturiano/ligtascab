@@ -27,7 +27,7 @@ import { useCreateDriver } from './create-driver-provider';
 import DriverDocumentsUpload from './driver-documents-upload';
 
 export default function DriverLicenseForm() {
-  const { step, nextStep, formData, setData, readonly } = useCreateDriver();
+  const { nextStep, prevStep, formData, setData, readonly } = useCreateDriver();
 
   const form = useForm<z.infer<typeof DriverComplianceSchema>>({
     resolver: zodResolver(DriverComplianceSchema),
@@ -141,7 +141,7 @@ export default function DriverLicenseForm() {
         className={`w-full bg-card h-16 flex items-center fixed bottom-0 left-0`}
       >
         <div className="max-w-screen-lg w-full mx-auto flex justify-between">
-          <Button variant={'outline'} size={'lg'} disabled={step === 1}>
+          <Button variant={'outline'} size={'lg'} onClick={prevStep}>
             <ArrowLeft />
             Back
           </Button>
