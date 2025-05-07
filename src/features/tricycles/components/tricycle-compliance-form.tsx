@@ -36,8 +36,8 @@ export default function TricycleComplianceForm() {
       or_number: formData.complianceDetails?.or_number || '',
       cr_number: formData.complianceDetails?.cr_number || '',
       franchise_number: formData.complianceDetails?.franchise_number || '',
-      franchise_expiry:
-        formData.complianceDetails?.franchise_expiry || undefined,
+      franchise_expiration:
+        formData.complianceDetails?.franchise_expiration || undefined,
     },
   });
 
@@ -139,7 +139,7 @@ export default function TricycleComplianceForm() {
 
               <FormField
                 control={form.control}
-                name="franchise_expiry"
+                name="franchise_expiration"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <Popover>

@@ -6,14 +6,7 @@ import {
   MaintenanceDetails,
   TricycleDetails,
 } from '../schemas/tricycle';
-
-export type AttachmentDetails = {
-  [key: string]: {
-    file: File | null;
-    documentId: string;
-    documentTitle: string;
-  };
-};
+import { AttachmentDetails } from '@/lib/types';
 
 export type TricycleFormData = {
   type: 'tricycle';

@@ -1,13 +1,25 @@
 'use server';
 
 import { createClient } from '@/supabase/server';
+import { TricycleFormData } from '../components/create-tricycle-provider';
 import {
-  AttachmentDetails,
-  TricycleFormData,
-} from '../components/create-tricycle-provider';
-import { createTricycle, uploadTricycleDocument } from '../db/tricycles';
+  createTricycle,
+  deleteTricycle,
+  getAllTricycles,
+  getTricycleById,
+} from '../db/tricycles';
+import { createLog, uploadDocument } from '@/db/db';
+import { AttachmentDetails } from '@/lib/types';
 
-export async function submitUserFormData(tricycleFormData: TricycleFormData) {
+export const fetchAllTricyclesFromOperator = async () => {
+  const { data, error } = await getAllTricycles();
+
+  if (error) throw new Error('Unable to fetch all tricycles');
+
+  return { data, error };
+};
+
+export async function createNewTricycle(tricycleFormData: TricycleFormData) {
   try {
     const { tricycleDetails, complianceDetails, maintenanceDetails } =
       tricycleFormData as {
@@ -46,44 +58,85 @@ export async function submitUserFormData(tricycleFormData: TricycleFormData) {
         cr_number: complianceDetails.cr_number,
       },
       plate_number: complianceDetails.plate_number,
-      registration_expiration: tricycleDetails.registration_expiry,
-      franchise_expiration: complianceDetails.franchise_expiry,
+      registration_expiration: tricycleDetails.registration_expiration,
+      franchise_expiration: complianceDetails.franchise_expiration,
       last_maintenance_date: maintenanceDetails.last_maintenance_date,
     };
 
-    const { error } = await createTricycle(tricycleData);
+    const { data: tricycle, error } = await createTricycle(tricycleData);
 
-    if (error) {
-      throw new Error(`Failed to create new tricycle`);
+    if (error || !tricycle) {
+      return { success: false, error: 'Failed to create driver.' };
     }
 
-    return {
-      success: true,
+    const logData = {
+      data: tricycleData,
+      operator_id: user.id,
+      tricycle_id: tricycle.id,
+      log_event: 'create_tricycle',
     };
-  } catch (error) {
-    console.error('Form submission error:', error);
 
-    return {
-      success: false,
-      error: error,
-    };
+    const { error: logError } = await createLog(logData);
+
+    if (logError) {
+      return { success: false, error: 'Failed to log event.' };
+    }
+
+    return { success: true, data: tricycle };
+  } catch (err) {
+    console.error('Creating new tricycle error:', err);
+    return { success: false, error: 'An unexpected error occurred.' };
   }
 }
 
-export const uploadDocumentFormData = async (
-  registration_number: string,
+export const removeTricycleFromOperator = async (tricycle_id: string) => {
+  const { error } = await deleteTricycle(tricycle_id);
+
+  if (error) throw new Error('Failed to delete tricycle');
+};
+
+export const uploadTricycleDocument = async (
+  tricycle_id: string,
   attachmentDetails: AttachmentDetails
 ) => {
-  const bucket_name = 'documents';
-  const { error } = await uploadTricycleDocument(
-    attachmentDetails,
-    bucket_name,
-    registration_number
-  );
+  const supabase = await createClient();
 
-  if (error) {
-    throw new Error(`Failed to upload documents tricycle`);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: 'User not authenticated.' };
   }
 
-  return error;
+  const { data: tricycle, error } = await getTricycleById(tricycle_id);
+
+  if (error) {
+    return { success: false, error: 'Failed to retrieve tricycle.' };
+  }
+
+  if (!tricycle.id) return null;
+
+  const bucket_name = 'documents';
+  const results = await uploadDocument(
+    attachmentDetails,
+    bucket_name,
+    'tricyles',
+    tricycle.id
+  );
+
+  const logData = {
+    data: results,
+    operator_id: user.id,
+    driver_id: tricycle.id,
+    log_event: 'tricycle_documents',
+  };
+
+  const { error: LogError } = await createLog(logData);
+
+  if (LogError) {
+    return { success: false, error: 'Failed to create audit log.' };
+  }
+
+  return { success: true };
 };

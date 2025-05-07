@@ -1,23 +1,24 @@
 'use server';
 
-import { Tricycle } from '@/lib/types';
+import { AttachmentDetails, Tricycle } from '@/lib/types';
 import { createClient } from '@/supabase/server';
 import { cache } from 'react';
-import { AttachmentDetails } from '../components/create-tricycle-provider';
+import { PostgrestError } from '@supabase/supabase-js';
 
-export const getAllTricycles = cache(async (): Promise<Tricycle[]> => {
-  const supabase = await createClient();
-  const { data: tricycles, error } = await supabase
-    .from('tricycles')
-    .select('*', { count: 'exact' })
-    .order('status', { ascending: true });
+export const getAllTricycles = cache(
+  async (): Promise<{ data: Tricycle[]; error: PostgrestError | null }> => {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('tricycles')
+      .select('*', { count: 'exact' })
+      .order('status', { ascending: true });
 
-  if (error) {
-    throw new Error('Error fetching vehicles:', error);
+    return {
+      data: data ?? [],
+      error,
+    };
   }
-
-  return tricycles ?? [];
-});
+);
 
 export const getTricycleByPlateNumber = async (
   plate_number: string
@@ -33,43 +34,53 @@ export const getTricycleByPlateNumber = async (
   return tricycle;
 };
 
-export async function deleteTricycle(plate_number: string) {
+export async function deleteTricycle(
+  tricycle_id: string
+): Promise<{ error: PostgrestError | null }> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('tricycles')
     .delete()
-    .eq('plate_number', plate_number);
+    .eq('id', tricycle_id);
 
-  if (error) {
-    console.error(error);
-    return { error };
-  }
-
-  return { data, error };
+  return { error };
 }
 
-export const createTricycle = async (tricycleData: Tricycle) => {
+export const createTricycle = async (
+  tricycleData: Tricycle
+): Promise<{ data: Tricycle; error: PostgrestError | null }> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('tricycles')
     .upsert([tricycleData])
-    .select();
+    .select()
+    .single();
 
-  if (error) throw new Error('Unable to create new tricycle', error);
-
-  return { error, data };
+  return { data, error };
 };
 
-export const uploadTricycleDocument = async (
+export const getTricycleById = async (
+  tricycle_id: string
+): Promise<{ data: Tricycle; error: PostgrestError | null }> => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('tricycles')
+    .select('*')
+    .eq('id', tricycle_id)
+    .single();
+
+  return { data, error };
+};
+
+export const uploadDocuments = async (
   attachmentDetails: AttachmentDetails,
   bucketName: string = 'documents',
-  plate_number: string
+  tricycle_id: string
 ) => {
   const results: Record<string, string | null> = {};
-
-  const tricycle = await getTricycleByPlateNumber(plate_number);
 
   for (const key in attachmentDetails) {
     const { file, documentId, documentTitle } = attachmentDetails[key];
@@ -90,7 +101,7 @@ export const uploadTricycleDocument = async (
       data: { user },
     } = await supabase.auth.getUser();
 
-    const path = `${user?.id}/${tricycle.id}/${documentId}/${sanitizedTitle}.${fileExtension}`;
+    const path = `${user?.id}/tricycles/${tricycle_id}/${documentId}/${sanitizedTitle}.${fileExtension}`;
 
     const { error } = await supabase.storage
       .from(bucketName)

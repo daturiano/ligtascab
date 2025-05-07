@@ -4,34 +4,36 @@ import TricycleDetailsForm from '@/features/tricycles/components/tricycle-detail
 import TricycleDocumentsUpload from '@/features/tricycles/components/tricycle-documents-upload';
 import TricycleMaintenanceForm from '@/features/tricycles/components/tricycle-maintenance-form';
 import { ArrowLeft } from 'lucide-react';
-import {
-  submitUserFormData,
-  uploadDocumentFormData,
-} from '../actions/tricycles';
 import { useCreateTricycle } from './create-tricycle-provider';
+import {
+  createNewTricycle,
+  uploadTricycleDocument,
+} from '../actions/tricycles';
+import { toast } from 'sonner';
 
 export default function FormReview() {
   const { prevStep, formData } = useCreateTricycle();
 
   const onSubmit = async () => {
     try {
-      const userResponse = await submitUserFormData(formData);
+      const {
+        success,
+        error,
+        data: tricycle,
+      } = await createNewTricycle(formData);
 
-      if (!userResponse?.success) {
-        console.error('User form submission failed');
+      if (!success || !tricycle?.id) {
+        toast.error(error || 'Unknown error');
         return;
       }
 
-      if (!formData.complianceDetails || !formData.attachmentDetails) {
-        throw new Error('Tricycle form data is incomplete');
-      }
-
-      const uploadResults = await uploadDocumentFormData(
-        formData.complianceDetails.plate_number,
-        formData.attachmentDetails
+      const uploadResults = await uploadTricycleDocument(
+        tricycle.id,
+        formData.attachmentDetails!
       );
 
       console.log('Documents uploaded:', uploadResults);
+      toast.success('Tricycle created successfully!');
     } catch (error) {
       console.error('Submission error:', error);
     }

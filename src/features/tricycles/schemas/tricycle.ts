@@ -4,7 +4,7 @@ export const TricycleInfoSchema = z.object({
   model: z.string().min(1, 'Model is required'),
   year: z.string().min(1, 'Year is required'),
   registration_number: z.string().min(1, 'Registration number is required'),
-  registration_expiry: z
+  registration_expiration: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
@@ -24,7 +24,7 @@ export const ComplianceSchema = z.object({
   or_number: z.string().min(1, 'Official Receipt is required'),
   cr_number: z.string().min(1, 'Certificate of Registration is required'),
   franchise_number: z.string().min(1, 'Franchise Number is required'),
-  franchise_expiry: z
+  franchise_expiration: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
@@ -46,11 +46,3 @@ export const MaintenanceSchema = z.object({
 });
 
 export type MaintenanceDetails = z.infer<typeof MaintenanceSchema>;
-
-export const TricycleDetailsSchema =
-  TricycleInfoSchema.merge(ComplianceSchema).merge(MaintenanceSchema);
-
-export type Tricycle = z.infer<typeof TricycleDetailsSchema> & {
-  id: string;
-  operator_id?: string;
-};

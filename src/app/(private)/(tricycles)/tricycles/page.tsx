@@ -9,8 +9,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { fetchAllTricyclesFromOperator } from '@/features/tricycles/actions/tricycles';
 import TricycleCard from '@/features/tricycles/components/tricycle-card';
-import { getAllTricycles } from '@/features/tricycles/db/tricycles';
 import { Tricycle } from '@/lib/types';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Search, SortDesc } from 'lucide-react';
@@ -54,14 +54,16 @@ export default function TricyclesPage() {
 
   const { data: tricycles, error } = useQuery({
     queryKey: ['tricycles'],
-    queryFn: getAllTricycles,
+    queryFn: fetchAllTricyclesFromOperator,
   });
 
   if (error) {
     return <div>Error loading tricycles: {error.message}</div>;
   }
 
-  const filteredTricycles = tricycles
+  if (!tricycles) return null;
+
+  const filteredTricycles = tricycles.data
     ?.filter((tricycle: Tricycle) =>
       tricycle.plate_number.toLowerCase().includes(search.toLowerCase())
     )
@@ -81,7 +83,7 @@ export default function TricyclesPage() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Tricycles</h1>
-          {tricycles && (
+          {tricycles.data && (
             <Button>
               <Link href={'/create-tricycle'}>Create a tricycle</Link>
             </Button>
@@ -154,7 +156,7 @@ export default function TricyclesPage() {
         </div>
       </div>
       <div className="min-w-full border-[0.3px] rounded-2xl max-h-[33rem] overflow-y-auto bg-card">
-        {!tricycles ? (
+        {!tricycles.data ? (
           <div className="flex items-center justify-center flex-col py-12">
             <Image src={emptyImage} alt="empty image" className="size-36" />
             <div className="flex flex-col space-y-4 text-center mb-8">

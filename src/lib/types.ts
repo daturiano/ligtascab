@@ -1,3 +1,11 @@
+export type AttachmentDetails = {
+  [key: string]: {
+    file: File | null;
+    documentId: string;
+    documentTitle: string;
+  };
+};
+
 export type Tricycle = {
   id?: string;
   operator_id: string;

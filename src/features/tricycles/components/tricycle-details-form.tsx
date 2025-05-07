@@ -41,8 +41,8 @@ export default function TricycleDetailsForm() {
       model: formData.tricycleDetails?.model || '',
       year: formData.tricycleDetails?.year || '',
       registration_number: formData.tricycleDetails?.registration_number || '',
-      registration_expiry:
-        formData.tricycleDetails?.registration_expiry || undefined,
+      registration_expiration:
+        formData.tricycleDetails?.registration_expiration || undefined,
       body_number: formData.tricycleDetails?.body_number || '',
       seating_capacity: formData.tricycleDetails?.seating_capacity || '',
       fuel_type: formData.tricycleDetails?.fuel_type || '',
@@ -127,7 +127,7 @@ export default function TricycleDetailsForm() {
 
               <FormField
                 control={form.control}
-                name="registration_expiry"
+                name="registration_expiration"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <Popover>

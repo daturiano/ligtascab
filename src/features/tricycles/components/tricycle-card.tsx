@@ -19,13 +19,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Tricycle } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Ellipsis, FileText, Trash } from 'lucide-react';
 import { useTransition } from 'react';
 import { toast } from 'sonner';
-import { deleteTricycle } from '../db/tricycles';
+import { removeTricycleFromOperator } from '../actions/tricycles';
+import { Tricycle } from '@/lib/types';
 
 type TricycleProps = {
   tricycle: Tricycle;
@@ -36,12 +36,12 @@ export default function TricycleCard({ tricycle }: TricycleProps) {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: deleteTricycle,
+    mutationFn: removeTricycleFromOperator,
   });
 
   const onDeleteHandler = async () => {
     startTransition(() => {
-      deleteMutation.mutate(tricycle.plate_number, {
+      deleteMutation.mutate(tricycle.id!, {
         onSuccess: () => {
           queryClient.invalidateQueries({
             queryKey: ['tricycles'],
