@@ -2,14 +2,7 @@
 
 import { createContext, useContext, useState } from 'react';
 import { DriverComplianceDetails, DriverDetails } from '../schemas/drivers';
-
-export type AttachmentDetails = {
-  [key: string]: {
-    file: File | null;
-    documentId: string;
-    documentTitle: string;
-  };
-};
+import { AttachmentDetails } from '@/lib/types';
 
 export type DriverFormData = {
   type: 'Driver';

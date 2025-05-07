@@ -3,7 +3,6 @@
 import { createClient } from '@/supabase/server';
 import { PostgrestError } from '@supabase/supabase-js';
 import { cache } from 'react';
-import { AttachmentDetails } from '../components/create-driver-provider';
 import { Driver } from '../schemas/drivers';
 
 export const getAllDrivers = cache(
@@ -89,44 +88,3 @@ export async function updateDriverById(
 
   return { data, error };
 }
-
-export const uploadDocument = async (
-  attachmentDetails: AttachmentDetails,
-  bucketName: string = 'documents',
-  driver_id: string
-) => {
-  const results: Record<string, string | null> = {};
-
-  for (const key in attachmentDetails) {
-    const { file, documentId, documentTitle } = attachmentDetails[key];
-
-    if (!file) {
-      results[documentId] = null;
-      continue;
-    }
-
-    const sanitizedTitle = documentTitle
-      .replace(/[^a-z0-9]/gi, '_')
-      .toLowerCase();
-    const fileExtension = file.name.split('.').pop();
-
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    const path = `${user?.id}/drivers/${driver_id}/${documentId}/${sanitizedTitle}.${fileExtension}`;
-
-    const { error } = await supabase.storage
-      .from(bucketName)
-      .upload(path, file, {
-        cacheControl: '3600',
-        upsert: true,
-      });
-
-    results[documentId] = error ? null : path;
-  }
-
-  return results;
-};

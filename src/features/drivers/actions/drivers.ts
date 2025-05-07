@@ -1,19 +1,16 @@
 'use server';
 
-import { createLog } from '@/db/db';
+import { createLog, uploadDocument } from '@/db/db';
 import { createClient } from '@/supabase/server';
-import {
-  AttachmentDetails,
-  DriverFormData,
-} from '../components/create-driver-provider';
+import { DriverFormData } from '../components/create-driver-provider';
 import {
   createDriver,
   deleteDriver,
   getAllDrivers,
   getDriverById,
   getDriverByLicenseNumber,
-  uploadDocument,
 } from '../db/drivers';
+import { AttachmentDetails } from '@/lib/types';
 
 export const fetchDriverDetails = async (id: string) => {
   const { data, error } = await getDriverById(id);
@@ -121,6 +118,7 @@ export const uploadDriverDocument = async (
   const results = await uploadDocument(
     attachmentDetails,
     bucket_name,
+    'drivers',
     driver.id
   );
 
