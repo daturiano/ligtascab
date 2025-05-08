@@ -41,7 +41,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { updateDriverById } from '../db/drivers';
-import { Driver, DriverSchema } from '../schemas/drivers';
+import { Driver, UpdateDriverSchema } from '../schemas/drivers';
 import { EditableInput } from './editable-input';
 
 type DriverProfileCardProps = {
@@ -53,8 +53,8 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
-  const form = useForm<z.infer<typeof DriverSchema>>({
-    resolver: zodResolver(DriverSchema),
+  const form = useForm<z.infer<typeof UpdateDriverSchema>>({
+    resolver: zodResolver(UpdateDriverSchema),
     mode: 'onSubmit',
     defaultValues: {
       id: driver.id,
@@ -67,11 +67,11 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
       license_expiration: new Date(driver.license_expiration),
       emergency_contact_name: driver.emergency_contact_name,
       emergency_contact_number: driver.emergency_contact_number,
+      updated_at: new Date(),
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof DriverSchema>) => {
-    if (!driver.id) return null;
+  const onSubmit = async (values: z.infer<typeof UpdateDriverSchema>) => {
     const { error } = await updateDriverById(driver.id, values);
     if (!error) {
       setIsEditable(false);

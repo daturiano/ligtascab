@@ -3,7 +3,7 @@
 import { createClient } from '@/supabase/server';
 import { PostgrestError } from '@supabase/supabase-js';
 import { cache } from 'react';
-import { Driver } from '../schemas/drivers';
+import { CreateDriver, Driver, UpdateDriver } from '../schemas/drivers';
 
 export const getAllDrivers = cache(
   async (): Promise<{ data: Driver[]; error: PostgrestError | null }> => {
@@ -20,19 +20,16 @@ export const getAllDrivers = cache(
   }
 );
 
-export const deleteDriver = async (license_number: string) => {
+export const deleteDriver = async (id: string) => {
   const supabase = await createClient();
 
-  const { error } = await supabase
-    .from('drivers')
-    .delete()
-    .eq('license_number', license_number);
+  const { error } = await supabase.from('drivers').delete().eq('id', id);
 
   return { error };
 };
 
 export const createDriver = async (
-  driverData: Driver
+  driverData: CreateDriver
 ): Promise<{ data: Driver; error: PostgrestError | null }> => {
   const supabase = await createClient();
 
@@ -75,7 +72,7 @@ export const getDriverById = async (
 
 export async function updateDriverById(
   id: string,
-  updatedData: Driver
+  updatedData: UpdateDriver
 ): Promise<{ data: Driver; error: PostgrestError | null }> {
   const supabase = await createClient();
 

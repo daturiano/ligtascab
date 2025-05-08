@@ -42,7 +42,7 @@ export default function DriverCard({ driver }: DriversProps) {
 
   const onDeleteHandler = async () => {
     startTransition(() => {
-      deleteMutation.mutate(driver.license_number, {
+      deleteMutation.mutate(driver.id, {
         onSuccess: () => {
           queryClient.invalidateQueries({
             queryKey: ['drivers'],
@@ -67,8 +67,8 @@ export default function DriverCard({ driver }: DriversProps) {
             /> */}
             <AvatarFallback className="size-10 border-1 border-white rounded-full bg-gray-300 flex items-center justify-center text-md font-medium">
               <p>
-                {driver?.first_name.charAt(0).toUpperCase()}
-                {driver?.last_name.charAt(0).toUpperCase()}
+                {driver.first_name.charAt(0).toUpperCase()}
+                {driver.last_name.charAt(0).toUpperCase()}
               </p>
             </AvatarFallback>
           </Avatar>
@@ -110,7 +110,7 @@ export default function DriverCard({ driver }: DriversProps) {
       </div>
 
       <div className="flex items-center gap-4">
-        <GenerateQRCode id={driver.license_number} />
+        <GenerateQRCode id={driver.id} />
         <button className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
           <FileText size={20} />
         </button>

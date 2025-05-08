@@ -37,14 +37,32 @@ export const DriverComplianceSchema = z.object({
 
 export type DriverComplianceDetails = z.infer<typeof DriverComplianceSchema>;
 
-export const DriverSchema = DriverInfoSchema.merge(
+//Schema & type for creating a new driver
+export const CreateDriverSchema = DriverInfoSchema.merge(
   DriverComplianceSchema
 ).extend({
-  id: z.string().optional(),
-  operator_id: z.string().optional(),
-  status: z.enum(['active', 'inactive']).optional(),
-  created_at: z.date().optional(),
-  updated_at: z.date().optional(),
+  operator_id: z.string(),
+});
+
+export type CreateDriver = z.infer<typeof CreateDriverSchema>;
+
+//Schema & type for updating the driver
+export const UpdateDriverSchema = DriverInfoSchema.merge(
+  DriverComplianceSchema
+).extend({
+  id: z.string(),
+  updated_at: z.date(),
+});
+
+export type UpdateDriver = z.infer<typeof UpdateDriverSchema>;
+
+//Schema & type for existing driver
+export const DriverSchema = CreateDriverSchema.extend({
+  id: z.string(),
+  operator_id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  created_at: z.date(),
+  updated_at: z.date(),
 });
 
 export type Driver = z.infer<typeof DriverSchema>;
