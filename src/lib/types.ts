@@ -31,6 +31,17 @@ export type Tricycle = {
   last_maintenance_date: Date;
 };
 
+export type ShiftLog = {
+  id?: string;
+  driver_name: string;
+  plate_number: string;
+  shift_type: string;
+  operator_id: string;
+  driver_id: string;
+  tricycle_id: string;
+  created_at?: string;
+};
+
 export type Operator = {
   id: string;
   first_name: string;

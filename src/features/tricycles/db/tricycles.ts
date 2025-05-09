@@ -22,16 +22,16 @@ export const getAllTricycles = cache(
 
 export const getTricycleByPlateNumber = async (
   plate_number: string
-): Promise<Tricycle> => {
+): Promise<{ data: Tricycle; error: PostgrestError | null }> => {
   const supabase = await createClient();
 
-  const { data: tricycle } = await supabase
+  const { data, error } = await supabase
     .from('tricycles')
     .select('*')
     .eq('plate_number', plate_number)
     .single();
 
-  return tricycle;
+  return { data, error };
 };
 
 export async function deleteTricycle(

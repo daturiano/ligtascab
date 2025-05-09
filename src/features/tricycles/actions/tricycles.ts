@@ -1,5 +1,7 @@
 'use server';
 
+import { createLog, uploadDocument } from '@/db/db';
+import { AttachmentDetails } from '@/lib/types';
 import { createClient } from '@/supabase/server';
 import { TricycleFormData } from '../components/create-tricycle-provider';
 import {
@@ -7,9 +9,8 @@ import {
   deleteTricycle,
   getAllTricycles,
   getTricycleById,
+  getTricycleByPlateNumber,
 } from '../db/tricycles';
-import { createLog, uploadDocument } from '@/db/db';
-import { AttachmentDetails } from '@/lib/types';
 
 export const fetchAllTricyclesFromOperator = async () => {
   const { data, error } = await getAllTricycles();
@@ -17,6 +18,16 @@ export const fetchAllTricyclesFromOperator = async () => {
   if (error) throw new Error('Unable to fetch all tricycles');
 
   return { data, error };
+};
+
+export const fetchTricycleDetailsWithPlateNumber = async (
+  plate_number: string
+) => {
+  const { data, error } = await getTricycleByPlateNumber(plate_number);
+
+  if (error) throw new Error('Unable to fetch tricycle details');
+
+  return { data };
 };
 
 export async function createNewTricycle(tricycleFormData: TricycleFormData) {
