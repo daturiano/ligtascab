@@ -41,6 +41,7 @@ export async function createNewShiftLog(data: ShiftLog) {
         await getDriverAssignedVehicle(log.driver_id);
       if (assignedError)
         return { error: 'Cannot get driver assigned vehicle', assignedError };
+      log.plate_number = assignedVehicle.plate_number;
       log.tricycle_id = assignedVehicle.tricycle_id;
       const isCreated = await createShiftLog(log);
       if (!isCreated) {

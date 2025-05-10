@@ -77,7 +77,7 @@ export default function ShiftForm({ driver }: LogFormProps) {
   }, [driver, form]);
 
   const { data: availableTricycles } = useQuery({
-    queryKey: ['fetch_tricycles'],
+    queryKey: ['available_vehicles'],
     queryFn: fetchAllAvailableTricyclesFromOperator,
     enabled: isOpen,
   });
@@ -93,7 +93,10 @@ export default function ShiftForm({ driver }: LogFormProps) {
       useCreateNewLog.mutate(data, {
         onSuccess: (response) => {
           queryClient.invalidateQueries({
-            queryKey: ['driver_logs'],
+            queryKey: ['shifts_logs'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['available_vehicles'],
           });
           if (response?.message) {
             toast.success(response.message);
