@@ -15,9 +15,7 @@ import { AttachmentDetails } from '@/lib/types';
 export const fetchDriverDetails = async (id: string) => {
   const { data, error } = await getDriverById(id);
 
-  if (error) throw new Error('Driver not found');
-
-  return { data };
+  return { data, error };
 };
 
 export const fetchAllDriversFromOperator = async () => {

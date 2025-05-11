@@ -47,9 +47,10 @@ import DriverDetailsCard from './driver-details-card';
 
 type LogFormProps = {
   driver: Driver;
+  setIsScanning: (isScanning: boolean) => void;
 };
 
-export default function ShiftForm({ driver }: LogFormProps) {
+export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isTimeOut, setIsTimeOut] = useState<boolean>(false);
@@ -91,6 +92,7 @@ export default function ShiftForm({ driver }: LogFormProps) {
           if (response?.message) {
             toast.success(response.message);
             form.reset();
+            setIsScanning(false);
           }
           if (response?.error) {
             toast.error(response.error);
