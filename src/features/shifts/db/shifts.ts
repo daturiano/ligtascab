@@ -112,3 +112,15 @@ export const updateTricycleStatus = async (
 
   return true;
 };
+
+export const getAllShiftLogs = cache(
+  async (): Promise<{ data: ShiftLog[]; error: PostgrestError | null }> => {
+    const supabase = await createClient();
+    const { data: logs, error } = await supabase
+      .from('shifts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    return { data: logs || [], error };
+  }
+);

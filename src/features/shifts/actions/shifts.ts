@@ -5,6 +5,7 @@ import { ShiftLog } from '@/lib/types';
 import {
   checkDriverStatus,
   createShiftLog,
+  getAllShiftLogs,
   getAvailableTricycles,
   getDriverAssignedVehicle,
   updateDriverStatus,
@@ -92,3 +93,11 @@ export async function createNewShiftLog(data: ShiftLog) {
     };
   }
 }
+
+export const fetchAllShiftLogs = async () => {
+  const { data: shift_logs, error } = await getAllShiftLogs();
+
+  if (error) throw new Error('Unable to fetch all tricycles');
+
+  return shift_logs;
+};
