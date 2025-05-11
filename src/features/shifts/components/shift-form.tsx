@@ -17,7 +17,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
@@ -35,18 +34,19 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ChevronsUpDown } from 'lucide-react';
-import { useEffect, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
-import { ShiftSchema } from '../schemas/shifts';
 import {
   createNewShiftLog,
   fetchAllAvailableTricyclesFromOperator,
 } from '../actions/shifts';
-import { toast } from 'sonner';
+import { ShiftSchema } from '../schemas/shifts';
+import DriverDetailsCard from './driver-details-card';
 
 type LogFormProps = {
-  driver: Driver | null;
+  driver: Driver;
 };
 
 export default function ShiftForm({ driver }: LogFormProps) {
@@ -57,24 +57,14 @@ export default function ShiftForm({ driver }: LogFormProps) {
   const form = useForm<z.infer<typeof ShiftSchema>>({
     resolver: zodResolver(ShiftSchema),
     defaultValues: {
-      driver_name: '',
+      driver_name: `${driver.first_name} ${driver.last_name}`,
       plate_number: '',
       shift_type: 'Time-in',
-      operator_id: '',
-      driver_id: '',
+      operator_id: driver.operator_id,
+      driver_id: driver.id,
       tricycle_id: '',
     },
   });
-
-  useEffect(() => {
-    if (driver) {
-      driver.license_expiration = new Date(driver.license_expiration);
-      const driver_name = `${driver.first_name} ${driver.last_name}`;
-      form.setValue('driver_name', driver_name);
-      form.setValue('operator_id', driver.operator_id);
-      form.setValue('driver_id', driver.id);
-    }
-  }, [driver, form]);
 
   const { data: availableTricycles } = useQuery({
     queryKey: ['available_vehicles'],
@@ -93,7 +83,7 @@ export default function ShiftForm({ driver }: LogFormProps) {
       useCreateNewLog.mutate(data, {
         onSuccess: (response) => {
           queryClient.invalidateQueries({
-            queryKey: ['shifts_logs'],
+            queryKey: ['shift_logs'],
           });
           queryClient.invalidateQueries({
             queryKey: ['available_vehicles'],
@@ -111,22 +101,10 @@ export default function ShiftForm({ driver }: LogFormProps) {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
+      <DriverDetailsCard driver={driver} />
       <Form {...form}>
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="driver_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Driver Name</FormLabel>
-                <FormControl>
-                  <Input {...field} readOnly />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <div className="flex gap-4">
             <FormField
               control={form.control}
@@ -222,7 +200,8 @@ export default function ShiftForm({ driver }: LogFormProps) {
           <Button
             className="p-1 w-full"
             disabled={
-              form.watch('plate_number') === '' ||
+              (form.watch('plate_number') === '' &&
+                form.watch('shift_type') !== 'Time-out') ||
               form.watch('driver_id') === '' ||
               isPending
             }

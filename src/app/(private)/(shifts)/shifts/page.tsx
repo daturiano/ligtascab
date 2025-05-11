@@ -35,34 +35,34 @@ export default function ShiftPage() {
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-semibold">Shifts</h1>
         <div className="flex gap-6">
-          <Card className="w-[450px] min-w-[450px]">
+          <Card className="w-[450px] min-w-[450px] max-h-[610px]">
             <CardHeader>
               <CardTitle>Log Driver Attendance</CardTitle>
               <CardDescription>
                 {isScanning
-                  ? 'Place the driver QR Code in front of the camera.'
+                  ? 'Log driver attendance using the QR Code and required details.'
                   : 'Press "Start Log Attendance" to start scanning the drivers QR Code.'}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {isScanning ? (
-                <QRCodeReader />
+                <QRCodeReader setIsScanning={setIsScanning} />
               ) : (
                 <Image src={qrImage} alt="qr code" />
               )}
             </CardContent>
-            <CardFooter>
-              {!isScanning && (
+            {!isScanning && (
+              <CardFooter>
                 <Button
                   className="w-full rounded-2xl"
                   onClick={() => setIsScanning(true)}
                 >
                   Start Log Attendance
                 </Button>
-              )}
-            </CardFooter>
+              </CardFooter>
+            )}
           </Card>
-          <Card className="w-full flex-wrap">
+          <Card className="w-full">
             <CardContent>
               <ShiftTable
                 data={shift_logs ?? []}

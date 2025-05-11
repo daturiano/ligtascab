@@ -124,3 +124,19 @@ export const getAllShiftLogs = cache(
     return { data: logs || [], error };
   }
 );
+
+export const getDriverMostRecentLog = async (
+  id: string
+): Promise<{ data: ShiftLog; error: PostgrestError | null }> => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('shifts')
+    .select('*')
+    .eq('driver_id', id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  return { data, error };
+};

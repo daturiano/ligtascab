@@ -8,6 +8,7 @@ import {
   getAllShiftLogs,
   getAvailableTricycles,
   getDriverAssignedVehicle,
+  getDriverMostRecentLog,
   updateDriverStatus,
   updateTricycleStatus,
 } from '../db/shifts';
@@ -100,4 +101,12 @@ export const fetchAllShiftLogs = async () => {
   if (error) throw new Error('Unable to fetch all tricycles');
 
   return shift_logs;
+};
+
+export const fetchDriverMostRecentLog = async (id: string) => {
+  const { data, error } = await getDriverMostRecentLog(id);
+
+  if (error) throw new Error('Unable to fetch most recent log');
+
+  return { data };
 };
