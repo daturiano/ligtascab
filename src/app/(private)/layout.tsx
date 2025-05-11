@@ -2,9 +2,16 @@
 
 import DashboardHeader from '@/features/dashboard/components/dashboard-header';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactNode } from 'react';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function AuthenticatedLayout({
   children,
@@ -20,6 +27,7 @@ export default function AuthenticatedLayout({
           {children}
         </div>
       </div>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
