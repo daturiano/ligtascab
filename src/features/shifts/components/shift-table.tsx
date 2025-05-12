@@ -29,7 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Search } from 'lucide-react';
 import React from 'react';
 
 interface DataTableProps<TData, TValue> {
@@ -55,7 +55,7 @@ export function ShiftTable<TData, TValue>({
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 9,
   });
 
   const table = useReactTable({
@@ -83,32 +83,25 @@ export function ShiftTable<TData, TValue>({
   return (
     <div className="w-full flex min-h-[350px]">
       <div className="w-full">
+        <h1 className="font-semibold">Driver Attendance</h1>
         <div className="flex items-center py-4">
           <div className="flex gap-2 w-full">
             <Input
               placeholder={`Search by ${filter_by
                 .replace(/_/g, ' ')
                 .replace(/\b\w/, (char) => char.toLowerCase())}...`}
+              startIcon={Search}
               value={
                 (table.getColumn(filter_by)?.getFilterValue() as string) ?? ''
               }
               onChange={(event) =>
                 table.getColumn(filter_by)?.setFilterValue(event.target.value)
               }
-              className="max-w-xs h-8 placeholder:text-xs"
+              className="py-2 max-w-sm bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
             />
             {children}
           </div>
           <div className="flex gap-2">
-            {/* {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-              <DeleteTasksDialog
-                tasks={table
-                  .getFilteredSelectedRowModel()
-                  .rows.map((row) => row.original)}
-                onSuccess={() => table.toggleAllRowsSelected(false)}
-                filter={filter_by}
-              />
-            ) : null} */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="ml-auto h-8 text-xs">

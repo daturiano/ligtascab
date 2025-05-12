@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { ShiftLog } from '@/lib/types';
 import { formatDateTime } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
+import Link from 'next/link';
 
 export const columns: ColumnDef<ShiftLog>[] = [
   {
@@ -35,6 +36,16 @@ export const columns: ColumnDef<ShiftLog>[] = [
   {
     accessorKey: 'driver_name',
     header: 'Full name',
+    cell: ({ row }) => {
+      return (
+        <Link
+          href={`/drivers/${row.original.driver_id}`}
+          className="hover:text-blue-500 hover:underline"
+        >
+          {row.getValue('driver_name')}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: 'plate_number',
