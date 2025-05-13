@@ -81,7 +81,7 @@ export function ShiftTable<TData, TValue>({
   });
 
   return (
-    <div className="w-full flex min-h-[350px]">
+    <div className="flex min-h-[350px]">
       <div className="w-full">
         <h1 className="font-semibold">Driver Attendance</h1>
         <div className="flex items-center py-4">
@@ -97,7 +97,7 @@ export function ShiftTable<TData, TValue>({
               onChange={(event) =>
                 table.getColumn(filter_by)?.setFilterValue(event.target.value)
               }
-              className="py-2 max-w-sm bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
+              className="py-2 max-w-[200px] lg:max-w-sm bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
             />
             {children}
           </div>

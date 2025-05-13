@@ -62,7 +62,7 @@ export default function DashboardHeader() {
   if (!operator) return null;
 
   return (
-    <div className="mx-auto w-full px-4 border-b border-muted-foreground/15 md:px-8 max-w-screen-2xl lg:border-none xl:px-20">
+    <div className="mx-auto w-full px-4 border-b border-muted-foreground/15 md:px-8 lg:border-none">
       <div className="flex h-14 md:h-16 items-center justify-between">
         <Link className="transition-all hidden md:block" href="/dashboard">
           <div className="flex max-w-fit items-center">

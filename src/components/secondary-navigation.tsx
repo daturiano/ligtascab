@@ -25,7 +25,7 @@ export default function SecondaryNavigation({ data }: InnerNavigationProps) {
   };
 
   return (
-    <div className="w-full items-center flex gap-4 lg:px-20 max-w-screen-2xl mx-auto">
+    <div className="w-full items-center flex gap-4">
       {data.map((item) => {
         return (
           <Link

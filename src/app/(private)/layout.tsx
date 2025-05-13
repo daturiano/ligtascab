@@ -20,11 +20,11 @@ export default function AuthenticatedLayout({
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex flex-col min-h-screen">
+      <div className="min-h-screen min-w-screen max-w-screen mx-auto">
         <div className="absolute bg-gradient-to-b from-[#1fab89]/20 to-transparent -z-50 w-full h-64"></div>
-        <DashboardHeader />
-        <div className="mx-auto w-full flex flex-col flex-1 gap-y-3">
-          {children}
+        <div className="lg:max-w-screen-2xl mx-auto">
+          <DashboardHeader />
+          <div className="flex-1">{children}</div>
         </div>
       </div>
       <ReactQueryDevtools initialIsOpen={false} />

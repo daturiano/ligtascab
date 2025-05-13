@@ -31,11 +31,11 @@ export default function ShiftPage() {
   }
 
   return (
-    <div className="space-y-4 w-full gap-4 lg:px-20 max-w-screen-2xl mx-auto mb-16">
+    <div className="space-y-4 gap-4 mx-auto mb-12">
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-semibold">Shifts</h1>
-        <div className="flex gap-6">
-          <Card className="w-[450px] min-w-[450px] max-h-[610px]">
+        <div className="flex flex-col lg:flex-row gap-6">
+          <Card className="justify-between min-w-[350px] max-w-[350px] lg:max-w-[450px] lg:max-h-[610px] max-h-[500px]">
             <CardHeader>
               <CardTitle>Log Driver Attendance</CardTitle>
               <CardDescription>
@@ -62,7 +62,7 @@ export default function ShiftPage() {
               </CardFooter>
             )}
           </Card>
-          <Card className="w-full">
+          <Card className="w-full min-w-[350px]">
             <CardContent>
               <ShiftTable
                 data={shift_logs ?? []}

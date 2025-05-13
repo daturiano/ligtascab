@@ -21,9 +21,9 @@ const data = [
 
 export default function ShiftsLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="pt-4 space-y-10 flex flex-col flex-1">
+    <div className="pt-4 mx-4 md:mx-6 space-y-10">
       <SecondaryNavigation data={data} />
-      <div className="flex flex-col flex-1">{children}</div>
+      {children}
     </div>
   );
 }
