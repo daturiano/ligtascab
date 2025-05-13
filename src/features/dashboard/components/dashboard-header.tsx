@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Logo from '@/components/ui/logo';
+import LogoWithName from '@/components/ui/logo-with-name';
 import { useQuery } from '@tanstack/react-query';
 import {
   Bell,
@@ -15,8 +16,9 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { getOperator } from '../db/dashboard';
+import MobileNavigation from './mobile-navigation';
 
-const data = {
+export const navData = {
   navMain: [
     {
       title: 'Home',
@@ -57,18 +59,25 @@ export default function DashboardHeader() {
     queryFn: getOperator,
   });
 
+  if (!operator) return null;
+
   return (
-    <div className="mx-auto w-full max-w-screen-2xl px-2.5 lg:px-20">
-      <div className="flex h-16 items-center justify-between py-10">
-        <div className="flex items-center">
-          <a className="transition-all sm:block" href="/app">
-            <div className="flex max-w-fit items-cent er gap-2">
-              <Logo />
-            </div>
-          </a>
+    <div className="mx-auto w-full px-4 border-b border-muted-foreground/15 md:px-8 max-w-screen-2xl lg:border-none xl:px-20">
+      <div className="flex h-14 md:h-16 items-center justify-between">
+        <Link className="transition-all hidden md:block" href="/dashboard">
+          <div className="flex max-w-fit items-center">
+            <LogoWithName />
+          </div>
+        </Link>
+        <div className="flex gap-4 md:hidden">
+          <MobileNavigation />
+          <div className="flex items-center gap-2">
+            <Logo />
+            <div className="border-r-1 border-muted-foreground/20 h-8"></div>
+          </div>
         </div>
-        <div className="flex items-center justify-center gap-8">
-          {data.navMain.map((item) => {
+        <div className="items-center justify-center gap-8 hidden md:flex">
+          {navData.navMain.map((item) => {
             const title =
               item.title.charAt(0).toUpperCase() + item.title.slice(1);
             return (
@@ -77,7 +86,7 @@ export default function DashboardHeader() {
                 href={item.url}
                 className={`cursor-pointer whitespace-nowrap flex items-center justify-center gap-2 ${
                   isPathMatch(item.pathname)
-                    ? 'bg-card px-4 py-2 rounded-4xl'
+                    ? 'bg-card px-4 py-2 rounded-4xl shadow-sm'
                     : ''
                 }`}
               >
@@ -104,7 +113,7 @@ export default function DashboardHeader() {
             );
           })}
         </div>
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center lg:space-x-2 space-x-1">
           <div className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
             <CircleHelp size={24} />
           </div>
@@ -114,16 +123,12 @@ export default function DashboardHeader() {
           <div className="relative">
             <Avatar className="size-10 rounded-full">
               <AvatarImage
-                src={operator?.image ?? undefined}
-                alt={operator?.first_name ?? undefined}
+                src={operator.image ?? undefined}
+                alt={operator.first_name}
               />
               <AvatarFallback className="size-10 border-1 border-white rounded-full bg-gray-300 flex items-center justify-center">
-                <p>
-                  {operator?.first_name.charAt(0).toUpperCase() ?? undefined}
-                </p>
-                <p>
-                  {operator?.last_name.charAt(0).toUpperCase() ?? undefined}
-                </p>
+                <p>{operator.first_name.charAt(0).toUpperCase()}</p>
+                <p>{operator.last_name.charAt(0).toUpperCase()}</p>
               </AvatarFallback>
             </Avatar>
             <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full flex items-center justify-center bg-card">

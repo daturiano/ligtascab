@@ -5,6 +5,11 @@
 .rdp-vhidden {
   @apply hidden;
 }
+
+@theme {
+  --breakpoint-lg: 60rem;
+}
+
 @theme inline {
   --font-nunito: var(--font-nunito);
   --color-background: var(--background);
