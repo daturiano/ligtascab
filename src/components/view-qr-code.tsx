@@ -9,17 +9,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { QrCode } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
+import React from 'react';
 
-export default function GenerateQRCode({ id }: { id: string }) {
+type ViewQRCodeProps = {
+  id: string;
+  children: React.ReactNode;
+};
+
+export default function ViewQRCode({ id, children }: ViewQRCodeProps) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <button className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
-          <QrCode size={20} />
-        </button>
-      </DialogTrigger>
+      <DialogTrigger className="w-full">{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Tricycle QR Code</DialogTitle>

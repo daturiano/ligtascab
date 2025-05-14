@@ -25,13 +25,13 @@ export default function SecondaryNavigation({ data }: InnerNavigationProps) {
   };
 
   return (
-    <div className="w-full items-center flex gap-4">
+    <div className="w-full items-center flex gap-4 overflow-x-auto">
       {data.map((item) => {
         return (
           <Link
             key={item.title}
             href={item.url}
-            className={`flex items-center gap-2 text-muted-foreground font-medium p-2 rounded-md ${
+            className={`flex items-center gap-2 text-muted-foreground whitespace-nowrap font-medium p-2 rounded-md ${
               isPathMatch(item.pathname) && 'bg-muted-foreground/10'
             }`}
           >

@@ -1,4 +1,4 @@
-import GenerateQRCode from '@/components/generate-qrcode';
+import GenerateQRCode from '@/components/view-qr-code';
 import {
   AlertDialog,
   AlertDialogAction,

@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/popover';
 import { fetchAllTricyclesFromOperator } from '@/features/tricycles/actions/tricycles';
 import TricycleCard from '@/features/tricycles/components/tricycle-card';
+import TricycleCardMobile from '@/features/tricycles/components/tricycle-card-mobile';
+import { useMobile } from '@/hooks/useMobile';
 import { Tricycle } from '@/lib/types';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Search, SortDesc } from 'lucide-react';
@@ -23,6 +25,7 @@ export default function TricyclesPage() {
   const [isSorted, setIsSorted] = useState(false);
   const [statusSort, setStatusSort] = useState<string[]>(['all']);
 
+  const isSmalScreen = useMobile({ max: 960 });
   const statusOptions = ['active', 'inactive', 'maintenance'];
 
   const toggleStatus = (status: string) => {
@@ -79,7 +82,7 @@ export default function TricyclesPage() {
     });
 
   return (
-    <div className="space-y-4 w-full gap-4 lg:px-20 max-w-screen-2xl mx-auto">
+    <div className="space-y-4 gap-4 mx-auto mb-12">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Tricycles</h1>
@@ -89,7 +92,7 @@ export default function TricyclesPage() {
             </Button>
           )}
         </div>
-        <div className="w-full flex items-center gap-4">
+        <div className="w-full flex flex-col gap-2 items-center lg:flex-row lg:gap-6">
           <Input
             startIcon={Search}
             value={search}
@@ -97,7 +100,7 @@ export default function TricyclesPage() {
             placeholder="Search by plate number"
             className="py-6 bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
           />
-          <div className="h-13 p-4 bg-card min-w-[50rem] rounded-xl flex items-center justify-between">
+          <div className="h-13 w-full px-2 bg-card rounded-xl flex items-center justify-between">
             <div className="flex gap-2 items-center">
               <button
                 className={`flex gap-1 py-2 px-4 border shadow-xs rounded-full cursor-pointer bg-card text-xs ${
@@ -105,11 +108,13 @@ export default function TricyclesPage() {
                 }`}
                 onClick={SetIsSortedHandler}
               >
-                <p className="font-normal">Sort by Expiration</p>
+                <p className="font-normal whitespace-nowrap">
+                  Sort by Expiration
+                </p>
                 <SortDesc size={14} />
               </button>
               <Popover>
-                <PopoverTrigger className="rounded-full cursor-pointer px-5 border py-2 text-xs bg-card flex gap-2 items-center justify-center">
+                <PopoverTrigger className="rounded-full cursor-pointer px-2 border py-2 text-xs bg-card flex gap-2 items-center justify-center">
                   <p className="text-popover-foreground">Status</p>
                   <ChevronDown size={14} />
                 </PopoverTrigger>
@@ -144,10 +149,16 @@ export default function TricyclesPage() {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="flex items-center">
+            <div className="ml-6 flex items-center">
               <div className="border-[0.5px] border-r-muted-foreground/20 h-4"></div>
               <Button variant={'ghost'} onClick={resetHandler}>
-                <p className="text-xs text-muted-foreground font-light">
+                <p
+                  className={`text-xs ${
+                    isSorted || search !== '' || statusSort[0] !== 'all'
+                      ? 'font-medium'
+                      : 'font-light text-muted-foreground'
+                  }`}
+                >
                   Reset
                 </p>
               </Button>
@@ -174,7 +185,15 @@ export default function TricyclesPage() {
         ) : (
           <div className="w-full">
             {filteredTricycles?.map((tricycle: Tricycle) => {
-              return <TricycleCard tricycle={tricycle} key={tricycle.id} />;
+              return (
+                <div key={tricycle.id}>
+                  {isSmalScreen ? (
+                    <TricycleCardMobile tricycle={tricycle} />
+                  ) : (
+                    <TricycleCard tricycle={tricycle} />
+                  )}
+                </div>
+              );
             })}
           </div>
         )}
