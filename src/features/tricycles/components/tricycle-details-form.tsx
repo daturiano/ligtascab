@@ -25,11 +25,12 @@ import {
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
-import { ArrowLeft, CalendarIcon } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { TricycleInfoSchema } from '../schemas/tricycle';
 import { useCreateTricycle } from './create-tricycle-provider';
+import FormBottomNavigation from './form-bottom-navigation';
 
 export default function TricycleDetailsForm() {
   const { step, nextStep, formData, setData, readonly } = useCreateTricycle();
@@ -56,9 +57,9 @@ export default function TricycleDetailsForm() {
 
   return (
     <div>
-      <Card className="min-w-[650px] max-w-[650px] w-full">
+      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
         <CardHeader>
-          <CardTitle className="text-sm font-normal">Triycle Details</CardTitle>
+          <CardTitle className="text-sm font-medium">Triycle Details</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -235,21 +236,11 @@ export default function TricycleDetailsForm() {
           </Form>
         </CardContent>
       </Card>
-      <div
-        className={`w-full bg-card h-16 flex items-center absolute bottom-0 left-0 ${
-          readonly && 'hidden'
-        }`}
-      >
-        <div className="max-w-screen-lg w-full mx-auto flex justify-between">
-          <Button variant={'outline'} size={'lg'} disabled={step === 1}>
-            <ArrowLeft />
-            Back
-          </Button>
-          <Button size={'lg'} type="submit" form="tricycle-form">
-            Continue
-          </Button>
-        </div>
-      </div>
+      <FormBottomNavigation
+        onSubmit={() => onSubmit}
+        step={step}
+        formName="tricycle-form"
+      />
     </div>
   );
 }

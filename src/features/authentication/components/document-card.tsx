@@ -62,7 +62,9 @@ export default function DocumentCard({
           <FileIcon className="h-6 w-6" />
           <div>
             <div className="flex items-center gap-3">
-              <h3 className="text-md font-bold">{document.title}</h3>
+              <h3 className="text-xs lg:text-base font-bold">
+                {document.title}
+              </h3>
               {document.required && (
                 <span className="text-red-500 text-xs">Required</span>
               )}
@@ -76,7 +78,7 @@ export default function DocumentCard({
       <CardContent className="w-full">
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full text-xs lg:text-sm"
           onClick={handleAttachClick}
           disabled={readonly}
         >

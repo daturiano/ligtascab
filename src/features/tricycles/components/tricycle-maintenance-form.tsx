@@ -15,14 +15,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
-import { ArrowLeft, CalendarIcon } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { MaintenanceSchema } from '../schemas/tricycle';
-import { useCreateTricycle } from './create-tricycle-provider';
 import {
   Select,
   SelectContent,
@@ -30,10 +22,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { MaintenanceSchema } from '../schemas/tricycle';
+import { useCreateTricycle } from './create-tricycle-provider';
+import FormBottomNavigation from './form-bottom-navigation';
 
 export default function TricycleMaintenanceForm() {
-  const { step, nextStep, formData, setData, prevStep, readonly } =
-    useCreateTricycle();
+  const { nextStep, formData, setData, readonly } = useCreateTricycle();
 
   const form = useForm<z.infer<typeof MaintenanceSchema>>({
     resolver: zodResolver(MaintenanceSchema),
@@ -53,7 +53,7 @@ export default function TricycleMaintenanceForm() {
 
   return (
     <div>
-      <Card className="min-w-[650px] max-w-[650px] w-full">
+      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
         <CardHeader>
           <CardTitle className="text-sm font-normal">
             Tricycle Meintenance
@@ -157,31 +157,10 @@ export default function TricycleMaintenanceForm() {
           </Form>
         </CardContent>
       </Card>
-      <div
-        className={`w-full bg-card h-16 flex items-center absolute bottom-0 left-0 ${
-          readonly && 'hidden'
-        }`}
-      >
-        <div className="max-w-screen-lg w-full mx-auto flex justify-between">
-          <Button
-            variant={'outline'}
-            size={'lg'}
-            disabled={step === 1}
-            onClick={prevStep}
-          >
-            <ArrowLeft />
-            Back
-          </Button>
-          <Button
-            size={'lg'}
-            type="submit"
-            onClick={() => onSubmit}
-            form="maintenance-form"
-          >
-            Continue
-          </Button>
-        </div>
-      </div>
+      <FormBottomNavigation
+        onSubmit={() => onSubmit}
+        formName="maintenance-form"
+      />
     </div>
   );
 }

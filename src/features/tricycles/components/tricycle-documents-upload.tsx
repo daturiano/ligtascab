@@ -1,9 +1,8 @@
-import { Button } from '@/components/ui/button';
 import DocumentCard from '@/features/authentication/components/document-card';
 import { DocumentType } from '@/lib/types';
-import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useCreateTricycle } from './create-tricycle-provider';
+import FormBottomNavigation from './form-bottom-navigation';
 
 const MAX_FILE_SIZE_MB = 5;
 
@@ -29,8 +28,7 @@ const document_type: DocumentType[] = [
 ];
 
 export default function TricycleDocumentsUpload() {
-  const { step, prevStep, nextStep, formData, setData, readonly } =
-    useCreateTricycle();
+  const { nextStep, formData, setData, readonly } = useCreateTricycle();
   const [selectedFiles, setSelectedFiles] = useState<{
     [key: string]: File | null;
   }>({});
@@ -65,7 +63,7 @@ export default function TricycleDocumentsUpload() {
 
   return (
     <div>
-      <div className="min-w-[650px] max-w-[650px] w-full">
+      <div className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] mb-24 lg:mb-0 w-full">
         <div className="flex flex-col gap-4 w-full">
           {document_type.map((docType) => (
             <DocumentCard
@@ -78,26 +76,7 @@ export default function TricycleDocumentsUpload() {
           ))}
         </div>
       </div>
-      <div
-        className={`w-full bg-card h-16 flex items-center absolute bottom-0 left-0 ${
-          readonly && 'hidden'
-        }`}
-      >
-        <div className="max-w-screen-lg w-full mx-auto flex justify-between">
-          <Button
-            variant={'outline'}
-            size={'lg'}
-            disabled={step === 1}
-            onClick={prevStep}
-          >
-            <ArrowLeft />
-            Back
-          </Button>
-          <Button size={'lg'} onClick={nextStep}>
-            Continue
-          </Button>
-        </div>
-      </div>
+      <FormBottomNavigation onSubmit={nextStep} />
     </div>
   );
 }
