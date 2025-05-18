@@ -80,7 +80,7 @@ export default function TricycleDetailsForm() {
                           type="text"
                           {...field}
                           readOnly={readonly}
-                          className="h-12 placeholder:text-sm"
+                          className="h-12"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -98,7 +98,7 @@ export default function TricycleDetailsForm() {
                           type="text"
                           {...field}
                           readOnly={readonly}
-                          className="h-12 placeholder:text-sm"
+                          className="h-12"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -118,7 +118,7 @@ export default function TricycleDetailsForm() {
                         type="text"
                         {...field}
                         readOnly={readonly}
-                        className="h-12 placeholder:text-sm"
+                        className="h-12"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -148,7 +148,9 @@ export default function TricycleDetailsForm() {
                             {field.value ? (
                               format(field.value, 'PPP')
                             ) : (
-                              <span>Registration expiry*</span>
+                              <span className="text-xs lg:text-sm">
+                                Registration expiry*
+                              </span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -182,7 +184,7 @@ export default function TricycleDetailsForm() {
                           type="text"
                           {...field}
                           readOnly={readonly}
-                          className="h-12 placeholder:text-sm"
+                          className="h-12"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -200,7 +202,7 @@ export default function TricycleDetailsForm() {
                           type="number"
                           {...field}
                           readOnly={readonly}
-                          className="h-12 placeholder:text-sm"
+                          className="h-12"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -218,7 +220,7 @@ export default function TricycleDetailsForm() {
                         defaultValue={formData.tricycleDetails?.fuel_type}
                       >
                         <FormControl>
-                          <SelectTrigger className="py-6 w-full">
+                          <SelectTrigger className="py-6 w-full text-xs lg:text-sm">
                             <SelectValue placeholder="Fuel type*" />
                           </SelectTrigger>
                         </FormControl>

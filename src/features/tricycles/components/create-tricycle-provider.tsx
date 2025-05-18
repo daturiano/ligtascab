@@ -37,7 +37,7 @@ export default function CreateTricycleProvider({
   const [formData, setFormData] = useState<TricycleFormData>({
     type: 'tricycle',
   });
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(3);
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(1, prev - 1));
   let readonly = false;

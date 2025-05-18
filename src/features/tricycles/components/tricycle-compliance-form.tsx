@@ -26,8 +26,7 @@ import { useCreateTricycle } from './create-tricycle-provider';
 import FormBottomNavigation from './form-bottom-navigation';
 
 export default function TricycleComplianceForm() {
-  const { nextStep, formData, setData, prevStep, readonly } =
-    useCreateTricycle();
+  const { nextStep, formData, setData, readonly } = useCreateTricycle();
 
   const form = useForm<z.infer<typeof ComplianceSchema>>({
     resolver: zodResolver(ComplianceSchema),
@@ -73,7 +72,7 @@ export default function TricycleComplianceForm() {
                         type="text"
                         {...field}
                         readOnly={readonly}
-                        className="h-12 placeholder:text-sm"
+                        className="h-12"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -92,7 +91,7 @@ export default function TricycleComplianceForm() {
                         type="text"
                         {...field}
                         readOnly={readonly}
-                        className="h-12 placeholder:text-sm"
+                        className="h-12"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -111,7 +110,7 @@ export default function TricycleComplianceForm() {
                         type="text"
                         {...field}
                         readOnly={readonly}
-                        className="h-12 placeholder:text-sm"
+                        className="h-12"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -130,7 +129,7 @@ export default function TricycleComplianceForm() {
                         type="text"
                         {...field}
                         readOnly={readonly}
-                        className="h-12 placeholder:text-sm"
+                        className="h-12"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -153,14 +152,16 @@ export default function TricycleComplianceForm() {
                           <Button
                             variant={'outline'}
                             className={cn(
-                              'w-full pl-3 text-left font-normal',
+                              'w-full pl-3 text-left font-normal text-xs lg:text-sm',
                               !field.value && 'text-muted-foreground'
                             )}
                           >
                             {field.value ? (
                               format(field.value, 'PPP')
                             ) : (
-                              <span>Franchise expiry*</span>
+                              <span className="text-xs lg:text-sm">
+                                Franchise expiry*
+                              </span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -186,7 +187,6 @@ export default function TricycleComplianceForm() {
         </CardContent>
       </Card>
       <FormBottomNavigation
-        prevStep={prevStep}
         onSubmit={() => onSubmit}
         formName="compliance-form"
       />
