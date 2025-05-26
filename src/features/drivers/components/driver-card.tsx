@@ -1,32 +1,11 @@
-import GenerateQRCode from '@/components/view-qr-code';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { formatDate } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Ellipsis, FileText, Trash, User } from 'lucide-react';
-import Link from 'next/link';
 import { useTransition } from 'react';
 import { toast } from 'sonner';
 import { removeDriverFromOperator } from '../actions/drivers';
 import { Driver } from '../schemas/drivers';
+import DriverCardOptions from './driver-card-options';
 
 type DriversProps = {
   driver: Driver;
@@ -108,64 +87,11 @@ export default function DriverCard({ driver }: DriversProps) {
           {formatDate(driver.license_expiration.toLocaleString())}
         </p>
       </div>
-
-      <div className="flex items-center gap-4">
-        <GenerateQRCode id={driver.id} />
-        <button className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
-          <FileText size={20} />
-        </button>
-        <DropdownMenu>
-          <DropdownMenuTrigger className="cursor-pointer rounded-full size-10 flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15">
-            <Ellipsis size={20} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-36">
-            <DropdownMenuLabel>Driver Options</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <AlertDialog>
-                <AlertDialogTrigger
-                  asChild
-                  className="p-2 hover:bg-destructive/10 cursor-pointer"
-                >
-                  <div className="flex gap-2 items-center">
-                    <Trash size={16} />
-                    <p className="text-sm">Delete</p>
-                  </div>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your driver and remove the data from our servers.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={onDeleteHandler}
-                      disabled={isPending}
-                    >
-                      Continue
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                href={`/drivers/${driver.id}`}
-                className="flex gap-2 items-center"
-              >
-                <User size={16} strokeWidth={2} />
-                <p className="text-sm">View Profile</p>
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <DriverCardOptions
+        driver_id={driver.id}
+        isPending={isPending}
+        onDeleteHandler={onDeleteHandler}
+      />
     </div>
   );
 }
