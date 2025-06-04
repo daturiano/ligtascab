@@ -25,7 +25,7 @@ const data = [
   },
 ];
 
-export default function DriversLayout({ children }: { children: ReactNode }) {
+export default function TricyclesLayout({ children }: { children: ReactNode }) {
   return (
     <div className="pt-4 mx-4 md:mx-6 space-y-10">
       <SecondaryNavigation data={data} />

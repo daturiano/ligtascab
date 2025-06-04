@@ -56,7 +56,7 @@ export type Operator = {
 };
 
 export type Driver = {
-  id?: string;
+  id: string;
   operator_id: string;
   first_name: string;
   last_name: string;

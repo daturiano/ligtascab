@@ -11,7 +11,9 @@ import {
 } from '@/components/ui/popover';
 import { fetchAllDriversFromOperator } from '@/features/drivers/actions/drivers';
 import DriverCard from '@/features/drivers/components/driver-card';
+import DriverCardMobile from '@/features/drivers/components/driver-card-mobile';
 import { Driver } from '@/features/drivers/schemas/drivers';
+import { useMobile } from '@/hooks/useMobile';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Search, SortDesc } from 'lucide-react';
 import Image from 'next/image';
@@ -23,6 +25,7 @@ export default function DriverPage() {
   const [isSorted, setIsSorted] = useState(false);
   const [statusSort, setStatusSort] = useState<string[]>(['all']);
 
+  const isSmallScreen = useMobile({ max: 960 });
   const statusOptions = ['active', 'inactive'];
 
   const toggleStatus = (status: string) => {
@@ -80,7 +83,7 @@ export default function DriverPage() {
     });
 
   return (
-    <div className="space-y-4 w-full gap-4 lg:px-20 max-w-screen-2xl mx-auto">
+    <div className="space-y-4 gap-4 mx-auto mb-12">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Drivers</h1>
@@ -90,7 +93,7 @@ export default function DriverPage() {
             </Button>
           )}
         </div>
-        <div className="w-full flex items-center gap-4">
+        <div className="w-full flex flex-col gap-2 items-center lg:flex-row lg:gap-6">
           <Input
             startIcon={Search}
             value={search}
@@ -98,7 +101,7 @@ export default function DriverPage() {
             placeholder="Search by name"
             className="py-6 bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
           />
-          <div className="h-13 p-4 bg-card min-w-[50rem] rounded-xl flex items-center justify-between">
+          <div className="h-13 w-full px-2 bg-card rounded-xl flex items-center justify-between">
             <div className="flex gap-2 items-center">
               <button
                 className={`flex gap-1 py-2 px-4 border shadow-xs rounded-full cursor-pointer bg-card text-xs ${
@@ -110,7 +113,7 @@ export default function DriverPage() {
                 <SortDesc size={14} />
               </button>
               <Popover>
-                <PopoverTrigger className="rounded-full cursor-pointer px-5 border py-2 text-xs bg-card flex gap-2 items-center justify-center">
+                <PopoverTrigger className="rounded-full cursor-pointer px-2 border py-2 text-xs bg-card flex gap-2 items-center justify-center">
                   <p className="text-popover-foreground">Status</p>
                   <ChevronDown size={14} />
                 </PopoverTrigger>
@@ -145,7 +148,7 @@ export default function DriverPage() {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="flex items-center">
+            <div className="ml-6 flex items-center">
               <div className="border-[0.5px] border-r-muted-foreground/20 h-4"></div>
               <Button variant={'ghost'} onClick={resetHandler}>
                 <p className="text-xs text-muted-foreground font-light">
@@ -175,7 +178,15 @@ export default function DriverPage() {
         ) : (
           <div className="w-full">
             {filteredDrivers?.map((driver: Driver) => {
-              return <DriverCard driver={driver} key={driver.id} />;
+              return (
+                <div key={driver.id}>
+                  {isSmallScreen ? (
+                    <DriverCardMobile driver={driver} />
+                  ) : (
+                    <DriverCard driver={driver} />
+                  )}
+                </div>
+              );
             })}
           </div>
         )}

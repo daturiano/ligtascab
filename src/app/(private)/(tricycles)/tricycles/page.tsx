@@ -25,7 +25,7 @@ export default function TricyclesPage() {
   const [isSorted, setIsSorted] = useState(false);
   const [statusSort, setStatusSort] = useState<string[]>(['all']);
 
-  const isSmalScreen = useMobile({ max: 960 });
+  const isSmallScreen = useMobile({ max: 960 });
   const statusOptions = ['active', 'inactive', 'maintenance'];
 
   const toggleStatus = (status: string) => {
@@ -187,7 +187,7 @@ export default function TricyclesPage() {
             {filteredTricycles?.map((tricycle: Tricycle) => {
               return (
                 <div key={tricycle.id}>
-                  {isSmalScreen ? (
+                  {isSmallScreen ? (
                     <TricycleCardMobile tricycle={tricycle} />
                   ) : (
                     <TricycleCard tricycle={tricycle} />
