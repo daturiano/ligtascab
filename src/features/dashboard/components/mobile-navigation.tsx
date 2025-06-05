@@ -2,6 +2,7 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { AlignJustify } from 'lucide-react';
@@ -18,24 +19,23 @@ export default function MobileNavigation() {
         <AlignJustify size={20} />
       </SheetTrigger>
       <SheetContent side="left" className="max-w-screen min-w-screen">
-        <SheetDescription className="flex flex-col items-start py-24 px-12 gap-10 min-h-screen">
+        <SheetTitle />
+        <div className="flex flex-col items-start py-24 px-12 gap-10 min-h-screen">
           {navData.navMain.map((item) => {
-            const title =
-              item.title.charAt(0).toUpperCase() + item.title.slice(1);
             return (
               <Link
                 key={item.title}
                 href={item.url}
                 onClick={() => setOpen(false)}
                 className={`cursor-pointer whitespace-nowrap flex items-center justify-center gap-2
-              `}
+                `}
               >
-                {<item.icon size={24} />}
-                <p className={`text-lg font-medium`}>{title}</p>
+                <item.icon size={24} />
+                <p className="text-lg font-medium">{item.title}</p>
               </Link>
             );
           })}
-        </SheetDescription>
+        </div>
       </SheetContent>
     </Sheet>
   );
