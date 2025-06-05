@@ -55,7 +55,7 @@ export default function DriverDocumentsUpload() {
   };
 
   return (
-    <div className="min-w-[650px] max-w-[650px] w-full px-6">
+    <div className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full px-6">
       <div className="flex flex-col gap-4 w-full">
         {document_type.map((docType) => (
           <DocumentCard

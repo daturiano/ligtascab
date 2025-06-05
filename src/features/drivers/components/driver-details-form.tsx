@@ -18,11 +18,12 @@ import {
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
-import { ArrowLeft, CalendarIcon } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { DriverInfoSchema } from '../schemas/drivers';
 import { useCreateDriver } from './create-driver-provider';
+import FormBottomNavigation from './form-bottom-navigation';
 
 export default function DriverDetailsForm() {
   const { step, nextStep, formData, setData, readonly } = useCreateDriver();
@@ -50,9 +51,9 @@ export default function DriverDetailsForm() {
 
   return (
     <div>
-      <Card className="min-w-[650px] max-w-[650px] w-full">
+      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
         <CardHeader>
-          <CardTitle className="text-sm font-normal">Driver Details</CardTitle>
+          <CardTitle className="text-sm font-medium">Driver Details</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -73,7 +74,7 @@ export default function DriverDetailsForm() {
                           type="text"
                           {...field}
                           readOnly={readonly}
-                          className="h-12 placeholder:text-sm"
+                          className="h-12"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -91,7 +92,7 @@ export default function DriverDetailsForm() {
                           type="text"
                           {...field}
                           readOnly={readonly}
-                          className="h-12 placeholder:text-sm"
+                          className="h-12"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -111,7 +112,7 @@ export default function DriverDetailsForm() {
                         type="text"
                         {...field}
                         readOnly={readonly}
-                        className="h-12 placeholder:text-sm"
+                        className="h-12"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -130,7 +131,7 @@ export default function DriverDetailsForm() {
                         type="text"
                         {...field}
                         readOnly={readonly}
-                        className="h-12 placeholder:text-sm"
+                        className="h-12"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -160,7 +161,9 @@ export default function DriverDetailsForm() {
                             {field.value ? (
                               format(field.value, 'PPP')
                             ) : (
-                              <span>Date of birth*</span>
+                              <span className="text-xs lg:text-sm">
+                                Date of birth*
+                              </span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -194,7 +197,7 @@ export default function DriverDetailsForm() {
                           type="text"
                           {...field}
                           readOnly={readonly}
-                          className="h-12 placeholder:text-sm"
+                          className="h-12"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -212,7 +215,7 @@ export default function DriverDetailsForm() {
                           type="text"
                           {...field}
                           readOnly={readonly}
-                          className="h-12 placeholder:text-sm"
+                          className="h-12"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -224,21 +227,11 @@ export default function DriverDetailsForm() {
           </Form>
         </CardContent>
       </Card>
-      <div
-        className={`w-full bg-card h-16 flex items-center absolute bottom-0 left-0 ${
-          readonly && 'hidden'
-        }`}
-      >
-        <div className="max-w-screen-lg w-full mx-auto flex justify-between">
-          <Button variant={'outline'} size={'lg'} disabled={step === 1}>
-            <ArrowLeft />
-            Back
-          </Button>
-          <Button size={'lg'} type="submit" form="driver-details-form">
-            Continue
-          </Button>
-        </div>
-      </div>
+      <FormBottomNavigation
+        onSubmit={() => onSubmit}
+        step={step}
+        formName="driver-details-form"
+      />
     </div>
   );
 }

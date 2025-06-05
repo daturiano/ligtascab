@@ -18,16 +18,17 @@ import {
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
-import { ArrowLeft, CalendarIcon } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { DriverComplianceSchema } from '../schemas/drivers';
 import { useCreateDriver } from './create-driver-provider';
 import DriverDocumentsUpload from './driver-documents-upload';
+import FormBottomNavigation from './form-bottom-navigation';
 
 export default function DriverLicenseForm() {
-  const { nextStep, prevStep, formData, setData, readonly } = useCreateDriver();
+  const { nextStep, formData, setData, readonly } = useCreateDriver();
 
   const form = useForm<z.infer<typeof DriverComplianceSchema>>({
     resolver: zodResolver(DriverComplianceSchema),
@@ -57,7 +58,7 @@ export default function DriverLicenseForm() {
 
   return (
     <div>
-      <Card className="min-w-[650px] max-w-[650px] w-full mb-24">
+      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
         <CardHeader>
           <CardTitle className="text-sm font-normal">
             Driver&apos;s License Details
@@ -81,7 +82,7 @@ export default function DriverLicenseForm() {
                         type="text"
                         {...field}
                         readOnly={readonly}
-                        className="h-12 placeholder:text-sm"
+                        className="h-12"
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -111,7 +112,9 @@ export default function DriverLicenseForm() {
                             {field.value ? (
                               format(field.value, 'PPP')
                             ) : (
-                              <span>License expiration*</span>
+                              <span className="text-xs lg:text-sm">
+                                License expiration*
+                              </span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -137,19 +140,10 @@ export default function DriverLicenseForm() {
         </CardContent>
         <DriverDocumentsUpload />
       </Card>
-      <div
-        className={`w-full bg-card h-16 flex items-center fixed bottom-0 left-0`}
-      >
-        <div className="max-w-screen-lg w-full mx-auto flex justify-between">
-          <Button variant={'outline'} size={'lg'} onClick={prevStep}>
-            <ArrowLeft />
-            Back
-          </Button>
-          <Button size={'lg'} type="submit" form="driver-license-form">
-            Continue
-          </Button>
-        </div>
-      </div>
+      <FormBottomNavigation
+        onSubmit={() => onSubmit}
+        formName="driver-license-form"
+      />
     </div>
   );
 }
