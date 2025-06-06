@@ -55,7 +55,7 @@ export function ShiftTable<TData, TValue>({
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 9,
+    pageSize: 10,
   });
 
   const table = useReactTable({
@@ -81,7 +81,7 @@ export function ShiftTable<TData, TValue>({
   });
 
   return (
-    <div className="flex min-h-[350px]">
+    <div className="flex min-h-[550px]">
       <div className="w-full">
         <h1 className="font-semibold">Driver Attendance</h1>
         <div className="flex items-center py-4">

@@ -1,14 +1,13 @@
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { AlignJustify } from 'lucide-react';
 import Link from 'next/link';
-import { navData } from './dashboard-header';
 import { useState } from 'react';
+import { navData } from './dashboard-header';
 
 export default function MobileNavigation() {
   const [open, setOpen] = useState(false);

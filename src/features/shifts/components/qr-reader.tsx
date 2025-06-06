@@ -72,8 +72,8 @@ export default function QRCodeReader({ setIsScanning }: QRCodeReaderProps) {
           <Image
             src={errorImg}
             alt="error"
-            height={300}
-            width={300}
+            height={250}
+            width={250}
             className="my-4"
           />
           <p className="text-destructive text-md">{scanError}</p>

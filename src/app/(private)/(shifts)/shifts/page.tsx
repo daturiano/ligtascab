@@ -35,12 +35,12 @@ export default function ShiftPage() {
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-semibold">Shifts</h1>
         <div className="flex flex-col lg:flex-row gap-6">
-          <Card className="justify-between min-w-[350px] max-w-[350px] lg:max-w-[450px] lg:max-h-[610px] max-h-[500px]">
+          <Card className="justify-between min-w-[350px] max-w-[350px] max-h-[650px] lg:min-w-[425px] lg:max-w-[425px]">
             <CardHeader>
               <CardTitle>Log Driver Attendance</CardTitle>
               <CardDescription>
                 {isScanning
-                  ? 'Log driver attendance using the QR Code and required details.'
+                  ? 'Log driver attendance using the driver QR Code.'
                   : 'Press "Start Log Attendance" to start scanning the drivers QR Code.'}
               </CardDescription>
             </CardHeader>

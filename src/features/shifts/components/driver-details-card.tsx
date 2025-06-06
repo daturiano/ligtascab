@@ -21,7 +21,7 @@ export default function DriverDetailsCard({ driver }: DriverDetailsCardProps) {
     <Card className="gap-2 shadow-none bg-muted-foreground/5">
       <CardHeader className="font-semibold">Driver Details</CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
           <Avatar className="size-18 rounded-md">
             <AvatarImage
               // src={driver?.image}
@@ -33,15 +33,15 @@ export default function DriverDetailsCard({ driver }: DriverDetailsCardProps) {
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <p>
+            <p className="text-sm md:text-base">
               <span className="text-muted-foreground">Name: </span>
               {driver.first_name} {driver.last_name}
             </p>
-            <p>
+            <p className="text-sm md:text-base">
               <span className="text-muted-foreground">Phone Number: </span>
               {driver.phone_number}
             </p>
-            <p>
+            <p className="text-sm md:text-base">
               <span className="text-muted-foreground">Birthday: </span>
               {formatDate(driver.birth_date.toLocaleString())}
             </p>
@@ -49,11 +49,11 @@ export default function DriverDetailsCard({ driver }: DriverDetailsCardProps) {
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col">
-            <p>
+            <p className="text-sm md:text-base">
               <span className="text-muted-foreground">Address: </span>
               {driver.address}
             </p>
-            <p>
+            <p className="text-sm md:text-base">
               <span className="text-muted-foreground">
                 License Expiration:{' '}
               </span>
@@ -61,23 +61,23 @@ export default function DriverDetailsCard({ driver }: DriverDetailsCardProps) {
             </p>
           </div>
           <div className="flex flex-col">
-            <p>
+            <p className="text-sm md:text-base">
               <span className="text-muted-foreground">Emergency Name: </span>
               {driver.emergency_contact_name}
             </p>
-            <p>
+            <p className="text-sm md:text-base">
               <span className="text-muted-foreground">Emergency Number: </span>
               {driver.emergency_contact_number}
             </p>
           </div>
           <div className="flex flex-col">
-            <p>
-              <span className="text-muted-foreground">Recent Attendance: </span>
+            <p className="text-sm md:text-base">
+              <span className="text-muted-foreground">Previous Shift: </span>
               {!recent_log?.data.created_at
                 ? 'No data avaialble'
                 : formatDateTime(recent_log.data.created_at.toLocaleString())}
             </p>
-            <p>
+            <p className="text-sm md:text-base">
               <span className="text-muted-foreground">
                 Last Used Tricycle:{' '}
               </span>

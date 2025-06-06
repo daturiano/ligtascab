@@ -113,7 +113,9 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
               name="plate_number"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Select Available Tricycle</FormLabel>
+                  <FormLabel className="text-sm md:text-base">
+                    Select Tricycle
+                  </FormLabel>
                   <Popover onOpenChange={() => setIsOpen(true)}>
                     <PopoverTrigger asChild disabled={isTimeOut}>
                       <FormControl>
@@ -121,7 +123,7 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            'w-full justify-between',
+                            'w-full justify-between text-sm',
                             !field.value && 'text-muted-foreground'
                           )}
                         >
@@ -165,7 +167,9 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
               name="shift_type"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Log Type</FormLabel>
+                  <FormLabel className="text-sm md:text-base">
+                    Log Type
+                  </FormLabel>
                   <Select
                     onValueChange={(value) => {
                       if (value === 'Time-out') {
