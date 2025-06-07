@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import GenerateQRCode from '@/components/view-qr-code';
 import { useMobile } from '@/hooks/useMobile';
-import { ChevronDown, Ellipsis, FileText, QrCode, Trash } from 'lucide-react';
+import { ChevronDown, Ellipsis, QrCode, Trash } from 'lucide-react';
 import OptionsButton from './options-button';
 
 type TricycleCardOptionsProps = {
@@ -46,15 +46,6 @@ export default function TricycleCardOptions({
           )}
         </OptionsButton>
       </GenerateQRCode>
-      <OptionsButton>
-        {isMobile ? (
-          <p className="text-xs md:text-sm">Documents</p>
-        ) : (
-          <div className="py-4 px-2.5 flex items-center justify-center">
-            <FileText size={20} />
-          </div>
-        )}
-      </OptionsButton>
       <DropdownMenu>
         <DropdownMenuTrigger className="w-full">
           <OptionsButton>

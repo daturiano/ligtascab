@@ -1,7 +1,7 @@
 import { fetchDriverDetails } from '@/features/drivers/actions/drivers';
 import DriverProfileCard from '@/features/drivers/components/driver-profile-card';
 
-export default async function page({
+export default async function DriverProfilePage({
   params,
 }: {
   params: Promise<{ driverId: string }>;

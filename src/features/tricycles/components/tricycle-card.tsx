@@ -1,8 +1,10 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tricycle } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useTransition } from 'react';
+import Link from 'next/link';
+import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { removeTricycleFromOperator } from '../actions/tricycles';
 import TricycleCardOptions from './tricycle-card-options';
@@ -13,6 +15,7 @@ type TricycleProps = {
 
 export default function TricycleCard({ tricycle }: TricycleProps) {
   const [isPending, startTransition] = useTransition();
+  const [isHovered, setIsHovered] = useState(false);
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
@@ -36,7 +39,11 @@ export default function TricycleCard({ tricycle }: TricycleProps) {
   };
 
   return (
-    <div className="p-5 flex border-b justify-between items-center">
+    <div
+      className="p-5 flex border-b justify-between items-center hover:bg-background/40"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="flex items-center lg:gap-4 xl:gap-14">
         <div className="max-w-24 min-w-24">
           {tricycle.status === 'active' && <Badge>Active</Badge>}
@@ -83,11 +90,18 @@ export default function TricycleCard({ tricycle }: TricycleProps) {
           </p>
         </div>
       </div>
-      <TricycleCardOptions
-        tricycle_id={tricycle.id}
-        isPending={isPending}
-        onDeleteHandler={onDeleteHandler}
-      />
+      <div className="flex gap-2 items-center">
+        {isHovered && (
+          <Link href={`/tricycles/${tricycle.id}`}>
+            <Button variant={'outline'}>View Tricycle</Button>
+          </Link>
+        )}
+        <TricycleCardOptions
+          tricycle_id={tricycle.id}
+          isPending={isPending}
+          onDeleteHandler={onDeleteHandler}
+        />
+      </div>
     </div>
   );
 }

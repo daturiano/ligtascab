@@ -12,6 +12,12 @@ import {
   getTricycleByPlateNumber,
 } from '../db/tricycles';
 
+export const fetchTricycleDetails = async (id: string) => {
+  const { data, error } = await getTricycleById(id);
+
+  return { data, error };
+};
+
 export const fetchAllTricyclesFromOperator = async () => {
   const { data, error } = await getAllTricycles();
 
