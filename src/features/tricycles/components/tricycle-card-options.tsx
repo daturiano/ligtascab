@@ -21,22 +21,40 @@ import GenerateQRCode from '@/components/view-qr-code';
 import { useMobile } from '@/hooks/useMobile';
 import { ChevronDown, Ellipsis, QrCode, Trash } from 'lucide-react';
 import OptionsButton from './options-button';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 type TricycleCardOptionsProps = {
   tricycle_id: string;
   onDeleteHandler: () => void;
   isPending: boolean;
+  isHovered?: boolean;
 };
 
 export default function TricycleCardOptions({
   tricycle_id,
   onDeleteHandler,
+  isHovered,
   isPending,
 }: TricycleCardOptionsProps) {
   const isMobile = useMobile({ max: 960 });
 
   return (
-    <div className="flex items-center gap-2 lg:gap-2 w-full lg:w-auto justify-between">
+    <div className="flex items-center gap-2 lg:gap-3 w-full lg:w-auto justify-between">
+      {isMobile && (
+        <Link href={`/tricycles/${tricycle_id}`} className="w-full">
+          <div className="cursor-pointer w-full py-2 rounded-md flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15 lg:size-10">
+            <p className="text-xs whitespace-nowrap md:text-sm">
+              View Tricycle
+            </p>
+          </div>
+        </Link>
+      )}
+      {!isMobile && isHovered && (
+        <Link href={`/tricycles/${tricycle_id}`}>
+          <Button variant={'outline'}>View Tricycle</Button>
+        </Link>
+      )}
       <GenerateQRCode id={tricycle_id}>
         <OptionsButton>
           {isMobile ? (

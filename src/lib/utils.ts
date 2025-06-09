@@ -32,12 +32,14 @@ export function formatDateTime(timestamp: string): string {
   return date.toLocaleString('en-US', options);
 }
 
-export function formatDate(dateString: string): string {
+type variant = 'long' | 'short' | 'narrow' | 'numeric' | '2-digit' | undefined;
+
+export function formatDate(dateString: string, variant?: variant): string {
   const date = new Date(dateString);
 
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
-    month: 'short',
+    month: variant ? variant : 'short',
     day: 'numeric',
   };
 
