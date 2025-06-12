@@ -1,7 +1,7 @@
 'use client';
 
 import SecondaryNavigation from '@/components/secondary-navigation';
-import { SquarePlus, UserRoundSearch, Users } from 'lucide-react';
+import { SquarePlus, Users } from 'lucide-react';
 import { ReactNode } from 'react';
 
 const data = [
@@ -16,12 +16,6 @@ const data = [
     url: '/create-driver',
     pathname: '/create-driver',
     icon: SquarePlus,
-  },
-  {
-    title: 'Driver Profile',
-    url: '/driver-profile',
-    pathname: '/driver-profile',
-    icon: UserRoundSearch,
   },
 ];
 export default function DriversLayout({ children }: { children: ReactNode }) {

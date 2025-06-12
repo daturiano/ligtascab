@@ -159,7 +159,7 @@ export default function DriverPage() {
           </div>
         </div>
       </div>
-      <div className="min-w-full border-[0.3px] rounded-2xl max-h-[33rem] overflow-y-auto bg-card">
+      <div className="min-w-full border-[0.3px] rounded-2xl max-h-[37rem] overflow-y-auto bg-card">
         {!data ? (
           <div className="flex items-center justify-center flex-col py-12">
             <Image src={emptyImage} alt="empty image" className="size-36" />

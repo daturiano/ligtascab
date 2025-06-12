@@ -1,18 +1,50 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import placeholder from '@/app/public/pictures.png';
 import { formatDate } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { removeDriverFromOperator } from '../actions/drivers';
-import { Driver } from '../schemas/drivers';
 import DriverCardOptions from './driver-card-options';
+import { Badge } from '@/components/ui/badge';
+import Image from 'next/image';
+import { Driver } from '@/lib/types';
+
+type DriverInformationProps = {
+  title: string;
+  description?: string;
+  children?: React.ReactNode;
+};
 
 type DriversProps = {
   driver: Driver;
 };
 
+function DriverInformation({
+  title,
+  description,
+  children,
+}: DriverInformationProps) {
+  return (
+    <>
+      {!children ? (
+        <p className="tracking-wide font-medium whitespace-nowrap text-base">
+          <span className="font-normal text-muted-foreground">{title}: </span>
+          {description}
+        </p>
+      ) : (
+        <div className="flex whitespace-nowrap">
+          <p className="font-normal text-muted-foreground mr-1">{title}:</p>
+          {children}
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function DriverCard({ driver }: DriversProps) {
   const [isPending, startTransition] = useTransition();
+  const [isHovered, setIsHovered] = useState(false);
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
@@ -35,63 +67,63 @@ export default function DriverCard({ driver }: DriversProps) {
     });
   };
 
+  const DriverStatus = () => {
+    if (driver.status == 'active') return <Badge>Active</Badge>;
+    if (driver.status == 'inactive')
+      return <Badge variant={'outline'}>Inactive</Badge>;
+  };
+
   return (
-    <div className="p-5 flex border-b justify-between items-start">
-      <div className="flex items-start gap-4 min-w-[250px]">
-        <div className="relative">
-          <Avatar className="size-10 rounded-full">
-            {/* <AvatarImage
-              src={driver?.image ?? undefined}
-              alt={driver?.first_name ?? undefined}
-            /> */}
-            <AvatarFallback className="size-10 border-1 border-white rounded-full bg-gray-300 flex items-center justify-center text-md font-medium">
-              <p>
-                {driver.first_name.charAt(0).toUpperCase()}
-                {driver.last_name.charAt(0).toUpperCase()}
+    <div
+      className="p-5 gap-8 flex items-center border-b hover:bg-background/40"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <Avatar className="size-40 rounded-md">
+        <AvatarImage src={driver.image ?? undefined} alt={driver.first_name} />
+        <AvatarFallback className="size-40 border-1 border-white bg-gray-200 rounded-md">
+          <Image
+            src={placeholder}
+            alt="placeholder image"
+            width={42}
+            height={42}
+          />
+        </AvatarFallback>
+      </Avatar>
+      <div className="w-full flex flex-col justify-between gap-2">
+        <div className="flex justify-between items-center">
+          <div className="max-w-24 min-w-24">
+            <DriverStatus />
+          </div>
+          <DriverCardOptions
+            driver_id={driver.id}
+            isPending={isPending}
+            isHovered={isHovered}
+            onDeleteHandler={onDeleteHandler}
+          />
+        </div>
+        <div className="flex justify-between">
+          <div className="space-y-1">
+            <DriverInformation
+              title="Name"
+              description={driver.first_name + ' ' + driver.last_name}
+            />
+            <DriverInformation
+              title="Phone Number"
+              description={driver.phone_number}
+            />
+            <DriverInformation title="License Expiration">
+              <p className="tracking-wide font-medium">
+                {formatDate(driver.license_expiration.toLocaleString(), 'long')}
               </p>
-            </AvatarFallback>
-          </Avatar>
-          <div
-            className={`absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full ${
-              driver.status === 'active' ? 'bg-primary' : 'bg-destructive'
-            }`}
-          ></div>
-        </div>
-
-        <div className="flex flex-col text-md">
-          <p className="tracking-wide font-medium">
-            <span className="font-normal text-muted-foreground">Name: </span>
-            {driver.first_name} {driver.last_name}
-          </p>
-          <p className="tracking-wide font-medium">
-            <span className="font-normal text-muted-foreground">
-              Phone Number:{' '}
-            </span>
-            {driver.phone_number}
-          </p>
+            </DriverInformation>
+            <DriverInformation
+              title="Most Recent Tricycle"
+              description="NGA 0239"
+            />
+          </div>
         </div>
       </div>
-
-      <div className="text-md min-w-[400px]">
-        <p className="tracking-wide text-start">
-          <span className="text-muted-foreground">Address: </span>
-          {driver.address}
-        </p>
-      </div>
-
-      <div className="flex flex-col text-md min-w-[250px]">
-        <p className="tracking-wide text-muted-foreground">
-          Driver&apos;s License Expiration:
-        </p>
-        <p className="tracking-wide font-medium">
-          {formatDate(driver.license_expiration.toLocaleString())}
-        </p>
-      </div>
-      <DriverCardOptions
-        driver_id={driver.id}
-        isPending={isPending}
-        onDeleteHandler={onDeleteHandler}
-      />
     </div>
   );
 }

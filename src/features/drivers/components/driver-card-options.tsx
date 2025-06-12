@@ -9,6 +9,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,23 +21,38 @@ import {
 import GenerateQRCode from '@/components/view-qr-code';
 import OptionsButton from '@/features/tricycles/components/options-button';
 import { useMobile } from '@/hooks/useMobile';
-import { ChevronDown, Ellipsis, FileText, QrCode, Trash } from 'lucide-react';
+import { ChevronDown, Ellipsis, QrCode, Trash } from 'lucide-react';
+import Link from 'next/link';
 
 type DriverCardOptionsProps = {
   driver_id: string;
   onDeleteHandler: () => void;
+  isHovered?: boolean;
   isPending: boolean;
 };
 
 export default function DriverCardOptions({
   driver_id,
   onDeleteHandler,
+  isHovered,
   isPending,
 }: DriverCardOptionsProps) {
   const isMobile = useMobile({ max: 960 });
 
   return (
-    <div className="flex items-center gap-2 lg:gap-2 w-full lg:w-auto justify-between">
+    <div className="flex items-center gap-2 lg:gap-3 w-full lg:w-auto justify-between">
+      {isMobile && (
+        <Link href={`/drivers/${driver_id}`} className="w-full">
+          <div className="cursor-pointer w-full py-2 rounded-md flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15 lg:size-10">
+            <p className="text-xs whitespace-nowrap md:text-sm">View Driver</p>
+          </div>
+        </Link>
+      )}
+      {!isMobile && isHovered && (
+        <Link href={`/drivers/${driver_id}`}>
+          <Button variant={'outline'}>View Driver</Button>
+        </Link>
+      )}
       <GenerateQRCode id={driver_id}>
         <OptionsButton>
           {isMobile ? (
@@ -46,15 +62,6 @@ export default function DriverCardOptions({
           )}
         </OptionsButton>
       </GenerateQRCode>
-      <OptionsButton>
-        {isMobile ? (
-          <p className="text-xs md:text-sm">Documents</p>
-        ) : (
-          <div className="py-4 px-2.5 flex items-center justify-center">
-            <FileText size={20} />
-          </div>
-        )}
-      </OptionsButton>
       <DropdownMenu>
         <DropdownMenuTrigger className="w-full">
           <OptionsButton>
