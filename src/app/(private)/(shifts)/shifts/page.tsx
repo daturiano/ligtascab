@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import Image from 'next/image';
-import qrImage from '@/app/public/scan.png';
+import qrImage from '@/app/public/qr.png';
 import QRCodeReader from '@/features/shifts/components/qr-reader';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllShiftLogs } from '@/features/shifts/actions/shifts';
@@ -35,10 +35,10 @@ export default function ShiftPage() {
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-semibold">Shifts</h1>
         <div className="flex flex-col lg:flex-row gap-6">
-          <Card className="justify-between min-w-[350px] max-w-[350px] max-h-[650px] lg:min-w-[425px] lg:max-w-[425px]">
+          <Card className="justify-between w-full h-full max-w-[350px] max-h-[650px] lg:max-w-[425px] lg:min-h-[645px] lg:max-h-[645px]]">
             <CardHeader>
               <CardTitle>Log Driver Attendance</CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs md:text-sm">
                 {isScanning
                   ? 'Log driver attendance using the driver QR Code.'
                   : 'Press "Start Log Attendance" to start scanning the drivers QR Code.'}
@@ -48,7 +48,9 @@ export default function ShiftPage() {
               {isScanning ? (
                 <QRCodeReader setIsScanning={setIsScanning} />
               ) : (
-                <Image src={qrImage} alt="qr code" />
+                <div className="flex items-center justify-center">
+                  <Image src={qrImage} alt="qr code" height={280} width={280} />
+                </div>
               )}
             </CardContent>
             {!isScanning && (
@@ -62,7 +64,7 @@ export default function ShiftPage() {
               </CardFooter>
             )}
           </Card>
-          <Card className="w-full min-w-[350px]">
+          <Card className="w-full min-w-[350px] lg:min-h-[645px] lg:max-h-[645px]">
             <CardContent>
               <ShiftTable
                 data={shift_logs ?? []}

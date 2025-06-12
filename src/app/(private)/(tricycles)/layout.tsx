@@ -1,7 +1,7 @@
 'use client';
 
 import SecondaryNavigation from '@/components/secondary-navigation';
-import { CarFront, FilePlus2, SquarePlus } from 'lucide-react';
+import { CarFront, SquarePlus } from 'lucide-react';
 import { ReactNode } from 'react';
 
 const data = [
@@ -16,12 +16,6 @@ const data = [
     url: '/create-tricycle',
     pathname: '/create-tricycle',
     icon: SquarePlus,
-  },
-  {
-    title: 'Renew Tricycle',
-    url: '/renew-tricycle',
-    pathname: '/renew-tricycle',
-    icon: FilePlus2,
   },
 ];
 
