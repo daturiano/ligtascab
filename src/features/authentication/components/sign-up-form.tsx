@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -7,18 +7,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import Spinner from "@/components/ui/spinner";
-import { UserSchema } from "@/features/authentication/schemas/authentication";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import * as z from "zod";
-import { getFormattedDate } from "@/lib/utils";
-import { WarningCircle } from "@phosphor-icons/react";
-import { registerWithCredentials } from "../actions/authentication";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import Spinner from '@/components/ui/spinner';
+import { UserSchema } from '@/features/authentication/schemas/authentication';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import * as z from 'zod';
+import { getFormattedDate } from '@/lib/utils';
+import { WarningCircle } from '@phosphor-icons/react';
+import { registerWithCredentials } from '../actions/authentication';
 
 export default function SignUpForm() {
   const [isPending, startTransition] = useTransition();
@@ -47,11 +47,11 @@ export default function SignUpForm() {
 
   const form = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
-    mode: "onBlur",
+    mode: 'onBlur',
     defaultValues: {
-      email: "",
-      password: "",
-      confirm_password: "",
+      email: '',
+      password: '',
+      confirm_password: '',
     },
   });
 
@@ -129,7 +129,7 @@ export default function SignUpForm() {
           className="w-full"
           disabled={!form.formState.isValid || isPending}
         >
-          {!isPending ? "Continue" : <Spinner />}
+          {!isPending ? 'Continue' : <Spinner />}
         </Button>
       </form>
     </Form>

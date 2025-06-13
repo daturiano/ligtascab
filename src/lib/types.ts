@@ -7,7 +7,7 @@ export type AttachmentDetails = {
 };
 
 export type Tricycle = {
-  id: string;
+  id?: string;
   operator_id: string;
   tricycle_details: {
     model: string;
@@ -24,7 +24,7 @@ export type Tricycle = {
     or_number: string;
     cr_number: string;
   };
-  status: string;
+  status?: string;
   plate_number: string;
   registration_expiration: Date;
   franchise_expiration: Date;
@@ -44,7 +44,7 @@ export type ShiftLog = {
 };
 
 export type Operator = {
-  id: string;
+  id?: string;
   first_name: string;
   last_name: string;
   phone_number: string;

@@ -46,7 +46,7 @@ export default function FormReview() {
         <TricycleMaintenanceForm />
         <TricycleDocumentsUpload />
       </div>
-      <FormBottomNavigation onSubmit={() => onSubmit} />
+      <FormBottomNavigation onSubmit={onSubmit} />
     </div>
   );
 }

@@ -1,21 +1,17 @@
 'use server';
 
+import { createLog, uploadDocument } from '@/db/db';
 import {
   CredentialsSchema,
   UserSchema,
 } from '@/features/authentication/schemas/authentication';
+import { AttachmentDetails } from '@/lib/types';
 import { createClient } from '@/supabase/server';
 import { redirect } from 'next/navigation';
-import { v4 as uuidv4 } from 'uuid';
-import { FormData } from '../components/progress-provider';
+import { AccountSetupFormData } from '../components/create-operator-provider';
+import { createOperator } from '../db/authentication';
 
 type AuthResponse = { error?: string; message?: string };
-
-type UploadProps = {
-  file: File;
-  bucket: string;
-  documentId: string;
-};
 
 export const signInWithGoogle = async () => {
   const supabase = await createClient();
@@ -112,42 +108,15 @@ export const registerWithCredentials = async (
   return { message: 'Sign up successful' };
 };
 
-export const uploadImage = async ({
-  file,
-  bucket,
-  documentId,
-}: UploadProps) => {
-  const fileName = file.name;
-  const fileExtension = fileName.slice(fileName.lastIndexOf('.') + 1);
-
-  const uniqueFilename = `${documentId}_${uuidv4()}.${fileExtension}`;
-
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const path = `${user?.id}/${uniqueFilename}`;
-
-  const { data, error } = await supabase.storage
-    .from(bucket)
-    .upload(path, file);
-
-  if (error) {
-    console.error('Upload error:', error);
-    return { imageUrl: '', error: `Upload failed: ${error.message}` };
-  }
-
-  const imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${data?.path}`;
-  return { imageUrl, error: '', filename: uniqueFilename };
-};
-
-export async function submitUserFormData(formData: FormData) {
+export async function createNewOperator(operatorFormData: AccountSetupFormData) {
   try {
-    const { personalDetails, addressDetails } = formData;
-
-    console.log(personalDetails, addressDetails);
+    const { personalDetails, addressDetails } =
+      operatorFormData as {
+        personalDetails: NonNullable<typeof operatorFormData.personalDetails>;
+        addressDetails: NonNullable<
+          typeof operatorFormData.addressDetails
+        >;
+      };
 
     const supabase = await createClient();
 
@@ -157,66 +126,85 @@ export async function submitUserFormData(formData: FormData) {
 
     if (!user) throw new Error('User not authenticated');
 
-    if (!personalDetails?.dial_code || !personalDetails?.phone_number) {
-      return;
-    }
-
-    const phone_number =
-      personalDetails.dial_code + personalDetails.phone_number;
-
-    const userProfileData = {
-      id: user.id,
-      first_name: personalDetails?.first_name,
-      last_name: personalDetails?.last_name,
-      birth_date: personalDetails?.birth_date
-        ? new Date(personalDetails.birth_date).toISOString()
-        : null,
-      phone_number: phone_number,
+    const operatorData = {
+      first_name: personalDetails.first_name,
+      last_name: personalDetails.last_name,
+      phone_number: personalDetails.dial_code + personalDetails.phone_number,
+      birth_date: personalDetails.birth_date,
+      address: {
+        address: addressDetails.address,
+        province: addressDetails.province,
+        postal_code: addressDetails.postal_code,
+        municipality: addressDetails.municipality
+      },
       is_new_user: false,
     };
 
-    const { error } = await supabase
-      .from('operators')
-      .upsert(
-        [
-          {
-            ...userProfileData,
-            address: {
-              province: addressDetails?.province,
-              municipality: addressDetails?.municipality,
-              address: addressDetails?.address,
-              postal_code: addressDetails?.postal_code,
-            },
-          },
-        ],
-        {
-          onConflict: 'id',
-          ignoreDuplicates: false,
-        }
-      )
-      .select();
+    const { data: operator, error } = await createOperator(operatorData, user.id);
 
-    if (error) {
-      throw new Error(`Failed to save profile data: ${error.message}`);
+    if (error || !operator) {
+      return { success: false, error: error };
     }
 
-    const { error: UpdateError } = await supabase.auth.updateUser({
-      data: { is_new_user: false },
-    });
+    // const logData = {
+    //   data: operatorData,
+    //   operator_id: user.id,
+    //   log_event: 'driver_documents',
+    // };
 
-    if (UpdateError) {
-      throw new Error(`Failed to save update data: ${UpdateError.message}`);
-    }
+    // const { error: logError } = await createLog(logData);
 
-    return {
-      success: true,
-    };
-  } catch (error) {
-    console.error('Form submission error:', error);
+    // if (logError) {
+    //   return { success: false, error: 'Failed to log event.' };
+    // }
 
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-    };
+    return { success: true, data: operator };
+  } catch (err) {
+    console.error('Creating new tricycle error:', err);
+    return { success: false, error: 'An unexpected error occurred.' };
   }
 }
+
+export const uploadOperatorDocument = async (
+  operator_id: string,
+  attachmentDetails: AttachmentDetails
+) => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: 'User not authenticated.' };
+  }
+
+  console.log('Starting document upload for operator:', operator_id);
+  console.log('Attachment details:', attachmentDetails);
+
+  try {
+    const results = await uploadDocument(
+      attachmentDetails,
+      'documents',
+      'documents',
+    );
+
+    console.log('Upload results:', results);
+
+    // const logData = {
+    //   data: results,
+    //   operator_id: user.id,
+    //   log_event: 'operator_documents',
+    // };
+
+    // const { error: logError } = await createLog(logData);
+    // if (logError) {
+    //   console.error('Failed to create audit log:', logError);
+    //   return { success: false, error: 'Failed to create audit log.' };
+    // }
+
+    return { success: true, data: results };
+  } catch (error) {
+    console.error('Upload failed:', error);
+    return { success: false, error: 'Failed to upload documents.' };
+  }
+};

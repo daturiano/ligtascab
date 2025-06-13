@@ -138,7 +138,7 @@ export const uploadTricycleDocument = async (
   const results = await uploadDocument(
     attachmentDetails,
     bucket_name,
-    'tricyles',
+    'tricycles',
     tricycle.id
   );
 

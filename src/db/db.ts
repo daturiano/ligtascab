@@ -13,7 +13,7 @@ export const uploadDocument = async (
   attachmentDetails: AttachmentDetails,
   bucketName: string = 'documents',
   tableName: string,
-  id: string
+  id?: string
 ) => {
   const results: Record<string, string | null> = {};
 
@@ -31,21 +31,37 @@ export const uploadDocument = async (
     const fileExtension = file.name.split('.').pop();
 
     const supabase = await createClient();
-
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const path = `${user?.id}/${tableName}/${id}/${documentId}/${sanitizedTitle}.${fileExtension}`;
+    if (!user) {
+      console.error('User not authenticated');
+      results[documentId] = null;
+      continue;
+    }
 
-    const { error } = await supabase.storage
+    // Build path based on whether id is provided
+    const path = id
+      ? `${user.id}/${tableName}/${id}/${documentId}/${sanitizedTitle}.${fileExtension}`
+      : `${user.id}/${tableName}/${documentId}/${sanitizedTitle}.${fileExtension}`;
+
+    console.log(`Uploading file to path: ${path}`);
+
+    const { data, error } = await supabase.storage
       .from(bucketName)
       .upload(path, file, {
         cacheControl: '3600',
         upsert: true,
       });
 
-    results[documentId] = error ? null : path;
+    if (error) {
+      console.error(`Upload error for ${documentId}:`, error);
+      results[documentId] = null;
+    } else {
+      console.log(`Upload successful for ${documentId}:`, data);
+      results[documentId] = path;
+    }
   }
 
   return results;

@@ -1,4 +1,5 @@
 'use client';
+import FormBottomNavigation from '@/components/form-bottom-navigation';
 import {
   Card,
   CardContent,
@@ -23,170 +24,152 @@ import {
 } from '@/components/ui/select';
 import { citiesAndMunicipalities, province } from '@/lib/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { AddressSchema } from '../schemas/authentication';
-import { useProgress } from './progress-provider';
+import { useCreateOperator } from './create-operator-provider';
 
 export default function AddressForm() {
-  const { formData, updateData, setFormValid } = useProgress();
-  const [isReady, setIsReady] = useState(false);
+  const { step, nextStep, formData, prevStep, setData, readonly } =
+    useCreateOperator();
 
   const form = useForm<z.infer<typeof AddressSchema>>({
     resolver: zodResolver(AddressSchema),
     mode: 'onBlur',
+    defaultValues: {
+      province: formData.addressDetails?.province || '',
+      municipality: formData.addressDetails?.municipality || '',
+      address: formData.addressDetails?.address || '',
+      postal_code: formData.addressDetails?.postal_code || '',
+    },
   });
 
-  useEffect(() => {
-    const addressDetails = formData.addressDetails || {};
-
-    form.reset({
-      province: addressDetails.province || '',
-      municipality: addressDetails.municipality || '',
-      address: addressDetails.address || '',
-      postal_code: addressDetails.postal_code || '',
-    });
-
-    setTimeout(() => {
-      form.trigger().then(() => {
-        setFormValid(form.formState.isValid);
-        setIsReady(true);
-      });
-    }, 0);
-  }, [formData, form, setFormValid]);
-
-  // Second useEffect to sync form changes back to context, but only after initial load
-  useEffect(() => {
-    if (!isReady) return;
-
-    const subscription = form.watch((values) => {
-      if (
-        values &&
-        Object.keys(values).some((key) => values[key] !== undefined)
-      ) {
-        updateData({ addressDetails: values as any });
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [form, updateData, setFormValid, isReady]);
-
-  useEffect(() => {
-    setFormValid(form.formState.isValid);
-  }, [form.formState.isValid, setFormValid]);
+  const onSubmit = (values: z.infer<typeof AddressSchema>) => {
+    setData({ addressDetails: values });
+    nextStep();
+  };
 
   return (
-    <Card className="w-full max-w-[28rem]">
-      <CardHeader>
-        <CardTitle className="text-2xl">Your work address</CardTitle>
-        <CardDescription>
-          Please provide the location where you primarily operate your fleet.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form className="space-y-6 w-full">
-            <FormField
-              control={form.control}
-              name="province"
-              render={({ field }) => (
-                <FormItem>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={formData.addressDetails?.province || ''}
-                  >
+    <div>
+      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
+        <CardHeader>
+          <CardTitle className="text-2xl">Your work address</CardTitle>
+          <CardDescription>
+            Please provide the location where you primarily operate your fleet.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              className="space-y-6 w-full"
+              onSubmit={form.handleSubmit(onSubmit)}
+              id="address-form"
+            >
+              <FormField
+                control={form.control}
+                name="province"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select
+                      onValueChange={field.onChange}
+                      disabled={readonly}
+                      defaultValue={formData.addressDetails?.province}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full py-6">
+                          <SelectValue placeholder="Province" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {province.map((item) => (
+                          <SelectItem value={item} key={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="municipality"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select
+                      disabled={readonly}
+                      onValueChange={field.onChange}
+                      defaultValue={formData.addressDetails?.municipality}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full py-6">
+                          <SelectValue placeholder="I'm a citizen of" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {citiesAndMunicipalities.map((item) => (
+                          <SelectItem value={item} key={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
                     <FormControl>
-                      <SelectTrigger className="w-full py-6">
-                        <SelectValue placeholder="Province" />
-                      </SelectTrigger>
+                      <Input
+                        placeholder="Street name, building, barangay"
+                        type="text"
+                        {...field}
+                        className="h-12"
+                        readOnly={readonly}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      {province.map((item) => (
-                        <SelectItem value={item} key={item}>
-                          {item}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="municipality"
-              render={({ field }) => (
-                <FormItem>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={formData.addressDetails?.municipality || ''}
-                  >
+              <FormField
+                control={form.control}
+                name="postal_code"
+                render={({ field }) => (
+                  <FormItem>
                     <FormControl>
-                      <SelectTrigger className="w-full py-6">
-                        <SelectValue placeholder="I'm a citizen of" />
-                      </SelectTrigger>
+                      <Input
+                        placeholder="Postal code"
+                        type="tel"
+                        {...field}
+                        className="h-12"
+                        maxLength={4}
+                        readOnly={readonly}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          field.onChange(value);
+                        }}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      {citiesAndMunicipalities.map((item) => (
-                        <SelectItem value={item} key={item}>
-                          {item}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Street name, building, barangay"
-                      type="text"
-                      {...field}
-                      value={field.value || ''}
-                      className="h-12 placeholder:text-sm"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="postal_code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Postal code"
-                      type="tel"
-                      {...field}
-                      value={field.value || ''}
-                      className="h-12 placeholder:text-sm"
-                      maxLength={4}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, ''); // ✅ Remove non-numeric characters
-                        field.onChange(value);
-                      }}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <div className="min-h-5 text-sm font-medium text-red-500">
-              {(Object.values(form.formState.errors)[0]?.message as string) ||
-                ' '}
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <FormBottomNavigation
+        onSubmit={() => onSubmit}
+        step={step}
+        prevStep={prevStep}
+        formName="address-form"
+      />
+    </div>
   );
 }

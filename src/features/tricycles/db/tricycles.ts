@@ -58,6 +58,8 @@ export const createTricycle = async (
     .select()
     .single();
 
+  console.log(error);
+
   return { data, error };
 };
 

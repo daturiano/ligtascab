@@ -1,22 +1,20 @@
 'use client';
 
 import AddressForm from '@/features/authentication/components/address-form';
-import { DocumentUpload } from '@/features/authentication/components/document-upload';
+import { useCreateOperator } from '@/features/authentication/components/create-operator-provider';
+import FormReview from '@/features/authentication/components/form-review';
+import OperatorDocumentsUpload from '@/features/authentication/components/operator-documents-upload';
 import PersonalDetailsForm from '@/features/authentication/components/personal-details-form';
-import ProgressBar from '@/features/authentication/components/progress-bar';
-import { useProgress } from '@/features/authentication/components/progress-provider';
 
 export default function AccountSetupPage() {
-  const { step } = useProgress();
+  const { step } = useCreateOperator();
 
   return (
-    <div className="w-full h-[90dvh] flex flex-col">
-      <div className="flex flex-grow items-center justify-evenly px-4">
-        {step === 1 && <PersonalDetailsForm />}
-        {step === 2 && <AddressForm />}
-        {step === 3 && <DocumentUpload />}
-      </div>
-      <ProgressBar />
+    <div>
+      {step === 1 && <PersonalDetailsForm />}
+      {step === 2 && <AddressForm />}
+      {step === 3 && <OperatorDocumentsUpload />}
+      {step === 4 && <FormReview />}
     </div>
   );
 }

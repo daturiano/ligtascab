@@ -18,12 +18,14 @@ export const UserSchema = z.object({
 });
 
 export const PersonalDetailsSchema = z.object({
-  first_name: z.string(),
-  last_name: z.string(),
-  birth_date: z.date(),
-  phone_number: z.string().min(10).max(10),
-  dial_code: z.string(),
+  first_name: z.string().min(2, 'First name is required.'),
+  last_name: z.string().min(2, 'Last name is required.'),
+  birth_date: z.date({message: "Birth date is required."}),
+  phone_number: z.string().min(10, 'Phone number is required.').max(10, 'Phone number is required.'),
+  dial_code: z.string().min(2, 'Dial code is required.'),
 });
+
+export type PersonalDetails = z.infer<typeof PersonalDetailsSchema>
 
 export const AddressSchema = z.object({
   province: z.string(),
@@ -35,6 +37,8 @@ export const AddressSchema = z.object({
     .max(4, 'Postal code must be exactly 4 digits')
     .regex(/^\d{4}$/, 'Postal code must contain only numbers'),
 });
+
+export type AddressDetails = z.infer<typeof AddressSchema>
 
 export const CredentialsSchema = z.object({
   email: z.string().email('Invalid email format'),
