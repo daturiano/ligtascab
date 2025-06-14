@@ -160,7 +160,7 @@ export default function DriverPage() {
         </div>
       </div>
       <div className="min-w-full border-[0.3px] rounded-2xl max-h-[37rem] overflow-y-auto bg-card">
-        {!data ? (
+        {filteredDrivers.length <= 0 ? (
           <div className="flex items-center justify-center flex-col py-12">
             <Image src={emptyImage} alt="empty image" className="size-36" />
             <div className="flex flex-col space-y-4 text-center mb-8">
