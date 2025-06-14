@@ -11,14 +11,15 @@ import {
 import { Input } from '@/components/ui/input';
 import Spinner from '@/components/ui/spinner';
 import { UserSchema } from '@/features/authentication/schemas/authentication';
+import { getFormattedDate } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { WarningCircle } from '@phosphor-icons/react';
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
-import { getFormattedDate } from '@/lib/utils';
-import { WarningCircle } from '@phosphor-icons/react';
 import { registerWithCredentials } from '../actions/authentication';
+import { redirect } from 'next/navigation';
 
 export default function SignUpForm() {
   const [isPending, startTransition] = useTransition();
@@ -35,7 +36,7 @@ export default function SignUpForm() {
       toast.success(response.message, {
         description: getFormattedDate(),
       });
-      return;
+      redirect('/account-setup');
     }
   };
 

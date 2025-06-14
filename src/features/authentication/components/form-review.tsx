@@ -1,4 +1,6 @@
 import FormBottomNavigation from '@/components/form-bottom-navigation';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import {
   createNewOperator,
@@ -8,26 +10,23 @@ import AddressForm from './address-form';
 import { useCreateOperator } from './create-operator-provider';
 import OperatorDocumentsUpload from './operator-documents-upload';
 import PersonalDetailsForm from './personal-details-form';
-import { useMutation } from '@tanstack/react-query';
 
 export default function FormReview() {
   const { formData, prevStep } = useCreateOperator();
+  const router = useRouter();
 
   const createOperatorMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      console.log(data);
       const { success, error, data: operator } = await createNewOperator(data);
 
-      if (!success || !operator?.id) {
-        console.log(error);
+      if (!success || !operator?.id || error) {
         throw new Error('Failed to create operator account');
       }
 
       const { success: uploadSuccess, error: UploadError } =
         await uploadOperatorDocument(operator.id, data.attachmentDetails!);
 
-      if (!uploadSuccess) {
-        console.log(UploadError);
+      if (!uploadSuccess || UploadError) {
         throw new Error('Failed to upload documents');
       }
 
@@ -36,6 +35,7 @@ export default function FormReview() {
     onSuccess: (data) => {
       console.log('Operator created:', data.operator);
       toast.success('Operator account created successfully!');
+      router.push('/home');
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to create operator account');

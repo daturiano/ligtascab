@@ -35,6 +35,7 @@ export const signInWithGoogle = async () => {
 export const signOut = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  redirect('/sign-in');
 };
 
 export const signInWithCredentials = async (
@@ -108,15 +109,14 @@ export const registerWithCredentials = async (
   return { message: 'Sign up successful' };
 };
 
-export async function createNewOperator(operatorFormData: AccountSetupFormData) {
+export async function createNewOperator(
+  operatorFormData: AccountSetupFormData
+) {
   try {
-    const { personalDetails, addressDetails } =
-      operatorFormData as {
-        personalDetails: NonNullable<typeof operatorFormData.personalDetails>;
-        addressDetails: NonNullable<
-          typeof operatorFormData.addressDetails
-        >;
-      };
+    const { personalDetails, addressDetails } = operatorFormData as {
+      personalDetails: NonNullable<typeof operatorFormData.personalDetails>;
+      addressDetails: NonNullable<typeof operatorFormData.addressDetails>;
+    };
 
     const supabase = await createClient();
 
@@ -135,33 +135,48 @@ export async function createNewOperator(operatorFormData: AccountSetupFormData) 
         address: addressDetails.address,
         province: addressDetails.province,
         postal_code: addressDetails.postal_code,
-        municipality: addressDetails.municipality
+        municipality: addressDetails.municipality,
       },
       is_new_user: false,
     };
 
-    const { data: operator, error } = await createOperator(operatorData, user.id);
+    const { data: operator, error } = await createOperator(
+      operatorData,
+      user.id
+    );
 
     if (error || !operator) {
       return { success: false, error: error };
     }
 
-    // const logData = {
-    //   data: operatorData,
-    //   operator_id: user.id,
-    //   log_event: 'driver_documents',
-    // };
+    const logData = {
+      data: operatorData,
+      operator_id: user.id,
+      log_event: 'create_operator_account',
+    };
 
-    // const { error: logError } = await createLog(logData);
+    const { error: logError } = await createLog(logData);
 
-    // if (logError) {
-    //   return { success: false, error: 'Failed to log event.' };
-    // }
+    if (logError) {
+      return { success: false, error: 'Failed to log event.' };
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: { is_new_user: false },
+    });
+
+    if (updateError) {
+      return { success: false, error: 'Failed to update user metadata.' };
+    }
 
     return { success: true, data: operator };
-  } catch (err) {
-    console.error('Creating new tricycle error:', err);
-    return { success: false, error: 'An unexpected error occurred.' };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    console.error('Creating new operator error:', err);
+    return {
+      success: false,
+      error: err.message || 'An unexpected error occurred.',
+    };
   }
 }
 
@@ -185,22 +200,22 @@ export const uploadOperatorDocument = async (
     const results = await uploadDocument(
       attachmentDetails,
       'documents',
-      'documents',
+      'documents'
     );
 
     console.log('Upload results:', results);
 
-    // const logData = {
-    //   data: results,
-    //   operator_id: user.id,
-    //   log_event: 'operator_documents',
-    // };
+    const logData = {
+      data: { results },
+      operator_id: user.id,
+      log_event: 'operator_documents',
+    };
 
-    // const { error: logError } = await createLog(logData);
-    // if (logError) {
-    //   console.error('Failed to create audit log:', logError);
-    //   return { success: false, error: 'Failed to create audit log.' };
-    // }
+    const { error: logError } = await createLog(logData);
+    if (logError) {
+      console.error('Failed to create audit log:', logError);
+      return { success: false, error: 'Failed to create audit log.' };
+    }
 
     return { success: true, data: results };
   } catch (error) {

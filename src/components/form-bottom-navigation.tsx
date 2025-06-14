@@ -9,12 +9,14 @@ type FormBottomNavigationProps = {
   formName?: string;
   step?: number;
   prevStep?: () => void;
+  disabled?: boolean;
 };
 
 export default function FormBottomNavigation({
   onSubmit,
   formName,
   prevStep,
+  disabled = false,
   step,
 }: FormBottomNavigationProps) {
   return (
@@ -36,6 +38,7 @@ export default function FormBottomNavigation({
           size={'lg'}
           onClick={onSubmit}
           form={formName}
+          disabled={disabled}
           className="text-xs lg:text-sm"
         >
           Continue

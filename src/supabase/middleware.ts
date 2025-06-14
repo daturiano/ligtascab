@@ -40,21 +40,21 @@ export async function updateSession(request: NextRequest) {
     '/tricycles',
     '/create-tricycle',
     '/renew-tricycle',
-    '/dashboard',
+    '/home',
   ];
 
   const { pathname } = request.nextUrl;
 
   if (
     !user &&
-    (pathname.startsWith('/dashboard') || pathname.startsWith('/account-setup'))
+    (pathname.startsWith('/home') || pathname.startsWith('/account-setup'))
   ) {
     const url = request.nextUrl.clone();
     url.pathname = '/sign-in';
     return NextResponse.redirect(url);
   }
 
-  if (user?.user_metadata?.is_new_user && pathname.startsWith('/dashboard')) {
+  if (user?.user_metadata?.is_new_user && pathname.startsWith('/home')) {
     const url = request.nextUrl.clone();
     url.pathname = '/account-setup';
     return NextResponse.redirect(url);
@@ -65,18 +65,17 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith('/account-setup')
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
+    url.pathname = '/home';
     return NextResponse.redirect(url);
   }
   if (user && publicRoutes.includes(pathname)) {
     // Authenticated users should not access public pages
     const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
+    url.pathname = '/home';
     return NextResponse.redirect(url);
   }
 
   if (!user && privateRoutes.includes(pathname)) {
-    // Authenticated users should not access public pages
     const url = request.nextUrl.clone();
     url.pathname = '/sign-in';
     return NextResponse.redirect(url);

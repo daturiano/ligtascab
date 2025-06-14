@@ -89,7 +89,7 @@ export default function DocumentCard({
           ref={fileInputRef}
           onChange={handleFileChange}
           className="hidden w-full"
-          accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          accept="image/*"
         />
 
         {selectedFile && (

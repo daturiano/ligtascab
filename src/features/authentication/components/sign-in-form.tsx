@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -7,18 +7,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import Spinner from "@/components/ui/spinner";
-import { getFormattedDate } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { WarningCircle } from "@phosphor-icons/react";
-import { useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import * as z from "zod";
-import { CredentialsSchema } from "../schemas/authentication";
-import { signInWithCredentials } from "../actions/authentication";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import Spinner from '@/components/ui/spinner';
+import { getFormattedDate } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { WarningCircle } from '@phosphor-icons/react';
+import { useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import * as z from 'zod';
+import { CredentialsSchema } from '../schemas/authentication';
+import { signInWithCredentials } from '../actions/authentication';
+import { redirect } from 'next/navigation';
 
 export default function SignInForm() {
   const [isPending, startTransition] = useTransition();
@@ -35,7 +36,7 @@ export default function SignInForm() {
       toast.success(response.message, {
         description: getFormattedDate(),
       });
-      return;
+      redirect('/home');
     }
   };
 
@@ -47,10 +48,10 @@ export default function SignInForm() {
 
   const form = useForm<z.infer<typeof CredentialsSchema>>({
     resolver: zodResolver(CredentialsSchema),
-    mode: "onBlur",
+    mode: 'onBlur',
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
@@ -118,7 +119,7 @@ export default function SignInForm() {
           className="w-full"
           disabled={!form.formState.isValid || isPending}
         >
-          {!isPending ? "Log in" : <Spinner />}
+          {!isPending ? 'Log in' : <Spinner />}
         </Button>
       </form>
     </Form>
