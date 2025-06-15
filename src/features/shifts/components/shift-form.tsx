@@ -203,17 +203,26 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
               {form.formState.errors.root.message}
             </div>
           )}
-          <Button
-            className="p-1 w-full"
-            disabled={
-              (form.watch('plate_number') === '' &&
-                form.watch('shift_type') !== 'Time-out') ||
-              form.watch('driver_id') === '' ||
-              isPending
-            }
-          >
-            {!isPending ? 'Continue' : 'Pending'}
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              onClick={() => setIsScanning(false)}
+              variant={'outline'}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              className="flex-1"
+              disabled={
+                (form.watch('plate_number') === '' &&
+                  form.watch('shift_type') !== 'Time-out') ||
+                form.watch('driver_id') === '' ||
+                isPending
+              }
+            >
+              {!isPending ? 'Continue' : 'Pending'}
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
