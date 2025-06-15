@@ -1,5 +1,6 @@
 import { fetchDriverDetails } from '@/features/drivers/actions/drivers';
 import DriverProfileCard from '@/features/drivers/components/driver-profile-card';
+import { DriverShiftsTable } from '@/features/drivers/components/driver-shifts-table';
 
 export default async function DriverProfilePage({
   params,
@@ -11,8 +12,11 @@ export default async function DriverProfilePage({
   if (!driver) return null;
 
   return (
-    <div className="space-y-4 w-full lg:px-20 max-w-screen-2xl mx-auto flex">
-      <DriverProfileCard driver={driver} />
+    <div className="space-y-6 gap-4 mx-auto mb-12">
+      <div className="flex gap-4">
+        <DriverProfileCard driver={driver} />
+        <DriverShiftsTable id={driver.id} />
+      </div>
     </div>
   );
 }

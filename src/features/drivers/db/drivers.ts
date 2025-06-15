@@ -4,6 +4,7 @@ import { createClient } from '@/supabase/server';
 import { PostgrestError } from '@supabase/supabase-js';
 import { cache } from 'react';
 import { CreateDriver, Driver, UpdateDriver } from '../schemas/drivers';
+import { ShiftLog } from '@/lib/types';
 
 export const getAllDrivers = cache(
   async (): Promise<{ data: Driver[]; error: PostgrestError | null }> => {
@@ -85,3 +86,18 @@ export async function updateDriverById(
 
   return { data, error };
 }
+
+export const getAllDriverShiftLogs = cache(
+  async (
+    id: string
+  ): Promise<{ data: ShiftLog[]; error: PostgrestError | null }> => {
+    const supabase = await createClient();
+    const { data: logs, error } = await supabase
+      .from('shifts')
+      .select('*')
+      .eq('driver_id', id)
+      .order('created_at', { ascending: false });
+
+    return { data: logs || [], error };
+  }
+);

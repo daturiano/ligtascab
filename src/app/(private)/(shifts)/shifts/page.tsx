@@ -16,7 +16,7 @@ import QRCodeReader from '@/features/shifts/components/qr-reader';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllShiftLogs } from '@/features/shifts/actions/shifts';
 import { ShiftTable } from '@/features/shifts/components/shift-table';
-import { columns } from '@/features/shifts/components/columns';
+import { columns } from '@/components/columns';
 
 export default function ShiftPage() {
   const [isScanning, setIsScanning] = useState(false);

@@ -7,6 +7,7 @@ import {
   createDriver,
   deleteDriver,
   getAllDrivers,
+  getAllDriverShiftLogs,
   getDriverById,
   getDriverByLicenseNumber,
 } from '../db/drivers';
@@ -134,4 +135,12 @@ export const uploadDriverDocument = async (
   }
 
   return { success: true };
+};
+
+export const fetchAllDriverShiftLogs = async (id: string) => {
+  const { data: shift_logs, error } = await getAllDriverShiftLogs(id);
+
+  if (error) throw new Error('Unable to fetch driver shift logs');
+
+  return shift_logs;
 };
