@@ -80,7 +80,7 @@ export function DriverShiftsTable({ id }: DriverShiftsTableProps) {
   });
 
   return (
-    <Card className="w-full min-w-[350px] lg:min-h-[350px] lg:max-h-[350px]">
+    <Card className="w-full min-w-[350px] lg:min-h-[410px] lg:max-h-[410px]">
       <CardContent>
         <div className="flex min-h-[550px]">
           <div className="w-full">

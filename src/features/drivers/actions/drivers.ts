@@ -2,7 +2,6 @@
 
 import { createLog, uploadDocument } from '@/db/db';
 import { createClient } from '@/supabase/server';
-import { DriverFormData } from '../components/create-driver-provider';
 import {
   createDriver,
   deleteDriver,
@@ -12,6 +11,7 @@ import {
   getDriverByLicenseNumber,
 } from '../db/drivers';
 import { AttachmentDetails } from '@/lib/types';
+import { DriverFormData } from '../components/create-driver-provider';
 
 export const fetchDriverDetails = async (id: string) => {
   const { data, error } = await getDriverById(id);
