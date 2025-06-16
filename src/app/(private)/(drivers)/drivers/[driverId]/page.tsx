@@ -4,7 +4,9 @@ import DriverProfileCard from '@/features/drivers/components/driver-profile-card
 import { DriverShiftsTable } from '@/features/drivers/components/driver-shifts-table';
 import Image from 'next/image';
 import license from '@/app/public/license.png';
+import qrcode from '@/app/public/qr-code.png';
 import { Button } from '@/components/ui/button';
+import ViewQRCode from '@/components/view-qr-code';
 
 export default async function DriverProfilePage({
   params,
@@ -16,7 +18,7 @@ export default async function DriverProfilePage({
   if (!driver) return null;
 
   return (
-    <div className="space-y-6 gap-4 mx-auto mb-12">
+    <div className="flex space-y-6 gap-4 mx-auto mb-12">
       <div className="flex gap-4">
         <DriverProfileCard driver={driver} />
         <div className="flex flex-col gap-4 w-full">
@@ -41,7 +43,25 @@ export default async function DriverProfilePage({
                 </div>
               </CardContent>
             </Card>
-            <Card className="w-full"></Card>
+            <Card className="w-full">
+              <CardTitle className="px-6">Driver&apos;s QR Code</CardTitle>
+              <CardContent className="flex gap-4">
+                <div className="min-h-32 min-w-32 bg-gray-300 flex items-center justify-center rounded-md">
+                  <Image src={qrcode} alt="license" width={60} height={60} />
+                </div>
+                <div className="w-full flex flex-col justify-between">
+                  <p className="text-muted-foreground text-sm">
+                    Make sure to only provide this QR Code to the driver itself.
+                    Please do not share this to others.
+                  </p>
+                  <div className="flex flex-row gap-2">
+                    <ViewQRCode id={driver.id}>
+                      <Button className="w-full">View QR Code</Button>
+                    </ViewQRCode>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
           <DriverShiftsTable id={driver.id} />
         </div>

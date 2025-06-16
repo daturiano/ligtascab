@@ -82,7 +82,7 @@ export function DriverShiftsTable({ id }: DriverShiftsTableProps) {
   return (
     <Card className="w-full min-w-[350px] lg:min-h-[410px] lg:max-h-[410px]">
       <CardContent>
-        <div className="flex min-h-[550px]">
+        <div className="flex2">
           <div className="w-full">
             <h1 className="font-semibold">Driver Attendance</h1>
             <div className="flex items-center py-4">
