@@ -17,13 +17,9 @@ import React from 'react';
 
 type ViewDriverLicenseProps = {
   path: string;
-  children: React.ReactNode;
 };
 
-export default function ViewDriverLicense({
-  path,
-  children,
-}: ViewDriverLicenseProps) {
+export default function ViewDriverLicense({ path }: ViewDriverLicenseProps) {
   const supabase = createClient();
   const { data: back_url } = supabase.storage
     .from('documents')
@@ -35,8 +31,8 @@ export default function ViewDriverLicense({
 
   return (
     <Dialog>
-      <DialogTrigger className="w-full" asChild>
-        {children}
+      <DialogTrigger className="w-full">
+        <Button className="flex-1">View License</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>

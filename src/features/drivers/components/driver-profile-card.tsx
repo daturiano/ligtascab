@@ -31,7 +31,6 @@ import {
   CalendarX,
   IdCard,
   MapPinHouse,
-  PencilOff,
   Phone,
   PhoneForwarded,
   User,
@@ -102,14 +101,15 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
           <CardHeader className="w-full relative flex flex-col items-center justify-center bg-muted-foreground/5 rounded-t-xl py-4">
             {isHovered && (
               <div className="absolute top-0 right-0 p-4">
-                <PencilOff
-                  className="text-muted-foreground cursor-pointer hover:text-foreground"
-                  size={22}
+                <Button
+                  variant={'outline'}
                   onClick={() => {
                     form.reset();
                     toogleIsEditable();
                   }}
-                />
+                >
+                  Edit Profile
+                </Button>
               </div>
             )}
             <CardTitle>
