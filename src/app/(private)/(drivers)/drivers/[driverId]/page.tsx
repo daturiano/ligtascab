@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import ViewQRCode from '@/components/view-qr-code';
 import { createClient } from '@/supabase/server';
 import ViewDriverLicense from '@/features/drivers/components/view-driver-license';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 export default async function DriverProfilePage({
   params,
@@ -28,7 +30,10 @@ export default async function DriverProfilePage({
   if (!user) return null;
 
   return (
-    <div className="flex space-y-6 gap-4 mx-auto mb-12">
+    <div className="flex flex-col space-y-4 mx-auto mb-12">
+      <Link href={'/drivers'}>
+        <ArrowLeft size={28} />
+      </Link>
       <div className="flex gap-4">
         <DriverProfileCard driver={driver} />
         <div className="flex flex-col gap-4 w-full">
