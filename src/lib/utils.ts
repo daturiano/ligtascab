@@ -45,3 +45,50 @@ export function formatDate(dateString: string, variant?: variant): string {
 
   return date.toLocaleDateString('en-US', options);
 }
+
+export const convertImageToJPG = (
+  file: File,
+  quality = 0.9
+): Promise<File | null> => {
+  return new Promise((resolve, reject) => {
+    // Create a canvas element
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Create an image element
+    const img = new Image();
+
+    img.onload = () => {
+      // Set canvas dimensions to match image
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      // Draw the image on canvas
+      ctx.drawImage(img, 0, 0);
+
+      // Convert to blob as JPG
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            // Create a new File object with JPG extension
+            const convertedFile = new File(
+              [blob],
+              file.name.replace(/\.[^/.]+$/, '.jpg'),
+              { type: 'image/jpeg' }
+            );
+            resolve(convertedFile);
+          } else {
+            reject(new Error('Failed to convert image'));
+          }
+        },
+        'image/jpeg',
+        quality // Quality from 0.0 to 1.0
+      );
+    };
+
+    img.onerror = () => reject(new Error('Failed to load image'));
+
+    // Load the image
+    img.src = URL.createObjectURL(file);
+  });
+};

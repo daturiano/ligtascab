@@ -3,7 +3,12 @@
 import { createClient } from '@/supabase/server';
 import { PostgrestError } from '@supabase/supabase-js';
 import { cache } from 'react';
-import { CreateDriver, Driver, UpdateDriver } from '../schemas/drivers';
+import {
+  CreateDriver,
+  Driver,
+  DriverComplianceDetails,
+  UpdateDriver,
+} from '../schemas/drivers';
 import { ShiftLog } from '@/lib/types';
 
 export const getAllDrivers = cache(
@@ -43,10 +48,9 @@ export const createDriver = async (
   return { data, error };
 };
 
-export const getDriverByLicenseNumber = async (
-  license_number: string
-): Promise<{ data: Driver; error: PostgrestError | null }> => {
+export const getDriverByLicenseNumber = async (license_number: string) => {
   const supabase = await createClient();
+  console.log(license_number);
 
   const { data, error } = await supabase
     .from('drivers')
@@ -101,3 +105,17 @@ export const getAllDriverShiftLogs = cache(
     return { data: logs || [], error };
   }
 );
+
+export const updateLicense = async (driverData: DriverComplianceDetails) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('drivers')
+    .update([driverData])
+    .eq('license_number', driverData.license_number)
+    .select();
+
+  console.log(error, data);
+
+  return { data, error };
+};

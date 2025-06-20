@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { convertImageToJPG } from '@/lib/utils';
 import { FileIcon, XIcon } from 'lucide-react';
 import { ChangeEvent, useRef } from 'react';
 import { toast } from 'sonner';
@@ -32,7 +33,7 @@ export default function DocumentCard({
 }: DocumentCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -41,7 +42,12 @@ export default function DocumentCard({
       return;
     }
 
-    onFileSelect(document.id, file);
+    try {
+      const jpgFile = await convertImageToJPG(file);
+      onFileSelect(document.id, jpgFile);
+    } catch (error) {
+      console.error('Conversion error:', error);
+    }
   };
 
   const handleAttachClick = () => {

@@ -1,15 +1,15 @@
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
-import { fetchDriverDetails } from '@/features/drivers/actions/drivers';
-import DriverProfileCard from '@/features/drivers/components/driver-profile-card';
-import { DriverShiftsTable } from '@/features/drivers/components/driver-shifts-table';
-import Image from 'next/image';
 import license from '@/app/public/license.png';
 import qrcode from '@/app/public/qr-code.png';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import ViewQRCode from '@/components/view-qr-code';
-import { createClient } from '@/supabase/server';
+import { fetchDriverDetails } from '@/features/drivers/actions/drivers';
+import DriverProfileCard from '@/features/drivers/components/driver-profile-card';
+import { DriverShiftsTable } from '@/features/drivers/components/driver-shifts-table';
 import ViewDriverLicense from '@/features/drivers/components/view-driver-license';
+import { createClient } from '@/supabase/server';
 import { ArrowLeft } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function DriverProfilePage({
@@ -53,9 +53,13 @@ export default async function DriverProfilePage({
                     <ViewDriverLicense
                       path={`${user.id}/drivers/${driver.id}`}
                     />
-                    <Button className="flex-1" variant={'outline'}>
-                      Update License
-                    </Button>
+                    <Link
+                      href={`/drivers/${driver.id}/update-license?driverId=${driver.id}`}
+                    >
+                      <Button className="flex-1" variant={'outline'}>
+                        Update License
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </CardContent>

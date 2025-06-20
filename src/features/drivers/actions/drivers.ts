@@ -1,17 +1,19 @@
 'use server';
 
 import { createLog, uploadDocument } from '@/db/db';
+import { AttachmentDetails } from '@/lib/types';
 import { createClient } from '@/supabase/server';
+import { z } from 'zod';
+import { DriverFormData } from '../components/create-driver-provider';
 import {
   createDriver,
   deleteDriver,
   getAllDrivers,
   getAllDriverShiftLogs,
   getDriverById,
-  getDriverByLicenseNumber,
+  updateLicense,
 } from '../db/drivers';
-import { AttachmentDetails } from '@/lib/types';
-import { DriverFormData } from '../components/create-driver-provider';
+import { DriverComplianceSchema } from '../schemas/drivers';
 
 export const fetchDriverDetails = async (id: string) => {
   const { data, error } = await getDriverById(id);
@@ -90,7 +92,7 @@ export const removeDriverFromOperator = async (id: string) => {
 };
 
 export const uploadDriverDocument = async (
-  license_number: string,
+  driver_id: string,
   attachmentDetails: AttachmentDetails
 ) => {
   const supabase = await createClient();
@@ -103,15 +105,19 @@ export const uploadDriverDocument = async (
     return { success: false, error: 'User not authenticated.' };
   }
 
-  const { data: driver, error } = await getDriverByLicenseNumber(
-    license_number
-  );
+  const { data: driver, error } = await getDriverById(driver_id);
+
+  console.log(driver);
 
   if (error) {
     return { success: false, error: 'Failed to retrieve driver.' };
   }
 
-  if (!driver.id) return null;
+  console.log(error);
+
+  if (!driver.id) {
+    return { success: false, error: 'Driver ID not found.' };
+  }
 
   const bucket_name = 'documents';
   const results = await uploadDocument(
@@ -121,18 +127,20 @@ export const uploadDriverDocument = async (
     driver.id
   );
 
-  const logData = {
-    data: results,
-    operator_id: user.id,
-    driver_id: driver.id,
-    log_event: 'driver_documents',
-  };
+  console.log(results);
 
-  const { error: LogError } = await createLog(logData);
+  // const logData = {
+  //   data: results,
+  //   operator_id: user.id,
+  //   driver_id: driver.id,
+  //   log_event: 'driver_documents',
+  // };
 
-  if (LogError) {
-    return { success: false, error: 'Failed to create audit log.' };
-  }
+  // const { error: LogError } = await createLog(logData);
+
+  // if (LogError) {
+  //   return { success: false, error: 'Failed to create audit log.' };
+  // }
 
   return { success: true };
 };
@@ -143,4 +151,33 @@ export const fetchAllDriverShiftLogs = async (id: string) => {
   if (error) throw new Error('Unable to fetch driver shift logs');
 
   return shift_logs;
+};
+
+export const updateDriverLicense = async (
+  data: z.infer<typeof DriverComplianceSchema>
+) => {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('User not authenticated');
+
+    const { data: driver, error } = await updateLicense(data);
+
+    if (error || !driver) {
+      return { success: false, error: error };
+    }
+
+    return { success: true, data: driver };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    console.error('Creating new operator error:', err);
+    return {
+      success: false,
+      error: err.message || 'An unexpected error occurred.',
+    };
+  }
 };
