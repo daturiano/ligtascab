@@ -50,7 +50,6 @@ export type CreateDriver = z.infer<typeof CreateDriverSchema>;
 export const UpdateDriverSchema = DriverInfoSchema.merge(
   DriverComplianceSchema
 ).extend({
-  id: z.string(),
   updated_at: z.date(),
 });
 

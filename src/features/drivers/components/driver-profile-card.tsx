@@ -21,6 +21,7 @@ import {
 import { formatDate } from '@/lib/utils';
 import { useState } from 'react';
 import { Driver } from '@/lib/types';
+import Link from 'next/link';
 
 type DriverProfileCardProps = {
   driver: Driver;
@@ -38,7 +39,9 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
         <div className="absolute top-0 right-0 p-4">
           {isHovered && (
             <div className="absolute top-0 right-0 p-4">
-              <Button variant={'outline'}>Edit Profile</Button>
+              <Link href={`/drivers/${driver.id}/edit-profile`}>
+                <Button variant={'outline'}>Edit Profile</Button>
+              </Link>
             </div>
           )}
         </div>

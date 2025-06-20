@@ -11,9 +11,11 @@ import {
   getAllDrivers,
   getAllDriverShiftLogs,
   getDriverById,
+  updateDriverById,
   updateLicense,
 } from '../db/drivers';
-import { DriverComplianceSchema } from '../schemas/drivers';
+import { DriverComplianceSchema, DriverDetails } from '../schemas/drivers';
+import { revalidatePath } from 'next/cache';
 
 export const fetchDriverDetails = async (id: string) => {
   const { data, error } = await getDriverById(id);
@@ -180,4 +182,17 @@ export const updateDriverLicense = async (
       error: err.message || 'An unexpected error occurred.',
     };
   }
+};
+
+export const updateDriverDetails = async (
+  id: string,
+  updatedData: DriverDetails
+) => {
+  const { data, error } = await updateDriverById(id, updatedData);
+
+  if (error) throw new Error('Failed to delete driver');
+
+  revalidatePath(`/drivers/${id}`);
+
+  return { data, error };
 };

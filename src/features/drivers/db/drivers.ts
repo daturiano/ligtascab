@@ -1,5 +1,6 @@
 'use server';
 
+import { ShiftLog } from '@/lib/types';
 import { createClient } from '@/supabase/server';
 import { PostgrestError } from '@supabase/supabase-js';
 import { cache } from 'react';
@@ -7,9 +8,8 @@ import {
   CreateDriver,
   Driver,
   DriverComplianceDetails,
-  UpdateDriver,
+  DriverDetails,
 } from '../schemas/drivers';
-import { ShiftLog } from '@/lib/types';
 
 export const getAllDrivers = cache(
   async (): Promise<{ data: Driver[]; error: PostgrestError | null }> => {
@@ -77,7 +77,7 @@ export const getDriverById = async (
 
 export async function updateDriverById(
   id: string,
-  updatedData: UpdateDriver
+  updatedData: DriverDetails
 ): Promise<{ data: Driver; error: PostgrestError | null }> {
   const supabase = await createClient();
 
