@@ -53,9 +53,7 @@ export default async function DriverProfilePage({
                     <ViewDriverLicense
                       path={`${user.id}/drivers/${driver.id}`}
                     />
-                    <Link
-                      href={`/drivers/${driver.id}/update-license?driverId=${driver.id}`}
-                    >
+                    <Link href={`/drivers/${driver.id}/update-license`}>
                       <Button className="flex-1" variant={'outline'}>
                         Update License
                       </Button>
