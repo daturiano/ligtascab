@@ -80,9 +80,9 @@ export function DriverShiftsTable({ id }: DriverShiftsTableProps) {
   });
 
   return (
-    <Card className="w-full min-w-[350px] lg:min-h-[410px] lg:max-h-[410px]">
+    <Card className="w-full min-h-[340px]">
       <CardContent>
-        <div className="flex2">
+        <div className="flex">
           <div className="w-full">
             <h1 className="font-semibold">Driver Attendance</h1>
             <div className="flex items-center py-4">

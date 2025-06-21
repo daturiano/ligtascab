@@ -31,8 +31,8 @@ export default function ViewDriverLicense({ path }: ViewDriverLicenseProps) {
 
   return (
     <Dialog>
-      <DialogTrigger className="w-full">
-        <Button className="flex-1">View License</Button>
+      <DialogTrigger>
+        <Button className="flex-1 w-full">View License</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>

@@ -31,7 +31,7 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   return (
     <Card
-      className="py-0 w-full max-w-[500px] space-y-4 relative"
+      className="py-0 w-full max-w-[500px] relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -72,13 +72,13 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
           </p>
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="pb-6 space-y-6">
         <div className="flex flex-col gap-2">
           <h1 className="font-semibold">Driver Details</h1>
           <div className="flex gap-2 items-center">
             <MapPinHouse className="text-muted-foreground" size={18} />
             <p className="whitespace-nowrap text-muted-foreground">Address: </p>
-            <p>{driver.address}</p>
+            <p className="whitespace-nowrap truncate">{driver.address}</p>
           </div>
           <div className="flex gap-2 items-center">
             <Phone className="text-muted-foreground" size={18} />
@@ -102,14 +102,16 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
             <p className="whitespace-nowrap text-muted-foreground">
               License Number:{' '}
             </p>
-            <p>{driver.license_number}</p>
+            <p className="whitespace-nowrap truncate">
+              {driver.license_number}
+            </p>
           </div>
           <div className="flex gap-2 items-center">
             <CalendarX className="text-muted-foreground" size={18} />
             <p className="whitespace-nowrap text-muted-foreground">
               License Expiration:{' '}
             </p>
-            <p>
+            <p className="whitespace-nowrap truncate">
               {formatDate(driver.license_expiration.toLocaleString(), 'long')}
             </p>
           </div>

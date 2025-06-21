@@ -30,58 +30,58 @@ export default async function DriverProfilePage({
   if (!user) return null;
 
   return (
-    <div className="flex flex-col space-y-4 mx-auto mb-12">
+    <div className="flex flex-col space-y-6">
       <Link href={'/drivers'}>
         <ArrowLeft size={28} />
       </Link>
-      <div className="flex gap-4">
-        <DriverProfileCard driver={driver} />
-        <div className="flex flex-col gap-4 w-full">
-          <div className="flex flex-row gap-4 flex-1">
-            <Card className="w-full">
-              <CardTitle className="px-6">Driver&apos;s License</CardTitle>
-              <CardContent className="flex gap-4">
-                <div className="min-h-32 min-w-32 bg-gray-300 flex items-center justify-center rounded-md">
-                  <Image src={license} alt="license" width={80} height={80} />
+      <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:grid-rows-3 xl:grid-cols-[auto_1fr]">
+        <div className="xl:col-start-1 xl:col-end-2 xl:row-start-1 xl:row-end-4">
+          <DriverProfileCard driver={driver} />
+        </div>
+        <div className="flex flex-col gap-4 md:justify-between xl:flex-row xl:col-start-2 xl:col-end-3 xl:row-start-1 xl:row-end-2">
+          <Card className="w-full grow xl:grow-0 max-w-[500px]">
+            <CardTitle className="px-6">Driver&apos;s License</CardTitle>
+            <CardContent className="flex grow gap-4">
+              <div className="min-h-32 min-w-32 bg-gray-300 flex items-center justify-center rounded-md">
+                <Image src={license} alt="license" width={80} height={80} />
+              </div>
+              <div className="w-full gap-4 flex flex-col justify-between">
+                <p className="text-muted-foreground text-sm">
+                  Keep the driver&apos;s license always up to date. Failure to
+                  do so will disable the usage of this driver.
+                </p>
+                <div className="flex flex-col gap-2">
+                  <ViewDriverLicense path={`${user.id}/drivers/${driver.id}`} />
+                  <Link href={`/drivers/${driver.id}/update-license`}>
+                    <Button className="flex-1 w-full" variant={'outline'}>
+                      Update License
+                    </Button>
+                  </Link>
                 </div>
-                <div className="w-full flex flex-col justify-between">
-                  <p className="text-muted-foreground text-sm">
-                    Keep the driver&apos;s license always up to date. Failure to
-                    do so will disable the usage of this driver.
-                  </p>
-                  <div className="flex flex-row gap-2">
-                    <ViewDriverLicense
-                      path={`${user.id}/drivers/${driver.id}`}
-                    />
-                    <Link href={`/drivers/${driver.id}/update-license`}>
-                      <Button className="flex-1" variant={'outline'}>
-                        Update License
-                      </Button>
-                    </Link>
-                  </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="w-full grow xl:grow-0 max-w-[500px]">
+            <CardTitle className="px-6">Driver&apos;s QR Code</CardTitle>
+            <CardContent className="flex grow gap-4">
+              <div className="min-h-32 min-w-32 bg-gray-300 flex items-center justify-center rounded-md">
+                <Image src={qrcode} alt="license" width={60} height={60} />
+              </div>
+              <div className="w-full flex flex-col justify-between gap-4">
+                <p className="text-muted-foreground text-sm">
+                  Make sure to only provide this QR Code to the driver itself.
+                  Please do not share this to others.
+                </p>
+                <div className="flex flex-row gap-2">
+                  <ViewQRCode id={driver.id}>
+                    <Button className="w-full">View QR Code</Button>
+                  </ViewQRCode>
                 </div>
-              </CardContent>
-            </Card>
-            <Card className="w-full">
-              <CardTitle className="px-6">Driver&apos;s QR Code</CardTitle>
-              <CardContent className="flex gap-4">
-                <div className="min-h-32 min-w-32 bg-gray-300 flex items-center justify-center rounded-md">
-                  <Image src={qrcode} alt="license" width={60} height={60} />
-                </div>
-                <div className="w-full flex flex-col justify-between">
-                  <p className="text-muted-foreground text-sm">
-                    Make sure to only provide this QR Code to the driver itself.
-                    Please do not share this to others.
-                  </p>
-                  <div className="flex flex-row gap-2">
-                    <ViewQRCode id={driver.id}>
-                      <Button className="w-full">View QR Code</Button>
-                    </ViewQRCode>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="md:col-start-1 md:col-end-3 xl:col-start-2 xl:col-end-3 xl:row-start-2 xl:row-end-4">
           <DriverShiftsTable id={driver.id} />
         </div>
       </div>
