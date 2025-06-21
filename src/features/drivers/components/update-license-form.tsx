@@ -135,7 +135,7 @@ export default function UpdateLicenseForm({
 
   return (
     <div>
-      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
+      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full mb-24">
         <CardHeader>
           <CardTitle className="text-base font-bold">
             Driver&apos;s License Details
