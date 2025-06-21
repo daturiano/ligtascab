@@ -74,7 +74,9 @@ export default async function DriverProfilePage({
                 </p>
                 <div className="flex flex-row gap-2">
                   <ViewQRCode id={driver.id}>
-                    <Button className="w-full">View QR Code</Button>
+                    <div className="w-full bg-primary text-white p-2 text-sm rounded-md cursor-pointer">
+                      View QR Code
+                    </div>
                   </ViewQRCode>
                 </div>
               </div>
