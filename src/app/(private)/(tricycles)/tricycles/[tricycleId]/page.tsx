@@ -31,7 +31,7 @@ export default async function TricycleProfilePage({
 
   return (
     <div className="flex flex-col space-y-6">
-      <Link href={'/tricycles'}>
+      <Link href={'/tricycles'} className="w-0">
         <ArrowLeft size={28} />
       </Link>
       <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:grid-rows-3 xl:grid-cols-[auto_1fr]">
