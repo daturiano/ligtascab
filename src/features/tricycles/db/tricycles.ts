@@ -1,6 +1,6 @@
 'use server';
 
-import { AttachmentDetails, Tricycle } from '@/lib/types';
+import { AttachmentDetails, ShiftLog, Tricycle } from '@/lib/types';
 import { createClient } from '@/supabase/server';
 import { cache } from 'react';
 import { PostgrestError } from '@supabase/supabase-js';
@@ -117,3 +117,18 @@ export const uploadDocuments = async (
 
   return results;
 };
+
+export const getAllTricycleShiftLogs = cache(
+  async (
+    id: string
+  ): Promise<{ data: ShiftLog[]; error: PostgrestError | null }> => {
+    const supabase = await createClient();
+    const { data: logs, error } = await supabase
+      .from('shifts')
+      .select('*')
+      .eq('tricycle_id', id)
+      .order('created_at', { ascending: false });
+
+    return { data: logs || [], error };
+  }
+);

@@ -8,6 +8,7 @@ import {
   createTricycle,
   deleteTricycle,
   getAllTricycles,
+  getAllTricycleShiftLogs,
   getTricycleById,
   getTricycleByPlateNumber,
 } from '../db/tricycles';
@@ -156,4 +157,12 @@ export const uploadTricycleDocument = async (
   }
 
   return { success: true };
+};
+
+export const fetchAllTricycleShiftLogs = async (id: string) => {
+  const { data: tricycle_logs, error } = await getAllTricycleShiftLogs(id);
+
+  if (error) throw new Error('Unable to fetch tricycle shift logs');
+
+  return tricycle_logs;
 };

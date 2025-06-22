@@ -4,6 +4,7 @@ import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import ViewQRCode from '@/components/view-qr-code';
 import { fetchTricycleDetails } from '@/features/tricycles/actions/tricycles';
 import TricycleProfileCard from '@/features/tricycles/components/tricycle-profile-card';
+import { TricycleShiftsTable } from '@/features/tricycles/components/tricycle-shifts-table';
 import ViewTricycleCompliance from '@/features/tricycles/components/view-tricycle-compliance';
 import { createClient } from '@/supabase/server';
 import { ArrowLeft } from 'lucide-react';
@@ -80,6 +81,9 @@ export default async function TricycleProfilePage({
               </div>
             </CardContent>
           </Card>
+        </div>
+        <div className="md:col-start-1 md:col-end-3 xl:col-start-2 xl:col-end-3 xl:row-start-2 xl:row-end-4">
+          <TricycleShiftsTable id={tricycle.id} />
         </div>
       </div>
     </div>
