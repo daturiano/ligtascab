@@ -39,7 +39,7 @@ export default async function DriverProfilePage({
           <DriverProfileCard driver={driver} />
         </div>
         <div className="flex flex-col gap-4 md:justify-between xl:flex-row xl:col-start-2 xl:col-end-3 xl:row-start-1 xl:row-end-2">
-          <Card className="w-full grow xl:grow-0 max-w-[500px]">
+          <Card className="w-full grow xl:grow-0 max-w-[500px] xl:max-w-[600px]">
             <CardTitle className="px-6">Driver&apos;s License</CardTitle>
             <CardContent className="flex grow gap-4">
               <div className="min-h-32 min-w-32 bg-gray-300 flex items-center justify-center rounded-md">
@@ -61,7 +61,7 @@ export default async function DriverProfilePage({
               </div>
             </CardContent>
           </Card>
-          <Card className="w-full grow xl:grow-0 max-w-[500px]">
+          <Card className="w-full grow xl:grow-0 max-w-[500px] xl:max-w-[600px]">
             <CardTitle className="px-6">Driver&apos;s QR Code</CardTitle>
             <CardContent className="flex grow gap-4">
               <div className="min-h-32 min-w-32 bg-gray-300 flex items-center justify-center rounded-md">

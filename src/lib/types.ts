@@ -7,7 +7,7 @@ export type AttachmentDetails = {
 };
 
 export type Tricycle = {
-  id?: string;
+  id: string;
   operator_id: string;
   tricycle_details: {
     model: string;
