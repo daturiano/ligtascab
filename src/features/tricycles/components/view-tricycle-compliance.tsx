@@ -29,7 +29,7 @@ const documents = [
     name: 'Official Receipt',
     title: 'Official Receipt (OR)',
     description: 'Upload the tricycles Official Receipt (OR)',
-    link: 'update-receipt',
+    link: 'receipt',
   },
   {
     id: 'certificate-of-franchise',

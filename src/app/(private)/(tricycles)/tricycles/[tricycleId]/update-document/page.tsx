@@ -1,13 +1,14 @@
 'use client';
 
 import LogoWithName from '@/components/ui/logo-with-name';
+import UpdateReceiptForm from '@/features/tricycles/components/update-receipt-form';
 import UpdateRegistrationForm from '@/features/tricycles/components/update-registration-form';
 import { X } from 'lucide-react';
 import { useSearchParams, useParams, useRouter } from 'next/navigation';
 
 const formMap: Record<string, React.ComponentType<{ tricycleId: string }>> = {
   registration: UpdateRegistrationForm,
-  // receipt: ReceiptForm,
+  receipt: UpdateReceiptForm,
   // franchise: FranchiseForm,
   // maintenance: MaintenanceForm,
 };

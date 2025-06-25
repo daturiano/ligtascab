@@ -61,6 +61,10 @@ export const MaintenanceSchema = z.object({
 
 export type MaintenanceDetails = z.infer<typeof MaintenanceSchema>;
 
+export const TricycleReceiptSchema = z.object({
+  or_number: z.string().min(1, 'Official receipt number is required'),
+});
+
 export const TricycleSchema = z.object({
   id: z.string(),
   operator_id: z.string(),
