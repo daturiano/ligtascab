@@ -22,14 +22,14 @@ const documents = [
     name: 'Registration',
     title: 'Certificate of Registration (CR)',
     description: 'Upload the tricycles Certificate of Registration (CR)',
-    link: 'registration',
+    link: 'update-registration',
   },
   {
     id: 'official-receipt',
     name: 'Official Receipt',
     title: 'Official Receipt (OR)',
     description: 'Upload the tricycles Official Receipt (OR)',
-    link: 'receipt',
+    link: 'update-or',
   },
   {
     id: 'certificate-of-franchise',

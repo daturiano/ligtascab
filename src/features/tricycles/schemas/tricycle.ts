@@ -46,6 +46,16 @@ export const ComplianceSchema = z.object({
     }),
 });
 
+export const TricycleFranchiseSchema = z.object({
+  franchise_number: z.string().min(1, 'Franchise Number is required'),
+  franchise_expiration: z
+    .date()
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Franchise expiry is required',
+    }),
+});
+
 export type ComplianceDetails = z.infer<typeof ComplianceSchema>;
 
 export const MaintenanceSchema = z.object({
