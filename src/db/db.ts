@@ -18,16 +18,14 @@ export const uploadDocument = async (
   const results: Record<string, string | null> = {};
 
   for (const key in attachmentDetails) {
-    const { file, documentId, documentTitle } = attachmentDetails[key];
+    const { file, documentId } = attachmentDetails[key];
 
     if (!file) {
       results[documentId] = null;
       continue;
     }
 
-    const sanitizedTitle = documentTitle
-      .replace(/[^a-z0-9]/gi, '_')
-      .toLowerCase();
+    const sanitizedTitle = documentId.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const fileExtension = file.name.split('.').pop();
 
     const supabase = await createClient();

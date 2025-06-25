@@ -2,8 +2,9 @@
 
 import { AttachmentDetails, ShiftLog, Tricycle } from '@/lib/types';
 import { createClient } from '@/supabase/server';
-import { cache } from 'react';
 import { PostgrestError } from '@supabase/supabase-js';
+import { cache } from 'react';
+import { TricycleUpdate } from '../schemas/tricycle';
 
 export const getAllTricycles = cache(
   async (): Promise<{ data: Tricycle[]; error: PostgrestError | null }> => {
@@ -132,3 +133,18 @@ export const getAllTricycleShiftLogs = cache(
     return { data: logs || [], error };
   }
 );
+
+export const updateTricycle = async (
+  tricycleData: TricycleUpdate,
+  tricycle_id: string
+) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('tricycles')
+    .update(tricycleData)
+    .eq('id', tricycle_id)
+    .select();
+
+  return { data, error };
+};

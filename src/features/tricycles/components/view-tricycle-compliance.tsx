@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { createClient } from '@/supabase/client';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const documents = [
   {
@@ -21,41 +22,50 @@ const documents = [
     name: 'Registration',
     title: 'Certificate of Registration (CR)',
     description: 'Upload the tricycles Certificate of Registration (CR)',
+    link: 'registration',
   },
   {
     id: 'official-receipt',
     name: 'Official Receipt',
     title: 'Official Receipt (OR)',
     description: 'Upload the tricycles Official Receipt (OR)',
+    link: 'update-receipt',
   },
   {
     id: 'certificate-of-franchise',
     name: 'Franchise',
     title: 'Franichse Certificate',
     description: 'Upload the tricycles Official Receipt (OR)',
+    link: 'update-franchise',
   },
   {
     id: 'inspection-certificate',
     name: 'Maintenance',
     title: 'Vehicle Inspection Certificate',
     description: 'Upload the tricycles Vehicle Inspection Certificate',
+    link: 'update-maintenance',
   },
 ];
 
 type ViewTricycleComplianceProps = {
   path: string;
+  tricycle_id: string;
 };
 
 export default function ViewTricycleCompliance({
   path,
+  tricycle_id,
 }: ViewTricycleComplianceProps) {
   const supabase = createClient();
   return (
     <div className="flex flex-col gap-2">
       {documents.map((item) => {
+        const sanitizedTitle = item.id
+          .replace(/[^a-z0-9]/gi, '_')
+          .toLowerCase();
         const { data: image } = supabase.storage
           .from('documents')
-          .getPublicUrl(`${path}/${item.id}/${item.id}.jpg`);
+          .getPublicUrl(`${path}/${item.id}/${sanitizedTitle}.jpg`);
         return (
           <Dialog key={item.id}>
             <DialogTrigger className="bg-primary text-white p-2 text-sm rounded-md cursor-pointer">
@@ -87,6 +97,9 @@ export default function ViewTricycleCompliance({
                     Close
                   </Button>
                 </DialogClose>
+                <Link href={`${tricycle_id}/update-document?type=${item.link}`}>
+                  <Button>Update Document</Button>
+                </Link>
               </DialogFooter>
             </DialogContent>
           </Dialog>
