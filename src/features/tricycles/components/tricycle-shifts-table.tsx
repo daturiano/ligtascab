@@ -80,7 +80,7 @@ export function TricycleShiftsTable({ id }: TricycleShiftsTableProps) {
   });
 
   return (
-    <Card className="w-full min-h-[340px]">
+    <Card className="w-full h-full">
       <CardContent>
         <div className="flex">
           <div className="w-full">

@@ -30,11 +30,11 @@ export default async function TricycleProfilePage({
   if (!user) return null;
 
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-6 h-full">
       <Link href={'/tricycles'} className="w-0">
         <ArrowLeft size={28} />
       </Link>
-      <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:grid-rows-3 xl:grid-cols-[auto_1fr]">
+      <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:grid-rows-3 xl:grid-cols-[auto_1fr] xl:grid-rows-[auto_1fr] flex-1 min-h-0">
         <div className="xl:col-start-1 xl:col-end-2 xl:row-start-1 xl:row-end-4">
           <TricycleProfileCard tricycle={tricycle} />
         </div>
@@ -83,7 +83,7 @@ export default async function TricycleProfilePage({
             </CardContent>
           </Card>
         </div>
-        <div className="md:col-start-1 md:col-end-3 xl:col-start-2 xl:col-end-3 xl:row-start-2 xl:row-end-4">
+        <div className="md:col-start-1 md:col-end-3 xl:col-start-2 xl:col-end-3 xl:row-start-2 xl:row-end-4 flex flex-col min-h-0">
           <TricycleShiftsTable id={tricycle.id} />
         </div>
       </div>
