@@ -58,6 +58,16 @@ export const TricycleFranchiseSchema = z.object({
 
 export type ComplianceDetails = z.infer<typeof ComplianceSchema>;
 
+export const TricycleMaintenanceSchema = z.object({
+  last_maintenance_date: z
+    .date()
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Last maintenance daet is required',
+    }),
+  mileage: z.string().min(1, 'Estimated mileage is required'),
+});
+
 export const MaintenanceSchema = z.object({
   last_maintenance_date: z
     .date()
