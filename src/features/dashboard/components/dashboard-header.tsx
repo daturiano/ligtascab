@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { getOperator } from '../db/dashboard';
 import MobileNavigation from './mobile-navigation';
+import SearchBar from './search-bar';
 
 export const navData = {
   navMain: [
@@ -114,6 +115,7 @@ export default function DashboardHeader() {
           })}
         </div>
         <div className="flex items-center lg:space-x-2 space-x-1">
+          <SearchBar />
           <div className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
             <CircleHelp size={24} />
           </div>
