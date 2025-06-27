@@ -8,38 +8,53 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Driver, Tricycle } from '@/lib/types';
-import { useQuery } from '@tanstack/react-query';
-import { Loader2, Search } from 'lucide-react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { ChevronDown, Loader2, Search } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { searchDrivers, searchTricycles } from '../db/dashboard';
 import DriverSearchCard from './driver-search-card';
 import TricycleSearchCard from './tricycle-search-card';
 
-type SearchResults = {
+interface SearchResults {
   tricycles: Tricycle[];
   drivers: Driver[];
-};
+  hasMore: boolean;
+}
 
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [debouncedQuery] = useDebounce(searchQuery, 500);
 
-  const { data: searchResults, isLoading } = useQuery({
+  const {
+    data: searchResults,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ['search', debouncedQuery],
-    queryFn: async (): Promise<SearchResults> => {
+    queryFn: async ({ pageParam = 0 }): Promise<SearchResults> => {
       if (!debouncedQuery.trim()) {
-        return { tricycles: [], drivers: [] };
+        return { tricycles: [], drivers: [], hasMore: false };
       }
+
       const [tricycles, drivers] = await Promise.all([
-        searchTricycles(debouncedQuery),
-        searchDrivers(debouncedQuery),
+        searchTricycles(debouncedQuery, pageParam),
+        searchDrivers(debouncedQuery, pageParam),
       ]);
-      return { tricycles, drivers };
+
+      const hasMore = tricycles.length === 5 || drivers.length === 5;
+
+      return { tricycles, drivers, hasMore };
     },
-    enabled: debouncedQuery.length > 0,
-    staleTime: 30000,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      // Return next page number if there are more results
+      return lastPage.hasMore ? allPages.length : undefined;
+    },
+    enabled: !!debouncedQuery.trim(),
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,14 +62,24 @@ export default function SearchBar() {
     setSearchQuery(value);
   };
 
-  const getTotalResults = () => {
-    if (!searchResults) return 0;
-    return searchResults.tricycles.length + searchResults.drivers.length;
-  };
+  const allTricycles =
+    searchResults?.pages.flatMap((page) => page.tricycles) || [];
+  const allDrivers = searchResults?.pages.flatMap((page) => page.drivers) || [];
 
   const resetState = () => {
     setSearchQuery('');
     setIsOpen(false);
+  };
+
+  const getTotalResults = () => {
+    if (!searchResults) return 0;
+    return allDrivers.length + allTricycles.length;
+  };
+
+  const loadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
   };
 
   return (
@@ -93,41 +118,51 @@ export default function SearchBar() {
           </div>
         ) : (
           <>
-            {searchResults?.drivers && searchResults.drivers.length > 0 && (
+            {allDrivers && allDrivers.length > 0 && (
               <div className="space-y-2">
                 <p className="font-medium text-muted-foreground">
-                  {searchResults.drivers.length > 1 ? 'Drivers' : 'Driver'}
+                  {allDrivers.length > 1 ? 'Drivers' : 'Driver'}
                 </p>
-                {searchResults.drivers.map((driver) => {
-                  return (
-                    <DriverSearchCard
-                      driver={driver}
-                      key={driver.id}
-                      resetState={resetState}
-                    />
-                  );
-                })}
+                <div className="max-h-[450px] overflow-y-auto">
+                  {allDrivers.map((driver) => {
+                    return (
+                      <DriverSearchCard
+                        driver={driver}
+                        key={driver.id}
+                        resetState={resetState}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             )}
-            {searchResults?.tricycles && searchResults.tricycles.length > 0 && (
+            {allTricycles && allTricycles.length > 0 && (
               <div className="space-y-2">
                 <p className="font-medium text-muted-foreground">
-                  {searchResults.tricycles.length > 1
-                    ? 'Tricycles'
-                    : 'Tricycle'}
+                  {allTricycles.length > 1 ? 'Tricycles' : 'Tricycle'}
                 </p>
-                {searchResults.tricycles.map((tricycle) => {
-                  return (
-                    <TricycleSearchCard
-                      tricycle={tricycle}
-                      key={tricycle.id}
-                      resetState={resetState}
-                    />
-                  );
-                })}
+                <div className="max-h-[450px] overflow-y-auto">
+                  {allTricycles.map((tricycle) => {
+                    return (
+                      <TricycleSearchCard
+                        tricycle={tricycle}
+                        key={tricycle.id}
+                        resetState={resetState}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             )}
           </>
+        )}
+        {hasNextPage && (
+          <div className="flex w-full gap-2 items-center justify-center p-2 rounded-xl bg-background/60 border-2 border-background hover:bg-background cursor-pointer">
+            <button onClick={loadMore}>
+              <p className="text-sm">Load more</p>
+            </button>
+            <ChevronDown size={14} />
+          </div>
         )}
       </DialogContent>
     </Dialog>

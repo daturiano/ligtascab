@@ -24,16 +24,22 @@ export const getOperator = async (): Promise<Operator | null> => {
   return operator;
 };
 
-export const searchTricycles = async (query: string): Promise<Tricycle[]> => {
+export const searchTricycles = async (
+  query: string,
+  page: number = 0
+): Promise<Tricycle[]> => {
   if (!query.trim()) return [];
 
   const supabase = await createClient();
+  const limit = 5;
+  const offset = page * limit;
 
   const { data, error } = await supabase
     .from('tricycles')
     .select('*')
     .ilike('plate_number', `%${query}%`)
-    .limit(10);
+    .range(offset, offset + limit - 1)
+    .limit(limit);
 
   if (error) {
     console.error('Error searching tricycles:', error);
@@ -43,17 +49,22 @@ export const searchTricycles = async (query: string): Promise<Tricycle[]> => {
   return data || [];
 };
 
-export const searchDrivers = async (query: string): Promise<Driver[]> => {
+export const searchDrivers = async (
+  query: string,
+  page: number = 0
+): Promise<Driver[]> => {
   if (!query.trim()) return [];
 
   const supabase = await createClient();
+  const limit = 5;
+  const offset = page * limit;
 
-  // Search in both first_name and last_name
   const { data, error } = await supabase
     .from('drivers')
     .select('*')
     .or(`first_name.ilike.%${query}%,last_name.ilike.%${query}%`)
-    .limit(10);
+    .range(offset, offset + limit - 1)
+    .limit(limit);
 
   if (error) {
     console.error('Error searching drivers:', error);
