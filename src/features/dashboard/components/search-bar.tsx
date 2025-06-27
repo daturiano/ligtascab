@@ -14,6 +14,7 @@ import React, { useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { searchDrivers, searchTricycles } from '../db/dashboard';
 import DriverSearchCard from './driver-search-card';
+import TricycleSearchCard from './tricycle-search-card';
 
 type SearchResults = {
   tricycles: Tricycle[];
@@ -25,11 +26,7 @@ export default function SearchBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [debouncedQuery] = useDebounce(searchQuery, 500);
 
-  const {
-    data: searchResults,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: searchResults, isLoading } = useQuery({
     queryKey: ['search', debouncedQuery],
     queryFn: async (): Promise<SearchResults> => {
       if (!debouncedQuery.trim()) {
@@ -106,6 +103,24 @@ export default function SearchBar() {
                     <DriverSearchCard
                       driver={driver}
                       key={driver.id}
+                      resetState={resetState}
+                    />
+                  );
+                })}
+              </div>
+            )}
+            {searchResults?.tricycles && searchResults.tricycles.length > 0 && (
+              <div className="space-y-2">
+                <p className="font-medium text-muted-foreground">
+                  {searchResults.tricycles.length > 1
+                    ? 'Tricycles'
+                    : 'Tricycle'}
+                </p>
+                {searchResults.tricycles.map((tricycle) => {
+                  return (
+                    <TricycleSearchCard
+                      tricycle={tricycle}
+                      key={tricycle.id}
                       resetState={resetState}
                     />
                   );
