@@ -36,9 +36,9 @@ export const fetchAllDriversFromOperator = async (): Promise<{
   return { data };
 };
 
-export async function createNewDriver(
-  driverFormData: DriverFormData
-): Promise<ServerActionResult<Driver>> {
+export async function createNewDriver(driverFormData: DriverFormData): Promise<{
+  data: Driver[];
+}> {
   try {
     const { driverDetails, complianceDetails } = driverFormData as {
       driverDetails: NonNullable<typeof driverFormData.driverDetails>;
@@ -52,7 +52,7 @@ export async function createNewDriver(
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return { success: false, error: 'User not authenticated.' };
+      throw new Error('User is not authenticated');
     }
 
     const driverData = {
@@ -71,7 +71,7 @@ export async function createNewDriver(
     const { data: driver, error } = await createDriver(driverData);
 
     if (error || !driver) {
-      return { success: false, error: 'Failed to create driver.' };
+      throw new Error(error?.message || 'Unable to create new driver');
     }
 
     const logData = {
@@ -84,13 +84,12 @@ export async function createNewDriver(
     const { error: logError } = await createLog(logData);
 
     if (logError) {
-      return { success: false, error: 'Failed to log event.' };
+      throw new Error(logError?.message || 'Unable to log create new driver');
     }
 
-    return { success: true, data: driver };
+    return { data: driver };
   } catch (err) {
-    console.error('submitUserFormData error:', err);
-    return { success: false, error: 'An unexpected error occurred.' };
+    throw new Error(err instanceof Error ? err.message : 'Unexpected error');
   }
 }
 

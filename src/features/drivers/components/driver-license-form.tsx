@@ -57,7 +57,7 @@ export default function DriverLicenseForm() {
   };
 
   return (
-    <div>
+    <div className="mb-24">
       <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
         <CardHeader>
           <CardTitle className="text-sm font-normal">

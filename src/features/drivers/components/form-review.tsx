@@ -1,31 +1,33 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { createNewDriver, uploadDriverDocument } from '../actions/drivers';
-import { useCreateDriver } from './create-driver-provider';
+import { DriverFormData, useCreateDriver } from './create-driver-provider';
 import DriverDetailsForm from './driver-details-form';
 import DriverLicenseForm from './driver-license-form';
 import FormBottomNavigation from './form-bottom-navigation';
 
 export default function FormReview() {
   const { formData } = useCreateDriver();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const createDriverMutation = useMutation({
+    mutationFn: async (data: DriverFormData) => createNewDriver(data),
+  });
 
   const onSubmit = async () => {
     try {
-      const result = await createNewDriver(formData);
-
-      if (!result.success) {
-        toast.error(result.error || 'Unknown error');
-        return;
-      }
-
-      const uploadResults = await uploadDriverDocument(
+      await createDriverMutation.mutateAsync(formData);
+      await uploadDriverDocument(
         formData.complianceDetails!.license_number,
         formData.attachmentDetails!
       );
-
-      console.log('Documents uploaded:', uploadResults);
+      queryClient.invalidateQueries({ queryKey: ['drivers'] });
       toast.success('Driver created successfully!');
+      router.push('/drivers');
     } catch (error) {
-      console.error('Submission error:', error);
+      toast.error(error instanceof Error ? error.message : 'Unexpected error');
     }
   };
 
@@ -35,7 +37,7 @@ export default function FormReview() {
         <DriverDetailsForm />
         <DriverLicenseForm />
       </div>
-      <FormBottomNavigation onSubmit={() => onSubmit} />
+      <FormBottomNavigation onSubmit={onSubmit} />
     </div>
   );
 }
