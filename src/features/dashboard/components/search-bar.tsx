@@ -104,7 +104,7 @@ export default function SearchBar() {
           placeholder="Search for tricycles or drivers"
           value={searchQuery}
           onChange={handleInputChange}
-          className="pl-10 px-12 py-6 w-full rounded-3xl"
+          className="w-full rounded-3xl"
         />
         {isLoading && (
           <div className="p-4 text-center text-gray-500">

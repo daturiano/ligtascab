@@ -1,14 +1,14 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import placeholder from '@/app/public/pictures.png';
-import { formatDate } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Driver } from '@/lib/types';
+import { formatDate, getErrorMessage } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState, useTransition } from 'react';
+import Image from 'next/image';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { removeDriverFromOperator } from '../actions/drivers';
 import DriverCardOptions from './driver-card-options';
-import { Badge } from '@/components/ui/badge';
-import Image from 'next/image';
-import { Driver } from '@/lib/types';
 
 type DriverInformationProps = {
   title: string;
@@ -43,28 +43,29 @@ function DriverInformation({
 }
 
 export default function DriverCard({ driver }: DriversProps) {
-  const [isPending, startTransition] = useTransition();
   const [isHovered, setIsHovered] = useState(false);
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: removeDriverFromOperator,
+    mutationFn: async (driver: Driver) => {
+      const result = await removeDriverFromOperator(driver);
+      if (!result.success) throw new Error(result.error);
+      return result.data;
+    },
+    onSuccess: (deletedDriver) => {
+      queryClient.invalidateQueries({ queryKey: ['drivers'] });
+      toast.success(
+        `${deletedDriver.first_name} ${deletedDriver.last_name} successfully removed from your drivers.`
+      );
+    },
+    onError: (err) => {
+      console.error(getErrorMessage(err));
+      toast.error('Something went wrong');
+    },
   });
 
-  const onDeleteHandler = async () => {
-    startTransition(() => {
-      deleteMutation.mutate(driver.id, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ['drivers'],
-          });
-          toast.success('Driver deleted successfully!');
-        },
-        onError: () => {
-          toast.error('Error deleting driver.');
-        },
-      });
-    });
+  const handleDelete = async () => {
+    deleteMutation.mutate(driver);
   };
 
   const DriverStatus = () => {
@@ -96,10 +97,10 @@ export default function DriverCard({ driver }: DriversProps) {
             <DriverStatus />
           </div>
           <DriverCardOptions
-            driver_id={driver.id}
-            isPending={isPending}
+            driver={driver}
             isHovered={isHovered}
-            onDeleteHandler={onDeleteHandler}
+            handleDelete={handleDelete}
+            isDeleting={deleteMutation.isPending}
           />
         </div>
         <div className="flex justify-between">

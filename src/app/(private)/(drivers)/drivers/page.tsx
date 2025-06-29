@@ -12,8 +12,8 @@ import {
 import { fetchAllDriversFromOperator } from '@/features/drivers/actions/drivers';
 import DriverCard from '@/features/drivers/components/driver-card';
 import DriverCardMobile from '@/features/drivers/components/driver-card-mobile';
-import { Driver } from '@/features/drivers/schemas/drivers';
 import { useMobile } from '@/hooks/useMobile';
+import { Driver } from '@/lib/types';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Search, SortDesc } from 'lucide-react';
 import Image from 'next/image';
@@ -55,7 +55,7 @@ export default function DriverPage() {
     setSearch('');
   };
 
-  const { data, error } = useQuery({
+  const { data: driver, error } = useQuery({
     queryKey: ['drivers'],
     queryFn: fetchAllDriversFromOperator,
   });
@@ -64,19 +64,19 @@ export default function DriverPage() {
     return <div>Error loading drivers: {error.message}</div>;
   }
 
-  if (!data) return null;
+  if (!driver) return null;
 
-  const filteredDrivers = data.data
-    ?.filter((driver: Driver) => {
+  const filteredDrivers = driver.data
+    .filter((driver: Driver) => {
       const full_name = driver.first_name + ' ' + driver.last_name;
       return full_name.toLowerCase().includes(search.toLowerCase());
     })
-    ?.filter((driver: Driver) => {
+    .filter((driver: Driver) => {
       if (statusSort.includes('all')) return true;
       if (!driver.status) return null;
       return statusSort.includes(driver.status?.toLowerCase());
     })
-    ?.sort((a: Driver, b: Driver) => {
+    .sort((a: Driver, b: Driver) => {
       const dateA = new Date(a.license_expiration).getTime();
       const dateB = new Date(b.license_expiration).getTime();
       return isSorted ? dateA - dateB : 0;
@@ -87,7 +87,7 @@ export default function DriverPage() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Drivers</h1>
-          {data.data && (
+          {driver.data && (
             <Button>
               <Link href={'/create-driver'}>Create a driver</Link>
             </Button>
@@ -99,7 +99,7 @@ export default function DriverPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name"
-            className="py-6 bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
+            className="bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
           />
           <div className="h-13 w-full px-2 bg-card rounded-xl flex items-center justify-between">
             <div className="flex gap-2 items-center">

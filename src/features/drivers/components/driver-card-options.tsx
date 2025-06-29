@@ -21,39 +21,40 @@ import {
 import GenerateQRCode from '@/components/view-qr-code';
 import OptionsButton from '@/features/tricycles/components/options-button';
 import { useMobile } from '@/hooks/useMobile';
-import { ChevronDown, Ellipsis, QrCode, Trash } from 'lucide-react';
+import { Driver } from '@/lib/types';
+import { ChevronDown, Ellipsis, Loader2, QrCode, Trash } from 'lucide-react';
 import Link from 'next/link';
 
 type DriverCardOptionsProps = {
-  driver_id: string;
-  onDeleteHandler: () => void;
+  driver: Driver;
+  handleDelete: () => void;
   isHovered?: boolean;
-  isPending: boolean;
+  isDeleting: boolean;
 };
 
 export default function DriverCardOptions({
-  driver_id,
-  onDeleteHandler,
+  driver,
+  handleDelete,
+  isDeleting,
   isHovered,
-  isPending,
 }: DriverCardOptionsProps) {
   const isMobile = useMobile({ max: 960 });
 
   return (
     <div className="flex items-center gap-2 lg:gap-3 w-full lg:w-auto justify-between">
       {isMobile && (
-        <Link href={`/drivers/${driver_id}`} className="w-full">
+        <Link href={`/drivers/${driver.id}`} className="w-full">
           <div className="cursor-pointer w-full py-2 rounded-md flex items-center justify-center bg-muted-foreground/20 hover:bg-muted-foreground/15 lg:size-10">
             <p className="text-xs whitespace-nowrap md:text-sm">View Driver</p>
           </div>
         </Link>
       )}
       {!isMobile && isHovered && (
-        <Link href={`/drivers/${driver_id}`}>
+        <Link href={`/drivers/${driver.id}`}>
           <Button variant={'outline'}>View Driver</Button>
         </Link>
       )}
-      <GenerateQRCode id={driver_id}>
+      <GenerateQRCode id={driver.id}>
         <OptionsButton>
           {isMobile ? (
             <p className="text-xs whitespace-nowrap md:text-sm">QR Code</p>
@@ -85,25 +86,42 @@ export default function DriverCardOptions({
                 className="p-2 hover:bg-destructive/10 cursor-pointer"
               >
                 <div className="flex gap-2 items-center">
-                  <Trash size={16} />
-                  <p className="text-sm">Delete</p>
+                  {isDeleting ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Trash size={16} />
+                  )}
+                  <p className="text-sm">
+                    {isDeleting ? 'Deleting...' : 'Delete'}
+                  </p>
                 </div>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your tricycle and remove the data from our servers.
+                    This action cannot be undone. This will permanently delete{' '}
+                    {driver.first_name} {driver.last_name} and remove their data
+                    from our servers.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel disabled={isDeleting}>
+                    Cancel
+                  </AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={onDeleteHandler}
-                    disabled={isPending}
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="bg-destructive hover:bg-destructive/90"
                   >
-                    Continue
+                    {isDeleting ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin mr-2" />
+                        Deleting...
+                      </>
+                    ) : (
+                      'Continue'
+                    )}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

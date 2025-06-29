@@ -1,37 +1,44 @@
 'use server';
 
 import { createLog, uploadDocument } from '@/db/db';
-import { AttachmentDetails } from '@/lib/types';
+import { AttachmentDetails, Driver, ServerActionResult } from '@/lib/types';
 import { createClient } from '@/supabase/server';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { DriverFormData } from '../components/create-driver-provider';
 import {
   createDriver,
   deleteDriver,
   getAllDrivers,
-  getAllDriverShiftLogs,
   getDriverById,
   updateDriverById,
   updateLicense,
 } from '../db/drivers';
 import { DriverComplianceSchema, DriverDetails } from '../schemas/drivers';
-import { revalidatePath } from 'next/cache';
 
-export const fetchDriverDetails = async (id: string) => {
+export const fetchDriverDetails = async (
+  id: string
+): Promise<{ data: Driver }> => {
   const { data, error } = await getDriverById(id);
 
-  return { data, error };
+  if (error || !data) throw new Error(error?.message || 'Driver not found');
+
+  return { data };
 };
 
-export const fetchAllDriversFromOperator = async () => {
+export const fetchAllDriversFromOperator = async (): Promise<{
+  data: Driver[];
+}> => {
   const { data, error } = await getAllDrivers();
 
-  if (error) throw new Error('Unable to fetch all drivers');
+  if (error || !data) throw new Error(error?.message || 'No available drivers');
 
-  return { data, error };
+  return { data };
 };
 
-export async function createNewDriver(driverFormData: DriverFormData) {
+export async function createNewDriver(
+  driverFormData: DriverFormData
+): Promise<ServerActionResult<Driver>> {
   try {
     const { driverDetails, complianceDetails } = driverFormData as {
       driverDetails: NonNullable<typeof driverFormData.driverDetails>;
@@ -80,17 +87,34 @@ export async function createNewDriver(driverFormData: DriverFormData) {
       return { success: false, error: 'Failed to log event.' };
     }
 
-    return { success: true };
+    return { success: true, data: driver };
   } catch (err) {
     console.error('submitUserFormData error:', err);
     return { success: false, error: 'An unexpected error occurred.' };
   }
 }
 
-export const removeDriverFromOperator = async (id: string) => {
-  const { error } = await deleteDriver(id);
+export const removeDriverFromOperator = async (
+  driver: Driver
+): Promise<ServerActionResult<Driver>> => {
+  const { data, error } = await deleteDriver(driver.id);
 
-  if (error) throw new Error('Failed to delete driver');
+  if (error) return { success: false, error: error.message };
+
+  const logData = {
+    data: { data },
+    operator_id: driver.operator_id,
+    driver_id: driver.id,
+    log_event: 'delete_driver',
+  };
+
+  const { error: logError } = await createLog(logData);
+
+  if (logError) {
+    return { success: false, error: logError.message };
+  }
+
+  return { success: true, data: data };
 };
 
 export const uploadDriverDocument = async (
@@ -109,13 +133,9 @@ export const uploadDriverDocument = async (
 
   const { data: driver, error } = await getDriverById(driver_id);
 
-  console.log(driver);
-
   if (error) {
     return { success: false, error: 'Failed to retrieve driver.' };
   }
-
-  console.log(error);
 
   if (!driver.id) {
     return { success: false, error: 'Driver ID not found.' };
@@ -129,30 +149,20 @@ export const uploadDriverDocument = async (
     driver.id
   );
 
-  console.log(results);
+  const logData = {
+    data: { results },
+    operator_id: user.id,
+    driver_id: driver.id,
+    log_event: 'driver_documents',
+  };
 
-  // const logData = {
-  //   data: results,
-  //   operator_id: user.id,
-  //   driver_id: driver.id,
-  //   log_event: 'driver_documents',
-  // };
+  const { error: LogError } = await createLog(logData);
 
-  // const { error: LogError } = await createLog(logData);
-
-  // if (LogError) {
-  //   return { success: false, error: 'Failed to create audit log.' };
-  // }
+  if (LogError) {
+    return { success: false, error: 'Failed to create audit log.' };
+  }
 
   return { success: true };
-};
-
-export const fetchAllDriverShiftLogs = async (id: string) => {
-  const { data: shift_logs, error } = await getAllDriverShiftLogs(id);
-
-  if (error) throw new Error('Unable to fetch driver shift logs');
-
-  return shift_logs;
 };
 
 export const updateDriverLicense = async (
@@ -165,18 +175,19 @@ export const updateDriverLicense = async (
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) throw new Error('User not authenticated');
+    if (!user) {
+      return { success: false, error: 'User not authenticated.' };
+    }
 
     const { data: driver, error } = await updateLicense(data);
 
-    if (error || !driver) {
-      return { success: false, error: error };
+    if (error) {
+      return { success: false, error: error.message };
     }
 
     return { success: true, data: driver };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    console.error('Creating new operator error:', err);
     return {
       success: false,
       error: err.message || 'An unexpected error occurred.',
@@ -187,12 +198,12 @@ export const updateDriverLicense = async (
 export const updateDriverDetails = async (
   id: string,
   updatedData: DriverDetails
-) => {
+): Promise<ServerActionResult<Driver>> => {
   const { data, error } = await updateDriverById(id, updatedData);
 
-  if (error) throw new Error('Failed to delete driver');
+  if (error) return { success: false, error: error.message };
 
   revalidatePath(`/drivers/${id}`);
 
-  return { data, error };
+  return { success: true, data: data };
 };

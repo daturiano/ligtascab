@@ -86,3 +86,13 @@ export interface DocumentType {
   description: string;
   required: boolean;
 }
+
+export type ServerActionResult<T> =
+  | {
+      success: true;
+      data: T;
+    }
+  | {
+      success: false;
+      error: string;
+    };

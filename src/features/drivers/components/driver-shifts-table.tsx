@@ -32,7 +32,7 @@ import {
 } from '@tanstack/react-table';
 import { ChevronDown, Search } from 'lucide-react';
 import React from 'react';
-import { fetchAllDriverShiftLogs } from '../actions/drivers';
+import { getAllDriverShiftLogs } from '../db/drivers';
 
 type DriverShiftsTableProps = {
   id: string;
@@ -52,13 +52,13 @@ export function DriverShiftsTable({ id }: DriverShiftsTableProps) {
     pageSize: 4,
   });
 
-  const { data: driver_logs } = useQuery({
+  const { data: shift_logs } = useQuery({
     queryKey: [id],
-    queryFn: async () => fetchAllDriverShiftLogs(id),
+    queryFn: async () => getAllDriverShiftLogs(id),
   });
 
   const table = useReactTable({
-    data: driver_logs ?? [],
+    data: shift_logs?.data ?? [],
     columns: columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

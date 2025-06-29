@@ -14,11 +14,13 @@ type NavItem = {
   >;
 };
 
-type InnerNavigationProps = {
+type SecondaryNavigationProps = {
   data: NavItem[];
 };
 
-export default function SecondaryNavigation({ data }: InnerNavigationProps) {
+export default function SecondaryNavigation({
+  data,
+}: SecondaryNavigationProps) {
   const pathname = usePathname();
   const isPathMatch = (substring: string): boolean => {
     return pathname.toLowerCase().includes(substring.toLowerCase());

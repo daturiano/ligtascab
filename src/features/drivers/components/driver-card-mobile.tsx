@@ -1,38 +1,38 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Driver } from '@/lib/types';
+import { formatDate, getErrorMessage } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useTransition } from 'react';
 import { toast } from 'sonner';
 import { removeDriverFromOperator } from '../actions/drivers';
 import DriverCardOptions from './driver-card-options';
-import { formatDate } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 type DriverCardMobileProps = {
   driver: Driver;
 };
 
 export default function DriverCardMobile({ driver }: DriverCardMobileProps) {
-  const [isPending, startTransition] = useTransition();
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: removeDriverFromOperator,
+    mutationFn: async (driver: Driver) => {
+      const result = await removeDriverFromOperator(driver);
+      if (!result.success) throw new Error(result.error);
+      return result.data;
+    },
+    onSuccess: (deletedDriver) => {
+      queryClient.invalidateQueries({ queryKey: ['drivers'] });
+      toast.success(
+        `${deletedDriver.first_name} ${deletedDriver.last_name} successfully removed from your drivers.`
+      );
+    },
+    onError: (err) => {
+      console.error(getErrorMessage(err));
+      toast.error('Something went wrong');
+    },
   });
 
-  const onDeleteHandler = async () => {
-    startTransition(() => {
-      deleteMutation.mutate(driver.id, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ['drivers'],
-          });
-          toast.success('Driver deleted successfully!');
-        },
-        onError: () => {
-          toast.error('Error deleting driver.');
-        },
-      });
-    });
+  const handleDelete = async () => {
+    deleteMutation.mutate(driver);
   };
   return (
     <div className="p-4 flex flex-col gap-4 border-b w-full">
@@ -70,9 +70,9 @@ export default function DriverCardMobile({ driver }: DriverCardMobileProps) {
       </div>
       <div className="space-y-2">
         <DriverCardOptions
-          driver_id={driver.id}
-          isPending={isPending}
-          onDeleteHandler={onDeleteHandler}
+          driver={driver}
+          isDeleting={deleteMutation.isPending}
+          handleDelete={handleDelete}
         />
       </div>
     </div>

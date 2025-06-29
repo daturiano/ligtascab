@@ -4,7 +4,11 @@ import { createClient } from '@/supabase/server';
 export const createLog = async (data: unknown) => {
   const supabase = await createClient();
 
-  const { error } = await supabase.from('logs').insert([data]).select();
+  const { error } = await supabase
+    .from('logs')
+    .insert([data])
+    .select()
+    .single();
 
   return { error };
 };
@@ -39,12 +43,9 @@ export const uploadDocument = async (
       continue;
     }
 
-    // Build path based on whether id is provided
     const path = id
       ? `${user.id}/${tableName}/${id}/${documentId}/${sanitizedTitle}.${fileExtension}`
       : `${user.id}/${tableName}/${documentId}/${sanitizedTitle}.${fileExtension}`;
-
-    console.log(`Uploading file to path: ${path}`);
 
     const { data, error } = await supabase.storage
       .from(bucketName)

@@ -1,42 +1,40 @@
 'use server';
 
-import { ShiftLog } from '@/lib/types';
 import { createClient } from '@/supabase/server';
-import { PostgrestError } from '@supabase/supabase-js';
 import { cache } from 'react';
 import {
   CreateDriver,
-  Driver,
   DriverComplianceDetails,
   DriverDetails,
 } from '../schemas/drivers';
 
-export const getAllDrivers = cache(
-  async (): Promise<{ data: Driver[]; error: PostgrestError | null }> => {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from('drivers')
-      .select('*', { count: 'exact' })
-      .order('status', { ascending: true });
+export const getAllDrivers = cache(async () => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('drivers')
+    .select('*', { count: 'exact' })
+    .order('status', { ascending: true });
 
-    return {
-      data: data ?? [],
-      error,
-    };
-  }
-);
+  return {
+    data: data ?? [],
+    error,
+  };
+});
 
 export const deleteDriver = async (id: string) => {
   const supabase = await createClient();
 
-  const { error } = await supabase.from('drivers').delete().eq('id', id);
+  const { data, error } = await supabase
+    .from('drivers')
+    .delete()
+    .eq('id', id)
+    .select()
+    .single();
 
-  return { error };
+  return { data, error };
 };
 
-export const createDriver = async (
-  driverData: CreateDriver
-): Promise<{ data: Driver; error: PostgrestError | null }> => {
+export const createDriver = async (driverData: CreateDriver) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -61,9 +59,7 @@ export const getDriverByLicenseNumber = async (license_number: string) => {
   return { data, error };
 };
 
-export const getDriverById = async (
-  driver_id: string
-): Promise<{ data: Driver; error: PostgrestError | null }> => {
+export const getDriverById = async (driver_id: string) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -75,10 +71,7 @@ export const getDriverById = async (
   return { data, error };
 };
 
-export async function updateDriverById(
-  id: string,
-  updatedData: DriverDetails
-): Promise<{ data: Driver; error: PostgrestError | null }> {
+export async function updateDriverById(id: string, updatedData: DriverDetails) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -91,20 +84,16 @@ export async function updateDriverById(
   return { data, error };
 }
 
-export const getAllDriverShiftLogs = cache(
-  async (
-    id: string
-  ): Promise<{ data: ShiftLog[]; error: PostgrestError | null }> => {
-    const supabase = await createClient();
-    const { data: logs, error } = await supabase
-      .from('shifts')
-      .select('*')
-      .eq('driver_id', id)
-      .order('created_at', { ascending: false });
+export const getAllDriverShiftLogs = cache(async (id: string) => {
+  const supabase = await createClient();
+  const { data: logs, error } = await supabase
+    .from('shifts')
+    .select('*')
+    .eq('driver_id', id)
+    .order('created_at', { ascending: false });
 
-    return { data: logs || [], error };
-  }
-);
+  return { data: logs || [], error };
+});
 
 export const updateLicense = async (driverData: DriverComplianceDetails) => {
   const supabase = await createClient();
