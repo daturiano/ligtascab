@@ -8,7 +8,7 @@ const data = [
   {
     title: 'Drivers',
     url: '/drivers',
-    pathname: 'driver',
+    pathname: '/driver',
     icon: Users,
   },
   {
