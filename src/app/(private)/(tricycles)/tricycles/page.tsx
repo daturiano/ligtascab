@@ -98,7 +98,7 @@ export default function TricyclesPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by plate number"
-            className="py-6 bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
+            className="bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
           />
           <div className="h-13 w-full px-2 bg-card rounded-xl flex items-center justify-between">
             <div className="flex gap-2 items-center">

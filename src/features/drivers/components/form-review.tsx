@@ -6,6 +6,7 @@ import { DriverFormData, useCreateDriver } from './create-driver-provider';
 import DriverDetailsForm from './driver-details-form';
 import DriverLicenseForm from './driver-license-form';
 import FormBottomNavigation from './form-bottom-navigation';
+import { getErrorMessage } from '@/lib/utils';
 
 export default function FormReview() {
   const { formData } = useCreateDriver();
@@ -18,16 +19,18 @@ export default function FormReview() {
 
   const onSubmit = async () => {
     try {
-      await createDriverMutation.mutateAsync(formData);
+      const { data: driver } = await createDriverMutation.mutateAsync(formData);
       await uploadDriverDocument(
         formData.complianceDetails!.license_number,
         formData.attachmentDetails!
       );
       queryClient.invalidateQueries({ queryKey: ['drivers'] });
-      toast.success('Driver created successfully!');
+      toast.success(
+        `${driver.first_name} ${driver.last_name} created Successfully!`
+      );
       router.push('/drivers');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unexpected error');
+      toast.error(getErrorMessage(error));
     }
   };
 

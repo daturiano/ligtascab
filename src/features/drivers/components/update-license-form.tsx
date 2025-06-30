@@ -15,17 +15,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { cn, getErrorMessage } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { DriverComplianceSchema } from '../schemas/drivers';
 import { useState } from 'react';
 import DocumentCard from '@/features/authentication/components/document-card';
 import { AttachmentDetails, DocumentType } from '@/lib/types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { updateDriverLicense, uploadDriverDocument } from '../actions/drivers';
@@ -48,8 +48,8 @@ const document_type: DocumentType[] = [
 ];
 
 type UpdateLicenseParams = {
+  driver_id: string;
   data: z.infer<typeof DriverComplianceSchema>;
-  images: AttachmentDetails;
 };
 
 export default function UpdateLicenseForm({
@@ -61,30 +61,42 @@ export default function UpdateLicenseForm({
     [key: string]: File | null;
   }>({});
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const updateLicenseMutation = useMutation({
-    mutationFn: async ({ data, images }: UpdateLicenseParams) => {
-      const { success, error } = await updateDriverLicense(data);
-
-      if (!success || error) {
-        throw new Error('Failed to update driver license');
-      }
-
-      const { success: uploadSuccess, error: uploadError } =
-        await uploadDriverDocument(driver_id, images);
-
-      if (!uploadSuccess || uploadError) {
-        throw new Error(uploadError);
-      }
-    },
-    onSuccess: () => {
-      toast.success('Driver&apos;s license updated successfully!');
-      router.back();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
+    mutationFn: async ({ driver_id, data }: UpdateLicenseParams) => {
+      const { data: driver } = await updateDriverLicense(driver_id, data);
+      return driver;
     },
   });
+
+  const onSubmit = async (values: z.infer<typeof DriverComplianceSchema>) => {
+    const attachmentDetails: AttachmentDetails = {};
+
+    Object.entries(selectedFiles).forEach(([docId, file]) => {
+      const docType = document_type.find((doc) => doc.id === docId);
+      attachmentDetails[docId] = {
+        file: file,
+        documentId: docId,
+        documentTitle: docType?.title || 'Unknown Document',
+      };
+    });
+
+    try {
+      const driver = await updateLicenseMutation.mutateAsync({
+        driver_id: driver_id,
+        data: values,
+      });
+      await uploadDriverDocument(driver_id, attachmentDetails);
+      queryClient.invalidateQueries({ queryKey: ['drivers'] });
+      toast.success(
+        `${driver.first_name} ${driver.last_name} license updated successfully!`
+      );
+      router.push('/drivers');
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
+  };
 
   const handleFileSelect = (docId: string, file: File | null) => {
     if (file && file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
@@ -114,24 +126,6 @@ export default function UpdateLicenseForm({
       license_expiration: undefined,
     },
   });
-
-  const onSubmit = async (values: z.infer<typeof DriverComplianceSchema>) => {
-    const attachmentDetails: AttachmentDetails = {};
-
-    Object.entries(selectedFiles).forEach(([docId, file]) => {
-      const docType = document_type.find((doc) => doc.id === docId);
-      attachmentDetails[docId] = {
-        file: file,
-        documentId: docId,
-        documentTitle: docType?.title || 'Unknown Document',
-      };
-    });
-
-    updateLicenseMutation.mutate({
-      data: values,
-      images: attachmentDetails,
-    });
-  };
 
   return (
     <div>
@@ -233,10 +227,18 @@ export default function UpdateLicenseForm({
           <Button
             size={'lg'}
             className="text-xs lg:text-sm"
-            disabled={!areRequiredDocumentsUploaded()}
+            disabled={
+              !areRequiredDocumentsUploaded() || updateLicenseMutation.isPending
+            }
             form="update-license-form"
           >
-            Continue
+            {updateLicenseMutation.isPending ? (
+              <div className="p-4 text-center text-gray-500">
+                <Loader2 className="h-4 w-4 animate-spin mx-auto mb-2" />
+              </div>
+            ) : (
+              'Continue'
+            )}
           </Button>
         </div>
       </div>

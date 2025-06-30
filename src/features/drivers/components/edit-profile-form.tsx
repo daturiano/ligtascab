@@ -11,9 +11,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Driver } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, getErrorMessage } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -41,19 +41,27 @@ export default function EditProfileForm({ driver }: { driver: Driver }) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const onSubmit = async (values: z.infer<typeof DriverInfoSchema>) => {
-    const { data, error } = await updateDriverDetails(driver.id, values);
-    if (data) {
+  const editProfileMutation = useMutation({
+    mutationFn: async (values: z.infer<typeof DriverInfoSchema>) => {
+      const { data } = await updateDriverDetails(driver, values);
+      return data;
+    },
+    onSuccess: (driver) => {
       queryClient.invalidateQueries({
         queryKey: ['drivers', 'driver_profile'],
       });
-      toast.success('Driver updated successfully.');
+      toast.success(
+        `${driver.first_name} ${driver.last_name} updated successfully.`
+      );
       router.back();
-      return;
-    }
-    if (error) {
-      return toast.error('Error updating driver', error);
-    }
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof DriverInfoSchema>) => {
+    editProfileMutation.mutate(values);
   };
 
   const isDirty = form.formState.isDirty;

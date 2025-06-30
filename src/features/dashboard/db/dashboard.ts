@@ -54,22 +54,45 @@ export const searchDrivers = async (
   page: number = 0
 ): Promise<Driver[]> => {
   if (!query.trim()) return [];
-
   const supabase = await createClient();
   const limit = 5;
   const offset = page * limit;
 
-  const { data, error } = await supabase
+  const searchTerms = query.trim().split(/\s+/);
+
+  let supabaseQuery = supabase
     .from('drivers')
     .select('*')
-    .or(`first_name.ilike.%${query}%,last_name.ilike.%${query}%`)
     .range(offset, offset + limit - 1)
     .limit(limit);
+
+  if (searchTerms.length === 1) {
+    supabaseQuery = supabaseQuery.or(
+      `first_name.ilike.%${searchTerms[0]}%,last_name.ilike.%${searchTerms[0]}%`
+    );
+  } else {
+    const [firstTerm, ...restTerms] = searchTerms;
+    const lastTerm = restTerms.join(' ');
+
+    supabaseQuery = supabaseQuery.or(
+      [
+        // First word in first_name, rest in last_name
+        `and(first_name.ilike.%${firstTerm}%,last_name.ilike.%${lastTerm}%)`,
+        // First word in last_name, rest in first_name
+        `and(last_name.ilike.%${firstTerm}%,first_name.ilike.%${lastTerm}%)`,
+        // Full query in first_name
+        `first_name.ilike.%${query}%`,
+        // Full query in last_name
+        `last_name.ilike.%${query}%`,
+      ].join(',')
+    );
+  }
+
+  const { data, error } = await supabaseQuery;
 
   if (error) {
     console.error('Error searching drivers:', error);
     return [];
   }
-
   return data || [];
 };

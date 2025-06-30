@@ -15,9 +15,8 @@ export default function DriverCardMobile({ driver }: DriverCardMobileProps) {
 
   const deleteMutation = useMutation({
     mutationFn: async (driver: Driver) => {
-      const result = await removeDriverFromOperator(driver);
-      if (!result.success) throw new Error(result.error);
-      return result.data;
+      const { data } = await removeDriverFromOperator(driver);
+      return data;
     },
     onSuccess: (deletedDriver) => {
       queryClient.invalidateQueries({ queryKey: ['drivers'] });
@@ -26,8 +25,7 @@ export default function DriverCardMobile({ driver }: DriverCardMobileProps) {
       );
     },
     onError: (err) => {
-      console.error(getErrorMessage(err));
-      toast.error('Something went wrong');
+      toast.error(getErrorMessage(err));
     },
   });
 

@@ -53,7 +53,7 @@ export function DriverShiftsTable({ id }: DriverShiftsTableProps) {
   });
 
   const { data: shift_logs } = useQuery({
-    queryKey: [id],
+    queryKey: ['driver_logs', id],
     queryFn: async () => getAllDriverShiftLogs(id),
   });
 

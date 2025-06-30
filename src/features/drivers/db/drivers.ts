@@ -95,16 +95,18 @@ export const getAllDriverShiftLogs = cache(async (id: string) => {
   return { data: logs || [], error };
 });
 
-export const updateLicense = async (driverData: DriverComplianceDetails) => {
+export const updateLicense = async (
+  driverData: DriverComplianceDetails,
+  driver_id: string
+) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('drivers')
     .update([driverData])
-    .eq('license_number', driverData.license_number)
-    .select();
-
-  console.log(error, data);
+    .eq('id', driver_id)
+    .select()
+    .single();
 
   return { data, error };
 };
