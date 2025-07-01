@@ -1,32 +1,24 @@
 'use server';
 
-import { ShiftLog, Tricycle } from '@/lib/types';
+import { ShiftLog } from '@/lib/types';
 import { createClient } from '@/supabase/server';
 import { PostgrestError } from '@supabase/supabase-js';
 import { cache } from 'react';
 
-export const getAvailableTricycles = cache(
-  async (): Promise<{
-    data: Tricycle['plate_number'][];
-    error: PostgrestError | null;
-  }> => {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from('tricycles')
-      .select('plate_number')
-      .eq('status', 'inactive');
+export const getAvailableTricycles = cache(async () => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('tricycles')
+    .select('plate_number')
+    .eq('status', 'inactive');
 
-    const sampleData = data?.map((tricycle) => tricycle.plate_number);
-    console.log(sampleData);
+  return {
+    data: data ? data.map((tricycle) => tricycle.plate_number) : [],
+    error: error,
+  };
+});
 
-    return {
-      data: data ? data.map((tricycle) => tricycle.plate_number) : [],
-      error: error,
-    };
-  }
-);
-
-export const checkDriverStatus = async (id: string): Promise<boolean> => {
+export const checkDriverStatus = async (id: string) => {
   const supabase = await createClient();
   const { error } = await supabase
     .from('drivers')
@@ -42,9 +34,7 @@ export const checkDriverStatus = async (id: string): Promise<boolean> => {
   return true;
 };
 
-export const getDriverAssignedVehicle = async (
-  id: string
-): Promise<{ data: ShiftLog; error: PostgrestError | null }> => {
+export const getDriverAssignedVehicle = async (id: string) => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('shifts')
@@ -57,26 +47,18 @@ export const getDriverAssignedVehicle = async (
   return { data, error };
 };
 
-export const createShiftLog = async (newLog: ShiftLog): Promise<boolean> => {
+export const createShiftLog = async (newLog: ShiftLog) => {
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('shifts')
     .insert([newLog])
     .select()
     .single();
 
-  if (error) {
-    console.error('Error inserting log:', error);
-    return false;
-  }
-
-  return true;
+  return { data, error };
 };
 
-export const updateDriverStatus = async (
-  id: string,
-  status: string
-): Promise<boolean> => {
+export const updateDriverStatus = async (id: string, status: string) => {
   const supabase = await createClient();
   const { error } = await supabase
     .from('drivers')
@@ -97,7 +79,7 @@ export const updateDriverStatus = async (
 export const updateTricycleStatus = async (
   plate_number: string,
   status: string
-): Promise<boolean> => {
+) => {
   const supabase = await createClient();
   const { error } = await supabase
     .from('tricycles')

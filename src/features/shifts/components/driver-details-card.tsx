@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { formatDate, formatDateTime } from '@/lib/utils';
 import { fetchDriverMostRecentLog } from '../actions/shifts';
-import { Driver } from '@/features/drivers/schemas/drivers';
 import { useQuery } from '@tanstack/react-query';
+import { Driver } from '@/lib/types';
 
 type DriverDetailsCardProps = {
   driver: Driver;

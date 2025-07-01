@@ -1,7 +1,7 @@
 'use client';
 
 import SecondaryNavigation from '@/components/secondary-navigation';
-import { CalendarClock, MonitorDot } from 'lucide-react';
+import { CalendarClock } from 'lucide-react';
 import { ReactNode } from 'react';
 
 const data = [
@@ -10,12 +10,6 @@ const data = [
     url: '/shifts',
     pathname: '/shifts',
     icon: CalendarClock,
-  },
-  {
-    title: 'Active Shifts',
-    url: '/active-shifts',
-    pathname: '/active-shifts',
-    icon: MonitorDot,
   },
 ];
 

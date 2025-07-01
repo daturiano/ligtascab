@@ -1,12 +1,12 @@
 import errorImg from '@/app/public/close.png';
 import { Button } from '@/components/ui/button';
-import { fetchDriverDetails } from '@/features/drivers/actions/drivers';
-import { Driver } from '@/features/drivers/schemas/drivers';
-import { useQuery } from '@tanstack/react-query';
+import { Driver } from '@/lib/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useState } from 'react';
 import { QrReader } from 'react-qr-reader';
 import ShiftForm from './shift-form';
+import { fetchDriverDetails } from '../actions/shifts';
 
 type QRCodeReaderProps = {
   setIsScanning: (isScanning: boolean) => void;
@@ -15,6 +15,8 @@ type QRCodeReaderProps = {
 export default function QRCodeReader({ setIsScanning }: QRCodeReaderProps) {
   const [driverId, setDriverId] = useState<string | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
+  const [shouldFetch, setShouldFetch] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: driver } = useQuery<Driver | null>({
     queryKey: ['driver-details', driverId],
@@ -25,16 +27,19 @@ export default function QRCodeReader({ setIsScanning }: QRCodeReaderProps) {
         setScanError(
           'Unable to validate QR Code. Please make sure to show valid driver QR Code.'
         );
+        return null;
       }
       return data;
     },
-    enabled: !!driverId,
+    enabled: shouldFetch && !!driverId,
     retry: false,
   });
 
   const tryAgain = () => {
     setDriverId(null);
     setScanError(null);
+    setShouldFetch(false);
+    queryClient.removeQueries({ queryKey: ['driver-details'], exact: false });
   };
 
   if (driver) {

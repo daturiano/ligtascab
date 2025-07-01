@@ -29,12 +29,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Driver } from '@/features/drivers/schemas/drivers';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ChevronsUpDown } from 'lucide-react';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -44,6 +43,7 @@ import {
 } from '../actions/shifts';
 import { ShiftSchema } from '../schemas/shifts';
 import DriverDetailsCard from './driver-details-card';
+import { Driver } from '@/lib/types';
 
 type LogFormProps = {
   driver: Driver;
@@ -51,7 +51,6 @@ type LogFormProps = {
 };
 
 export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
-  const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isTimeOut, setIsTimeOut] = useState<boolean>(false);
 
@@ -75,31 +74,31 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
 
   const queryClient = useQueryClient();
 
-  const useCreateNewLog = useMutation({
-    mutationFn: createNewShiftLog,
+  const createLogMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof ShiftSchema>) => {
+      const { data: log } = await createNewShiftLog(data);
+      return log;
+    },
+    onSuccess: (log) => {
+      queryClient.invalidateQueries({
+        queryKey: ['shift_logs'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['available_vehicles'],
+      });
+      toast.success(
+        `${log.shift_type} of ${log.driver_name} in tricycle ${log.plate_number} completed.`
+      );
+      form.reset();
+      setIsScanning(false);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 
   const onSubmit = async (data: z.infer<typeof ShiftSchema>) => {
-    startTransition(() => {
-      useCreateNewLog.mutate(data, {
-        onSuccess: (response) => {
-          queryClient.invalidateQueries({
-            queryKey: ['shift_logs'],
-          });
-          queryClient.invalidateQueries({
-            queryKey: ['available_vehicles'],
-          });
-          if (response?.message) {
-            toast.success(response.message);
-            form.reset();
-            setIsScanning(false);
-          }
-          if (response?.error) {
-            toast.error(response.error);
-          }
-        },
-      });
-    });
+    createLogMutation.mutate(data);
   };
 
   return (
@@ -217,10 +216,10 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
                 (form.watch('plate_number') === '' &&
                   form.watch('shift_type') !== 'Time-out') ||
                 form.watch('driver_id') === '' ||
-                isPending
+                createLogMutation.isPending
               }
             >
-              {!isPending ? 'Continue' : 'Pending'}
+              {!createLogMutation.isPending ? 'Continue' : 'Pending'}
             </Button>
           </div>
         </form>

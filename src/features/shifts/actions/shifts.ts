@@ -1,7 +1,7 @@
 'use server';
 
 import { getTricycleByPlateNumber } from '@/features/tricycles/db/tricycles';
-import { ShiftLog } from '@/lib/types';
+import { Driver, ShiftLog } from '@/lib/types';
 import {
   checkDriverStatus,
   createShiftLog,
@@ -12,17 +12,33 @@ import {
   updateDriverStatus,
   updateTricycleStatus,
 } from '../db/shifts';
+import { getErrorMessage } from '@/lib/utils';
+import { PostgrestError } from '@supabase/supabase-js';
+import { getDriverById } from '@/features/drivers/db/drivers';
 
-export const fetchAllAvailableTricyclesFromOperator = async () => {
-  const { data: availableVehicles, error } = await getAvailableTricycles();
+export const fetchDriverDetails = async (
+  id: string
+): Promise<{ data: Driver; error: PostgrestError | null }> => {
+  const { data, error } = await getDriverById(id);
 
-  if (error) throw new Error('Unable to fetch all tricycles');
-
-  return availableVehicles;
+  return { data, error };
 };
 
-export async function createNewShiftLog(data: ShiftLog) {
+export const fetchAllAvailableTricyclesFromOperator = async () => {
+  const { data, error } = await getAvailableTricycles();
+
+  if (error || !data) {
+    throw new Error(error?.message || 'Unable to fetch all tricycles');
+  }
+
+  return data;
+};
+
+export const createNewShiftLog = async (
+  data: ShiftLog
+): Promise<{ data: ShiftLog }> => {
   try {
+    let logDetails = null;
     const log = {
       driver_name: data.driver_name,
       plate_number: data.plate_number,
@@ -37,63 +53,69 @@ export async function createNewShiftLog(data: ShiftLog) {
     if (log.shift_type === 'Time-out') {
       const isActive = await checkDriverStatus(log.driver_id);
       if (!isActive) {
-        return { error: 'Driver is not active.' };
+        throw new Error('Driver is not active');
       }
       const { data: assignedVehicle, error: assignedError } =
         await getDriverAssignedVehicle(log.driver_id);
-      if (assignedError)
-        return { error: 'Cannot get driver assigned vehicle', assignedError };
+      if (assignedError || !assignedVehicle) {
+        throw new Error(
+          assignedError?.message || 'Cannot get driver assigned vehicle'
+        );
+      }
       log.plate_number = assignedVehicle.plate_number;
       log.tricycle_id = assignedVehicle.tricycle_id;
-      const isCreated = await createShiftLog(log);
-      if (!isCreated) {
-        return { error: 'Log was not created' };
+      const { data: shiftLogDetails, error: logError } = await createShiftLog(
+        log
+      );
+      if (logError || !shiftLogDetails) {
+        throw new Error(logError?.message || 'Unable to create shift log');
       }
+      logDetails = { data: shiftLogDetails };
     }
 
     if (log.shift_type === 'Time-in') {
-      const { data, error: getTricycleError } = await getTricycleByPlateNumber(
-        log.plate_number
-      );
-      if (getTricycleError || data.id == undefined)
-        return {
-          error: 'Cannot get tricycle using plate number',
-          getTricycleError,
-        };
-      log.tricycle_id = data.id;
+      const { data: tricycle, error: getTricycleError } =
+        await getTricycleByPlateNumber(log.plate_number);
+      if (getTricycleError || !tricycle) {
+        throw new Error(
+          getTricycleError?.message || 'Cannot get tricycle using plate number'
+        );
+      }
+      log.tricycle_id = tricycle.id;
       const isActive = await checkDriverStatus(log.driver_id);
       if (isActive) {
-        return { error: 'Driver is currently active.' };
+        throw new Error('Driver is currently active');
       }
-      const isCreated = await createShiftLog(log);
-      if (!isCreated) {
-        return { error: 'Log was not created' };
+      const { data: shiftLogDetails, error: logError } = await createShiftLog(
+        log
+      );
+      if (logError || !shiftLogDetails) {
+        throw new Error(logError?.message || 'Unable to create shift log');
       }
+      logDetails = { data: shiftLogDetails };
     }
 
     const isDriverUpdated = await updateDriverStatus(log.driver_id, status);
     if (!isDriverUpdated) {
-      return { message: 'Cannot update driver status.' };
+      throw new Error('Cannot update driver status.');
     }
     const isTricycleUpdated = await updateTricycleStatus(
       log.plate_number,
       status
     );
     if (!isTricycleUpdated) {
-      return { message: 'Cannot update vehicle status.' };
+      throw new Error('Cannot update tricycle status.');
     }
 
-    return {
-      message: 'Shift Log Attendance Recorded!',
-    };
+    if (!logDetails) {
+      throw new Error('Unable to fetch log details');
+    }
+
+    return logDetails;
   } catch (error) {
-    console.error('Error creating new log:', error);
-    return {
-      success: false,
-      error: 'An unexpected error occurred.',
-    };
+    throw new Error(getErrorMessage(error));
   }
-}
+};
 
 export const fetchAllShiftLogs = async () => {
   const { data: shift_logs, error } = await getAllShiftLogs();
