@@ -17,9 +17,9 @@ import {
 } from '@/components/ui/popover';
 import DocumentCard from '@/features/authentication/components/document-card';
 import { AttachmentDetails, DocumentType } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, getErrorMessage } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
@@ -47,45 +47,47 @@ const document_type: DocumentType[] = [
   },
 ];
 
-type UpdateFranchiseParams = {
-  data: z.infer<typeof TricycleUpdateSchema>;
-  images: AttachmentDetails;
-};
-
 export default function UpdateFranchiseForm() {
   const { tricycleId } = useParams();
+  const tricycle_id = tricycleId as string;
   const [selectedFiles, setSelectedFiles] = useState<{
     [key: string]: File | null;
   }>({});
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const UpdateFranchiseMutation = useMutation({
-    mutationFn: async ({ data, images }: UpdateFranchiseParams) => {
-      const { success, error } = await updateTricycleInformation(
-        data,
-        tricycleId as string
-      );
-
-      if (!success || error) {
-        throw new Error('Failed to update tricycle franchise');
-      }
-
-      const { success: uploadSuccess, error: uploadError } =
-        await uploadTricycleDocument(tricycleId as string, images);
-
-      if (!uploadSuccess || uploadError) {
-        console.error(uploadError);
-        throw new Error(uploadError);
-      }
-    },
-    onSuccess: () => {
-      toast.success('Tricycle&apos;s franchise details updated successfully!');
-      router.back();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
+  const updateFranchiseMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof TricycleUpdateSchema>) =>
+      updateTricycleInformation(data, tricycle_id),
   });
+
+  const onSubmit = async (values: z.infer<typeof TricycleFranchiseSchema>) => {
+    const attachmentDetails: AttachmentDetails = {};
+
+    Object.entries(selectedFiles).forEach(([docId, file]) => {
+      const docType = document_type.find((doc) => doc.id === docId);
+      attachmentDetails[docId] = {
+        file: file,
+        documentId: docId,
+        documentTitle: docType?.title || 'Unknown Document',
+      };
+    });
+
+    try {
+      const { data: tricycle } = await updateFranchiseMutation.mutateAsync({
+        compliance_details: {
+          franchise_number: values.franchise_number,
+        },
+        franchise_expiration: values.franchise_expiration,
+      });
+      await uploadTricycleDocument(tricycleId as string, attachmentDetails);
+      queryClient.invalidateQueries({ queryKey: ['tricycles'] });
+      toast.success(`${tricycle.plate_number} franchise updated successfully!`);
+      router.push(`/tricycles/${tricycle_id}`);
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
+  };
 
   const handleFileSelect = (docId: string, file: File | null) => {
     if (file && file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
@@ -115,29 +117,6 @@ export default function UpdateFranchiseForm() {
       franchise_expiration: undefined,
     },
   });
-
-  const onSubmit = async (values: z.infer<typeof TricycleFranchiseSchema>) => {
-    const attachmentDetails: AttachmentDetails = {};
-
-    Object.entries(selectedFiles).forEach(([docId, file]) => {
-      const docType = document_type.find((doc) => doc.id === docId);
-      attachmentDetails[docId] = {
-        file: file,
-        documentId: docId,
-        documentTitle: docType?.title || 'Unknown Document',
-      };
-    });
-
-    UpdateFranchiseMutation.mutate({
-      data: {
-        compliance_details: {
-          franchise_number: values.franchise_number,
-        },
-        franchise_expiration: values.franchise_expiration,
-      },
-      images: attachmentDetails,
-    });
-  };
 
   return (
     <div className="flex flex-col gap-6 flex-1 max-w-screen-xl mx-auto">

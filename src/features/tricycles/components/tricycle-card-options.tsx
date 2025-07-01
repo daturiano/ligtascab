@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import GenerateQRCode from '@/components/view-qr-code';
 import { useMobile } from '@/hooks/useMobile';
-import { ChevronDown, Ellipsis, QrCode, Trash } from 'lucide-react';
+import { ChevronDown, Ellipsis, Loader2, QrCode, Trash } from 'lucide-react';
 import OptionsButton from './options-button';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -104,8 +104,15 @@ export default function TricycleCardOptions({
                   <AlertDialogAction
                     onClick={onDeleteHandler}
                     disabled={isPending}
+                    className="bg-destructive hover:bg-destructive/90"
                   >
-                    Continue
+                    {isPending ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin mr-2" />
+                      </>
+                    ) : (
+                      'Continue'
+                    )}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

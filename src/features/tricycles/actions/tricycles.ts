@@ -1,8 +1,9 @@
 'use server';
 
 import { createLog, uploadDocument } from '@/db/db';
-import { AttachmentDetails } from '@/lib/types';
+import { AttachmentDetails, Tricycle } from '@/lib/types';
 import { createClient } from '@/supabase/server';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { TricycleFormData } from '../components/create-tricycle-provider';
 import {
@@ -11,37 +12,37 @@ import {
   getAllTricycles,
   getAllTricycleShiftLogs,
   getTricycleById,
-  getTricycleByPlateNumber,
   updateTricycle,
 } from '../db/tricycles';
 import { TricycleUpdateSchema } from '../schemas/tricycle';
-import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
 
-export const fetchTricycleDetails = async (id: string) => {
+export const fetchTricycleDetails = async (
+  id: string
+): Promise<{ data: Tricycle }> => {
   const { data, error } = await getTricycleById(id);
 
-  return { data, error };
-};
-
-export const fetchAllTricyclesFromOperator = async () => {
-  const { data, error } = await getAllTricycles();
-
-  if (error) throw new Error('Unable to fetch all tricycles');
-
-  return { data, error };
-};
-
-export const fetchTricycleDetailsWithPlateNumber = async (
-  plate_number: string
-) => {
-  const { data, error } = await getTricycleByPlateNumber(plate_number);
-
-  if (error) throw new Error('Unable to fetch tricycle details');
+  if (error || !data) {
+    throw new Error(error?.message || 'Tricycle not found');
+  }
 
   return { data };
 };
 
-export async function createNewTricycle(tricycleFormData: TricycleFormData) {
+export const fetchAllTricyclesFromOperator = async (): Promise<{
+  data: Tricycle[];
+}> => {
+  const { data, error } = await getAllTricycles();
+
+  if (error || !data)
+    throw new Error(error?.message || 'Unable to fetch all tricycles');
+
+  return { data };
+};
+
+export async function createNewTricycle(
+  tricycleFormData: TricycleFormData
+): Promise<{ data: Tricycle }> {
   try {
     const { tricycleDetails, complianceDetails, maintenanceDetails } =
       tricycleFormData as {
@@ -60,7 +61,9 @@ export async function createNewTricycle(tricycleFormData: TricycleFormData) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) throw new Error('User not authenticated');
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
 
     const tricycleData = {
       operator_id: user.id,
@@ -88,7 +91,7 @@ export async function createNewTricycle(tricycleFormData: TricycleFormData) {
     const { data: tricycle, error } = await createTricycle(tricycleData);
 
     if (error || !tricycle) {
-      return { success: false, error: 'Failed to create driver.' };
+      throw new Error(error?.message || 'Unable to create new tricycle');
     }
 
     const logData = {
@@ -101,20 +104,25 @@ export async function createNewTricycle(tricycleFormData: TricycleFormData) {
     const { error: logError } = await createLog(logData);
 
     if (logError) {
-      return { success: false, error: 'Failed to log event.' };
+      throw new Error(logError.message || 'Unable to log create tricycle');
     }
 
-    return { success: true, data: tricycle };
+    return { data: tricycle };
   } catch (err) {
-    console.error('Creating new tricycle error:', err);
-    return { success: false, error: 'An unexpected error occurred.' };
+    throw new Error(getErrorMessage(err));
   }
 }
 
-export const removeTricycleFromOperator = async (tricycle_id: string) => {
-  const { error } = await deleteTricycle(tricycle_id);
+export const removeTricycleFromOperator = async (
+  tricycle_id: string
+): Promise<{ data: Tricycle }> => {
+  const { data, error } = await deleteTricycle(tricycle_id);
 
-  if (error) throw new Error('Failed to delete tricycle');
+  if (error || !data) {
+    throw new Error(error?.message || 'Failed to delete tricycle');
+  }
+
+  return { data };
 };
 
 export const uploadTricycleDocument = async (
@@ -128,45 +136,45 @@ export const uploadTricycleDocument = async (
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { success: false, error: 'User not authenticated.' };
+    throw new Error('User not authenticated');
   }
 
   const { data: tricycle, error } = await getTricycleById(tricycle_id);
 
-  if (error) {
-    return { success: false, error: 'Failed to retrieve tricycle.' };
+  if (error || !tricycle) {
+    throw new Error(error?.message || 'Unable to fetch tricycle by id');
   }
 
-  if (!tricycle.id) return { success: false, error: 'no tricycle id' };
-
   const bucket_name = 'documents';
-  await uploadDocument(
+  const results = await uploadDocument(
     attachmentDetails,
     bucket_name,
     'tricycles',
     tricycle.id
   );
 
-  // const logData = {
-  //   data: results,
-  //   operator_id: user.id,
-  //   driver_id: tricycle.id,
-  //   log_event: 'tricycle_documents',
-  // };
+  const logData = {
+    data: { results },
+    operator_id: user.id,
+    tricycle_id: tricycle.id,
+    log_event: 'tricycle_documents',
+  };
 
-  // const { error: LogError } = await createLog(logData);
+  const { error: LogError } = await createLog(logData);
 
-  // if (LogError) {
-  //   return { success: false, error: 'Failed to create audit log.' };
-  // }
-
-  return { success: true };
+  if (LogError) {
+    throw new Error(
+      LogError.message || 'unable to create log for update tricycle document'
+    );
+  }
 };
 
 export const fetchAllTricycleShiftLogs = async (id: string) => {
   const { data: tricycle_logs, error } = await getAllTricycleShiftLogs(id);
 
-  if (error) throw new Error('Unable to fetch tricycle shift logs');
+  if (error || !tricycle_logs) {
+    throw new Error(error?.message || 'Unable to fetch tricycle shift logs');
+  }
 
   return tricycle_logs;
 };
@@ -174,7 +182,7 @@ export const fetchAllTricycleShiftLogs = async (id: string) => {
 export const updateTricycleInformation = async (
   formData: z.infer<typeof TricycleUpdateSchema>,
   id: string
-) => {
+): Promise<{ data: Tricycle }> => {
   const supabase = await createClient();
 
   const {
@@ -182,12 +190,14 @@ export const updateTricycleInformation = async (
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { success: false, error: 'User not authenticated.' };
+    throw new Error('User is not authenticated');
   }
 
   const { data: currentTricycleData, error } = await getTricycleById(id);
 
-  if (error) return { success: false, error: 'Cannot fetch tricycle by id' };
+  if (error || !currentTricycleData) {
+    throw new Error(error?.message || 'Current tricycle data does not exist');
+  }
 
   const mergedData = {
     ...currentTricycleData,
@@ -202,13 +212,16 @@ export const updateTricycleInformation = async (
     },
   };
 
-  const { error: updateError } = await updateTricycle(mergedData, id);
+  const { data: tricycle, error: updateError } = await updateTricycle(
+    mergedData,
+    id
+  );
 
-  if (updateError) return { success: false, error: updateError };
+  if (updateError || !tricycle) {
+    throw new Error(updateError?.message || 'Unable to update tricycle');
+  }
 
   revalidatePath(`/tricycles/${id}`);
 
-  return { success: true };
-
-  //Merge formData with currentTricycleData
+  return { data: tricycle };
 };

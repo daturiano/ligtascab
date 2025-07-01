@@ -77,7 +77,7 @@ export default function DriverCardOptions({
           </OptionsButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-36">
-          <DropdownMenuLabel>Tricycle Options</DropdownMenuLabel>
+          <DropdownMenuLabel>Driver Options</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <AlertDialog>

@@ -85,6 +85,31 @@ export const TricycleReceiptSchema = z.object({
   or_number: z.string().min(1, 'Official receipt number is required'),
 });
 
+export const CreateTricycleSchema = z.object({
+  operator_id: z.string(),
+  tricycle_details: z.object({
+    model: z.string(),
+    year: z.string(),
+    body_number: z.string(),
+    seating_capacity: z.string(),
+    fuel_type: z.string(),
+    mileage: z.string(),
+    maintenance_status: z.enum(['ok', 'due', 'critical']),
+  }),
+  compliance_details: z.object({
+    or_number: z.string().min(1, 'Official Receipt is required'),
+    cr_number: z.string().min(1, 'Certificate of Registration is required'),
+    franchise_number: z.string().min(1, 'Franchise Number is required'),
+    registration_number: z.string().min(1, 'Registration number is required'),
+  }),
+  plate_number: z.string(),
+  registration_expiration: z.date(),
+  franchise_expiration: z.date(),
+  last_maintenance_date: z.date(),
+});
+
+export type CreateTricycle = z.infer<typeof CreateTricycleSchema>;
+
 export const TricycleSchema = z.object({
   id: z.string(),
   operator_id: z.string(),

@@ -5,7 +5,7 @@ import { Tricycle } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { removeTricycleFromOperator } from '../actions/tricycles';
 import TricycleCardOptions from './tricycle-card-options';
@@ -43,28 +43,27 @@ function TricycleInformation({
 }
 
 export default function TricycleCard({ tricycle }: TricycleProps) {
-  const [isPending, startTransition] = useTransition();
   const [isHovered, setIsHovered] = useState(false);
   const queryClient = useQueryClient();
 
-  const deleteMutation = useMutation({
-    mutationFn: removeTricycleFromOperator,
+  const deleteTricycleMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await removeTricycleFromOperator(id);
+      return data;
+    },
+    onSuccess: (deletedTricycle) => {
+      queryClient.invalidateQueries({
+        queryKey: ['tricycles'],
+      });
+      toast.success(`${deletedTricycle.plate_number} deleted successfully!`);
+    },
+    onError: () => {
+      toast.error('Unable to delete tricycle.');
+    },
   });
 
   const onDeleteHandler = async () => {
-    startTransition(() => {
-      deleteMutation.mutate(tricycle.id!, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ['tricycles'],
-          });
-          toast.success('Tricycle deleted successfully!');
-        },
-        onError: () => {
-          toast.error('Error deleting tricycle.');
-        },
-      });
-    });
+    deleteTricycleMutation.mutate(tricycle.id);
   };
 
   const TricycleStatus = () => {
@@ -103,7 +102,7 @@ export default function TricycleCard({ tricycle }: TricycleProps) {
           <TricycleCardOptions
             tricycle_id={tricycle.id}
             isHovered={isHovered}
-            isPending={isPending}
+            isPending={deleteTricycleMutation.isPending}
             onDeleteHandler={onDeleteHandler}
           />
         </div>

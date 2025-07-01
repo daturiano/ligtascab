@@ -52,13 +52,13 @@ export function TricycleShiftsTable({ id }: TricycleShiftsTableProps) {
     pageSize: 4,
   });
 
-  const { data: driver_logs } = useQuery({
+  const { data: tricycle_logs } = useQuery({
     queryKey: [id],
     queryFn: async () => fetchAllTricycleShiftLogs(id),
   });
 
   const table = useReactTable({
-    data: driver_logs ?? [],
+    data: tricycle_logs ?? [],
     columns: columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

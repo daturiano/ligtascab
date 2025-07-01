@@ -4,7 +4,7 @@ import { AttachmentDetails, ShiftLog, Tricycle } from '@/lib/types';
 import { createClient } from '@/supabase/server';
 import { PostgrestError } from '@supabase/supabase-js';
 import { cache } from 'react';
-import { TricycleUpdate } from '../schemas/tricycle';
+import { CreateTricycle, TricycleUpdate } from '../schemas/tricycle';
 
 export const getAllTricycles = cache(
   async (): Promise<{ data: Tricycle[]; error: PostgrestError | null }> => {
@@ -35,22 +35,20 @@ export const getTricycleByPlateNumber = async (
   return { data, error };
 };
 
-export async function deleteTricycle(
-  tricycle_id: string
-): Promise<{ error: PostgrestError | null }> {
+export async function deleteTricycle(tricycle_id: string) {
   const supabase = await createClient();
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('tricycles')
     .delete()
-    .eq('id', tricycle_id);
+    .eq('id', tricycle_id)
+    .select()
+    .single();
 
-  return { error };
+  return { data, error };
 }
 
-export const createTricycle = async (
-  tricycleData: Tricycle
-): Promise<{ data: Tricycle; error: PostgrestError | null }> => {
+export const createTricycle = async (tricycleData: CreateTricycle) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -58,8 +56,6 @@ export const createTricycle = async (
     .upsert([tricycleData])
     .select()
     .single();
-
-  console.log(error);
 
   return { data, error };
 };
@@ -144,7 +140,8 @@ export const updateTricycle = async (
     .from('tricycles')
     .update(tricycleData)
     .eq('id', tricycle_id)
-    .select();
+    .select()
+    .single();
 
   return { data, error };
 };

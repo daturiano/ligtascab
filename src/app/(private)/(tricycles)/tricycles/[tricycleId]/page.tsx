@@ -18,7 +18,6 @@ export default async function TricycleProfilePage({
 }) {
   const tricycleId = (await params).tricycleId;
   const { data: tricycle } = await fetchTricycleDetails(tricycleId);
-  console.log(tricycle);
   if (!tricycle) return null;
 
   const supabase = await createClient();

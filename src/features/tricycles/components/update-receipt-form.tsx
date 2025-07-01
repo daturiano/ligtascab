@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import DocumentCard from '@/features/authentication/components/document-card';
 import { AttachmentDetails, DocumentType } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -26,6 +26,7 @@ import {
   TricycleReceiptSchema,
   TricycleUpdateSchema,
 } from '../schemas/tricycle';
+import { getErrorMessage } from '@/lib/utils';
 
 const MAX_FILE_SIZE_MB = 5;
 
@@ -38,45 +39,48 @@ const document_type: DocumentType[] = [
   },
 ];
 
-type UpdateReceiptParams = {
-  data: z.infer<typeof TricycleUpdateSchema>;
-  images: AttachmentDetails;
-};
-
 export default function UpdateReceiptForm() {
   const { tricycleId } = useParams();
+  const tricycle_id = tricycleId as string;
   const [selectedFiles, setSelectedFiles] = useState<{
     [key: string]: File | null;
   }>({});
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const updateReceiptMutation = useMutation({
-    mutationFn: async ({ data, images }: UpdateReceiptParams) => {
-      const { success, error } = await updateTricycleInformation(
-        data,
-        tricycleId as string
-      );
-
-      if (!success || error) {
-        throw new Error('Failed to update tricycle Receipt');
-      }
-
-      const { success: uploadSuccess, error: uploadError } =
-        await uploadTricycleDocument(tricycleId as string, images);
-
-      if (!uploadSuccess || uploadError) {
-        console.error(uploadError);
-        throw new Error(uploadError);
-      }
-    },
-    onSuccess: () => {
-      toast.success('Tricycle&apos;s Receipt details updated successfully!');
-      router.back();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
+    mutationFn: async (data: z.infer<typeof TricycleUpdateSchema>) =>
+      updateTricycleInformation(data, tricycle_id),
   });
+
+  const onSubmit = async (values: z.infer<typeof TricycleReceiptSchema>) => {
+    const attachmentDetails: AttachmentDetails = {};
+
+    Object.entries(selectedFiles).forEach(([docId, file]) => {
+      const docType = document_type.find((doc) => doc.id === docId);
+      attachmentDetails[docId] = {
+        file: file,
+        documentId: docId,
+        documentTitle: docType?.title || 'Unknown Document',
+      };
+    });
+
+    try {
+      const { data: tricycle } = await updateReceiptMutation.mutateAsync({
+        compliance_details: {
+          or_number: values.or_number,
+        },
+      });
+      await uploadTricycleDocument(tricycleId as string, attachmentDetails);
+      queryClient.invalidateQueries({ queryKey: ['tricycles'] });
+      toast.success(
+        `${tricycle.plate_number} official receipt updated successfully!`
+      );
+      router.push(`/tricycles/${tricycle_id}`);
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
+  };
 
   const handleFileSelect = (docId: string, file: File | null) => {
     if (file && file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
@@ -105,28 +109,6 @@ export default function UpdateReceiptForm() {
       or_number: '',
     },
   });
-
-  const onSubmit = async (values: z.infer<typeof TricycleReceiptSchema>) => {
-    const attachmentDetails: AttachmentDetails = {};
-
-    Object.entries(selectedFiles).forEach(([docId, file]) => {
-      const docType = document_type.find((doc) => doc.id === docId);
-      attachmentDetails[docId] = {
-        file: file,
-        documentId: docId,
-        documentTitle: docType?.title || 'Unknown Document',
-      };
-    });
-
-    updateReceiptMutation.mutate({
-      data: {
-        compliance_details: {
-          or_number: values.or_number,
-        },
-      },
-      images: attachmentDetails,
-    });
-  };
 
   return (
     <div className="flex flex-col gap-6 flex-1 max-w-screen-xl mx-auto">

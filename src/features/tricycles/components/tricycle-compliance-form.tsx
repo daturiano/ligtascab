@@ -87,7 +87,7 @@ export default function TricycleComplianceForm() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Official Receipt number*"
+                        placeholder="Official Receipt number (OR)*"
                         type="text"
                         {...field}
                         readOnly={readonly}
@@ -106,7 +106,7 @@ export default function TricycleComplianceForm() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Certificate of Registration number*"
+                        placeholder="Certificate of Registration number (CR)*"
                         type="text"
                         {...field}
                         readOnly={readonly}

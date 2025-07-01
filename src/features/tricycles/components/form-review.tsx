@@ -7,34 +7,35 @@ import {
   createNewTricycle,
   uploadTricycleDocument,
 } from '../actions/tricycles';
-import { useCreateTricycle } from './create-tricycle-provider';
+import {
+  TricycleFormData,
+  useCreateTricycle,
+} from './create-tricycle-provider';
 import FormBottomNavigation from './form-bottom-navigation';
+import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getErrorMessage } from '@/lib/utils';
 
 export default function FormReview() {
   const { formData } = useCreateTricycle();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const createTricycleMutation = useMutation({
+    mutationFn: async (data: TricycleFormData) => createNewTricycle(data),
+  });
 
   const onSubmit = async () => {
     try {
-      const {
-        success,
-        error,
-        data: tricycle,
-      } = await createNewTricycle(formData);
-
-      if (!success || !tricycle?.id) {
-        toast.error(error || 'Unknown error');
-        return;
-      }
-
-      const uploadResults = await uploadTricycleDocument(
-        tricycle.id,
-        formData.attachmentDetails!
+      const { data: tricycle } = await createTricycleMutation.mutateAsync(
+        formData
       );
-
-      console.log('Documents uploaded:', uploadResults);
-      toast.success('Tricycle created successfully!');
+      await uploadTricycleDocument(tricycle.id, formData.attachmentDetails!);
+      queryClient.invalidateQueries({ queryKey: ['tricycles'] });
+      toast.success(`Tricycle ${tricycle.plate_number} created successfully!`);
+      router.push('/tricycles');
     } catch (error) {
-      console.error('Submission error:', error);
+      toast.error(getErrorMessage(error));
     }
   };
 
