@@ -85,8 +85,9 @@ export default function SearchBar() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <div className="size-10 m-0 rounded-full bg-muted-foreground/20 flex items-center justify-center cursor-pointer">
-          <Search size={24} />
+        <div className="m-0 space-x-2 rounded-4xl py-2 px-4 bg-muted-foreground/20 flex items-center justify-center cursor-pointer">
+          <Search size={22} className="text-gray-600" />
+          <p className="text-xs text-gray-600">Search</p>
         </div>
       </DialogTrigger>
       <DialogHeader>

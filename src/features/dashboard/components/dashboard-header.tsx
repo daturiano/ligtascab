@@ -4,18 +4,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Logo from '@/components/ui/logo';
 import LogoWithName from '@/components/ui/logo-with-name';
 import { useQuery } from '@tanstack/react-query';
-import {
-  CarFront,
-  CircleHelp,
-  House,
-  SquareChartGantt,
-  SquareUser,
-} from 'lucide-react';
+import { CarFront, House, SquareChartGantt, SquareUser } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { getOperator } from '../db/dashboard';
 import MobileNavigation from './mobile-navigation';
 import Notifications from './notification';
+import SearchBar from './search-bar';
 
 export const navData = {
   navMain: [
@@ -113,9 +108,10 @@ export default function DashboardHeader() {
           })}
         </div>
         <div className="flex items-center lg:space-x-3 space-x-1">
-          <div className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
-            <CircleHelp size={24} className="text-gray-600" />
-          </div>
+          <SearchBar />
+          {/* <div className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
+            <CircleHelp size={20} className="text-gray-600" />
+          </div> */}
           <Notifications />
           <Avatar className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
             <AvatarImage

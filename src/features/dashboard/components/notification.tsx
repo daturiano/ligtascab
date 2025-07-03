@@ -36,8 +36,15 @@ export default function Notifications() {
   return (
     <Popover open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <PopoverTrigger asChild>
-        <button className="relative size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center cursor-pointer">
-          <Bell className={`text-gray-600 ${isOpen && 'fill-gray-600'}`} />
+        <button
+          className={`relative size-10 rounded-full flex items-center justify-center cursor-pointer ${
+            isOpen ? 'bg-white' : 'bg-muted-foreground/20'
+          }`}
+        >
+          <Bell
+            className={`text-gray-600 ${isOpen && 'fill-black'}`}
+            size={20}
+          />
           {totalCount ? (
             <div className="bg-red-500 absolute -top-1 -right-2 size-5 rounded-full flex items-center justify-center">
               <p className="text-xs text-white">{totalCount}</p>
