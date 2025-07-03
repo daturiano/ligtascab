@@ -5,9 +5,7 @@ import Logo from '@/components/ui/logo';
 import LogoWithName from '@/components/ui/logo-with-name';
 import { useQuery } from '@tanstack/react-query';
 import {
-  Bell,
   CarFront,
-  ChevronDown,
   CircleHelp,
   House,
   SquareChartGantt,
@@ -17,7 +15,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { getOperator } from '../db/dashboard';
 import MobileNavigation from './mobile-navigation';
-import SearchBar from './search-bar';
+import Notifications from './notification';
 
 export const navData = {
   navMain: [
@@ -114,29 +112,23 @@ export default function DashboardHeader() {
             );
           })}
         </div>
-        <div className="flex items-center lg:space-x-2 space-x-1">
-          <SearchBar />
+        <div className="flex items-center lg:space-x-3 space-x-1">
           <div className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
-            <CircleHelp size={24} />
+            <CircleHelp size={24} className="text-gray-600" />
           </div>
-          <div className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
-            <Bell size={22} />
-          </div>
-          <div className="relative">
-            <Avatar className="size-10 rounded-full">
-              <AvatarImage
-                src={operator.image ?? undefined}
-                alt={operator.first_name}
-              />
-              <AvatarFallback className="size-10 border-1 border-white rounded-full bg-gray-300 flex items-center justify-center">
-                <p>{operator.first_name.charAt(0).toUpperCase()}</p>
-                <p>{operator.last_name.charAt(0).toUpperCase()}</p>
-              </AvatarFallback>
-            </Avatar>
-            <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full flex items-center justify-center bg-card">
-              <ChevronDown size={12} />
-            </div>
-          </div>
+          <Notifications />
+          <Avatar className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
+            <AvatarImage
+              src={operator.image ?? undefined}
+              alt={operator.first_name}
+            />
+            <AvatarFallback className="size-10 rounded-full bg-muted-foreground/10 flex items-center justify-center">
+              <p className="font-medium">
+                {operator.first_name.charAt(0).toUpperCase()}
+                {operator.last_name.charAt(0).toUpperCase()}
+              </p>
+            </AvatarFallback>
+          </Avatar>
         </div>
       </div>
     </div>

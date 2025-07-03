@@ -87,12 +87,15 @@ export interface DocumentType {
   required: boolean;
 }
 
-export type ServerActionResult<T> =
-  | {
-      success: true;
-      data: T;
-    }
-  | {
-      success: false;
-      error: string;
-    };
+export type Notification = {
+  id: string;
+  operator_id: string;
+  driver_id?: string;
+  tricycle_id?: string;
+  plate_number?: string;
+  driver_name?: string;
+  expiration_type: string;
+  read: boolean;
+  created_at: string;
+  expiration_date: Date;
+};

@@ -1,7 +1,7 @@
-'use server';
+"use server";
 
-import { Driver, Operator, Tricycle } from '@/lib/types';
-import { createClient } from '@/supabase/server';
+import { Driver, Notification, Operator, Tricycle } from "@/lib/types";
+import { createClient } from "@/supabase/server";
 
 export const getOperator = async (): Promise<Operator | null> => {
   const supabase = await createClient();
@@ -12,9 +12,9 @@ export const getOperator = async (): Promise<Operator | null> => {
   if (!user) return null;
 
   const { data: operator, error } = await supabase
-    .from('operators')
-    .select('*')
-    .eq('id', user.id)
+    .from("operators")
+    .select("*")
+    .eq("id", user.id)
     .single();
 
   if (error) {
@@ -26,7 +26,7 @@ export const getOperator = async (): Promise<Operator | null> => {
 
 export const searchTricycles = async (
   query: string,
-  page: number = 0
+  page: number = 0,
 ): Promise<Tricycle[]> => {
   if (!query.trim()) return [];
 
@@ -35,14 +35,14 @@ export const searchTricycles = async (
   const offset = page * limit;
 
   const { data, error } = await supabase
-    .from('tricycles')
-    .select('*')
-    .ilike('plate_number', `%${query}%`)
+    .from("tricycles")
+    .select("*")
+    .ilike("plate_number", `%${query}%`)
     .range(offset, offset + limit - 1)
     .limit(limit);
 
   if (error) {
-    console.error('Error searching tricycles:', error);
+    console.error("Error searching tricycles:", error);
     return [];
   }
 
@@ -51,7 +51,7 @@ export const searchTricycles = async (
 
 export const searchDrivers = async (
   query: string,
-  page: number = 0
+  page: number = 0,
 ): Promise<Driver[]> => {
   if (!query.trim()) return [];
   const supabase = await createClient();
@@ -61,18 +61,20 @@ export const searchDrivers = async (
   const searchTerms = query.trim().split(/\s+/);
 
   let supabaseQuery = supabase
-    .from('drivers')
-    .select('*')
+    .from("drivers")
+    .select("*")
     .range(offset, offset + limit - 1)
     .limit(limit);
 
   if (searchTerms.length === 1) {
     supabaseQuery = supabaseQuery.or(
-      `first_name.ilike.%${searchTerms[0]}%,last_name.ilike.%${searchTerms[0]}%`
+      `first_name.ilike.%${searchTerms[0]}%,last_name.ilike.%${
+        searchTerms[0]
+      }%`,
     );
   } else {
     const [firstTerm, ...restTerms] = searchTerms;
-    const lastTerm = restTerms.join(' ');
+    const lastTerm = restTerms.join(" ");
 
     supabaseQuery = supabaseQuery.or(
       [
@@ -84,15 +86,39 @@ export const searchDrivers = async (
         `first_name.ilike.%${query}%`,
         // Full query in last_name
         `last_name.ilike.%${query}%`,
-      ].join(',')
+      ].join(","),
     );
   }
 
   const { data, error } = await supabaseQuery;
 
   if (error) {
-    console.error('Error searching drivers:', error);
+    console.error("Error searching drivers:", error);
     return [];
   }
   return data || [];
+};
+
+export const getNotifications = async (): Promise<Notification[]> => {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("notifications")
+    .select("*", { count: "exact" })
+    .order("created_at", { ascending: false });
+
+  return data || [];
+};
+
+export const markAsRead = async (id: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("notifications")
+    .update({ read: true })
+    .eq("id", id)
+    .select();
+  if (error) {
+    return error;
+  }
+
+  return data;
 };
