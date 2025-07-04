@@ -31,7 +31,7 @@ export default function DriverProfileCard({ driver }: DriverProfileCardProps) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   return (
     <Card
-      className="py-0 w-full max-w-[500px]"
+      className="py-0 w-full xl:min-w-[410px] xl:max-w-[410px]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

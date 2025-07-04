@@ -112,3 +112,20 @@ export function isPastDue(date: Date): boolean {
 
   return targetDate < today;
 }
+
+export function isTwoMonthFromNow(date: Date): boolean {
+  const targetDate = new Date(date);
+  const currentDate = new Date();
+
+  const twoMonthsFromNow = new Date();
+  twoMonthsFromNow.setMonth(currentDate.getMonth() + 2);
+  twoMonthsFromNow.setHours(0, 0, 0, 0);
+
+  targetDate.setHours(0, 0, 0, 0);
+
+  return (
+    targetDate.getFullYear() === twoMonthsFromNow.getFullYear() &&
+    targetDate.getMonth() === twoMonthsFromNow.getMonth() &&
+    targetDate.getDate() === twoMonthsFromNow.getDate()
+  );
+}

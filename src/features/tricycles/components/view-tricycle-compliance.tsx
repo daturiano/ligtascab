@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,48 +14,47 @@ import {
 import { createClient } from '@/supabase/client';
 import Image from 'next/image';
 import Link from 'next/link';
-
-const documents = [
-  {
-    id: 'certificate-of-registration',
-    name: 'Registration',
-    title: 'Certificate of Registration (CR)',
-    description: 'Upload the tricycles Certificate of Registration (CR)',
-    link: 'update-registration',
-  },
-  {
-    id: 'official-receipt',
-    name: 'Official Receipt',
-    title: 'Official Receipt (OR)',
-    description: 'Upload the tricycles Official Receipt (OR)',
-    link: 'update-or',
-  },
-  {
-    id: 'certificate-of-franchise',
-    name: 'Franchise',
-    title: 'Franichse Certificate',
-    description: 'Upload the tricycles Official Receipt (OR)',
-    link: 'update-franchise',
-  },
-  {
-    id: 'inspection-certificate',
-    name: 'Maintenance',
-    title: 'Vehicle Inspection Certificate',
-    description: 'Upload the tricycles Vehicle Inspection Certificate',
-    link: 'update-maintenance',
-  },
-];
+import { Tricycle } from '@/lib/types';
+import DocumentStatusBadge from '../../../components/document-status-badge';
 
 type ViewTricycleComplianceProps = {
   path: string;
-  tricycle_id: string;
+  tricycle: Tricycle;
 };
 
 export default function ViewTricycleCompliance({
   path,
-  tricycle_id,
+  tricycle,
 }: ViewTricycleComplianceProps) {
   const supabase = createClient();
+
+  const documents = [
+    {
+      id: 'or/cr',
+      name: 'Receipt & Registration',
+      title: 'Official Receipt & Certificate of Registration',
+      description: 'Upload the tricycles Certificate of Registration (CR)',
+      link: 'update-or/cr',
+      expiration_date: tricycle.registration_expiration,
+    },
+    {
+      id: 'certificate-of-franchise',
+      name: 'Franchise',
+      title: 'Franchise Certificate',
+      description: 'Upload the tricycles Franchise Certificate',
+      link: 'update-franchise',
+      expiration_date: tricycle.franchise_expiration,
+    },
+    {
+      id: 'inspection-certificate',
+      name: 'Maintenance',
+      title: 'Vehicle Inspection Certificate',
+      description: 'Upload the tricycles Vehicle Inspection Certificate',
+      link: 'update-maintenance',
+      expiration_date: tricycle.last_maintenance_date,
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-2">
       {documents.map((item) => {
@@ -66,6 +64,7 @@ export default function ViewTricycleCompliance({
         const { data: image } = supabase.storage
           .from('documents')
           .getPublicUrl(`${path}/${item.id}/${sanitizedTitle}.jpg`);
+
         return (
           <Dialog key={item.id}>
             <DialogTrigger className="bg-primary text-white p-2 text-sm rounded-md cursor-pointer">
@@ -73,7 +72,10 @@ export default function ViewTricycleCompliance({
             </DialogTrigger>
             <DialogContent className="sm:max-w-2xl">
               <DialogHeader>
-                <DialogTitle>{item.title}</DialogTitle>
+                <DialogTitle className="flex flex-row gap-4 items-center">
+                  <p>{item.title}</p>
+                  <DocumentStatusBadge date={item.expiration_date} />
+                </DialogTitle>
                 <DialogDescription>
                   Please make sure to keep the tricycle&apos;s {item.title}{' '}
                   always up to date.
@@ -97,7 +99,7 @@ export default function ViewTricycleCompliance({
                     Close
                   </Button>
                 </DialogClose>
-                <Link href={`${tricycle_id}/update-document?type=${item.link}`}>
+                <Link href={`${tricycle.id}/update-document?type=${item.link}`}>
                   <Button>Update Document</Button>
                 </Link>
               </DialogFooter>

@@ -51,7 +51,10 @@ export default async function DriverProfilePage({
                   do so will disable the usage of this driver.
                 </p>
                 <div className="flex flex-col gap-2">
-                  <ViewDriverLicense path={`${user.id}/drivers/${driver.id}`} />
+                  <ViewDriverLicense
+                    path={`${user.id}/drivers/${driver.id}`}
+                    license_expiration={driver.license_expiration}
+                  />
                   <Link href={`/drivers/${driver.id}/update-license`}>
                     <Button className="flex-1 w-full" variant={'outline'}>
                       Update License

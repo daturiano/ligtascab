@@ -53,7 +53,7 @@ export const columns: ColumnDef<ShiftLog>[] = [
   },
   {
     accessorKey: 'revenue_collected',
-    header: 'revenue_collected',
+    header: 'Revenue',
   },
   {
     accessorKey: 'shift_description',

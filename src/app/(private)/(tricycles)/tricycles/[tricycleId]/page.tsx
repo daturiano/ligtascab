@@ -55,7 +55,7 @@ export default async function TricycleProfilePage({
                 <div className="flex flex-col gap-2">
                   <ViewTricycleCompliance
                     path={`${user.id}/tricycles/${tricycle.id}`}
-                    tricycle_id={tricycle.id}
+                    tricycle={tricycle}
                   />
                 </div>
               </div>

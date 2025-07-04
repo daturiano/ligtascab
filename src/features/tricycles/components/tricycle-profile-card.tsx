@@ -29,7 +29,7 @@ export default function TricycleProfileCard({
   tricycle,
 }: TricycleProfileCardProps) {
   return (
-    <Card className="py-0 w-full max-w-[500px]">
+    <Card className="py-0 w-full xl:min-w-[410px] xl:max-w-[410px]">
       <CardHeader className="w-full relative flex flex-col items-center justify-center bg-muted-foreground/5 rounded-t-xl py-4">
         <CardTitle>
           <div className="relative">
