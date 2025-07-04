@@ -102,3 +102,13 @@ export function getErrorMessage(err: unknown): string {
 export function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
+
+export function isPastDue(date: Date): boolean {
+  const targetDate = new Date(date);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  targetDate.setHours(0, 0, 0, 0);
+
+  return targetDate < today;
+}

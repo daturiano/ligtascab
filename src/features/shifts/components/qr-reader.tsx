@@ -2,11 +2,11 @@ import errorImg from '@/app/public/close.png';
 import { Button } from '@/components/ui/button';
 import { Driver } from '@/lib/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Scanner } from '@yudiel/react-qr-scanner';
 import Image from 'next/image';
 import { useState } from 'react';
-import { QrReader } from 'react-qr-reader';
-import ShiftForm from './shift-form';
 import { fetchDriverDetails } from '../actions/shifts';
+import ShiftForm from './shift-form';
 
 type QRCodeReaderProps = {
   setIsScanning: (isScanning: boolean) => void;
@@ -15,7 +15,6 @@ type QRCodeReaderProps = {
 export default function QRCodeReader({ setIsScanning }: QRCodeReaderProps) {
   const [driverId, setDriverId] = useState<string | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
-  const [shouldFetch, setShouldFetch] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: driver } = useQuery<Driver | null>({
@@ -31,14 +30,13 @@ export default function QRCodeReader({ setIsScanning }: QRCodeReaderProps) {
       }
       return data;
     },
-    enabled: shouldFetch && !!driverId,
+    enabled: !!driverId,
     retry: false,
   });
 
   const tryAgain = () => {
     setDriverId(null);
     setScanError(null);
-    setShouldFetch(false);
     queryClient.removeQueries({ queryKey: ['driver-details'], exact: false });
   };
 
@@ -49,30 +47,30 @@ export default function QRCodeReader({ setIsScanning }: QRCodeReaderProps) {
   return (
     <div className="flex flex-col gap-4">
       {!scanError ? (
-        <QrReader
-          onResult={(result) => {
-            if (!!result) {
-              setDriverId(result.getText());
-            }
+        <Scanner
+          onScan={(result) => {
+            setDriverId(result[0].rawValue);
           }}
           constraints={{ facingMode: 'environment' }}
-          videoId="qr-video"
-          className="w-full h-full"
-          videoContainerStyle={{
-            position: 'relative',
-            width: '100%',
-            minHeight: '300px',
-          }}
-          videoStyle={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            position: 'absolute',
-            top: 0,
-            left: 0,
+          paused={driverId !== null}
+          sound={false}
+          styles={{
+            container: {
+              position: 'relative',
+              width: '100%',
+              minHeight: '300px',
+            },
+            video: {
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            },
           }}
         />
-      ) : (
+      ) : scanError ? (
         <div className="flex flex-col items-center gap-4">
           <Image
             src={errorImg}
@@ -82,6 +80,12 @@ export default function QRCodeReader({ setIsScanning }: QRCodeReaderProps) {
             className="my-4"
           />
           <p className="text-destructive text-md">{scanError}</p>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-full h-[300px] bg-gray-100 rounded-lg flex items-center justify-center">
+            <p className="text-gray-600">Processing QR Code...</p>
+          </div>
         </div>
       )}
       <div className="flex flex-col gap-2">
