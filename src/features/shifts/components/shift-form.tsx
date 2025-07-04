@@ -17,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
@@ -29,6 +30,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Driver } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -43,7 +46,6 @@ import {
 } from '../actions/shifts';
 import { ShiftSchema } from '../schemas/shifts';
 import DriverDetailsCard from './driver-details-card';
-import { Driver } from '@/lib/types';
 
 type LogFormProps = {
   driver: Driver;
@@ -63,6 +65,8 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
       operator_id: driver.operator_id,
       driver_id: driver.id,
       tricycle_id: '',
+      revenue_collected: undefined,
+      shift_description: '',
     },
   });
 
@@ -103,9 +107,52 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <DriverDetailsCard driver={driver} />
+      {!isTimeOut && <DriverDetailsCard driver={driver} />}
       <Form {...form}>
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          {isTimeOut && (
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="revenue_collected"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm md:text-base">
+                      Revenue Collected
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Revenue collected"
+                        type="text"
+                        {...field}
+                        className="h-12"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="shift_description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm md:text-base">
+                      Reported issues or incidents(if any)
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Vehicle condition report, leave blank if none"
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
           <div className="flex gap-4">
             <FormField
               control={form.control}

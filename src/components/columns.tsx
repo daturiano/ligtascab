@@ -51,4 +51,12 @@ export const columns: ColumnDef<ShiftLog>[] = [
     accessorKey: 'plate_number',
     header: 'Plate Number',
   },
+  {
+    accessorKey: 'revenue_collected',
+    header: 'revenue_collected',
+  },
+  {
+    accessorKey: 'shift_description',
+    header: 'Shift Description',
+  },
 ];

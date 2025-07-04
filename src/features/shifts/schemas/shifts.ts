@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const ShiftSchema = z.object({
   driver_name: z.string(),
@@ -7,4 +7,6 @@ export const ShiftSchema = z.object({
   operator_id: z.string(),
   driver_id: z.string(),
   tricycle_id: z.string(),
+  revenue_collected: z.string().optional(),
+  shift_description: z.string().optional(),
 });

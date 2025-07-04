@@ -46,6 +46,8 @@ export const createNewShiftLog = async (
       operator_id: data.operator_id,
       driver_id: data.driver_id,
       tricycle_id: "",
+      revenue_collected: data.revenue_collected,
+      shift_description: data.shift_description,
     };
 
     const status = `${data.shift_type === "Time-in" ? "active" : "inactive"}`;
