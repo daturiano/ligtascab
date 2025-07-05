@@ -1,10 +1,8 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse, type NextRequest } from 'next/server';
+import { createServerClient } from "@supabase/ssr";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
+  let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,69 +13,75 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
-          supabaseResponse = NextResponse.next({
-            request,
-          });
+          supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           );
         },
       },
-    }
+    },
   );
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const publicRoutes = ['/sign-in', '/sign-up', '/'];
+  const publicRoutes = ["/sign-in", "/sign-up", "/"];
   const privateRoutes = [
-    '/account-setup',
-    '/tricycles',
-    '/create-tricycle',
-    '/renew-tricycle',
-    '/home',
+    "/account-setup",
+    "/tricycles",
+    "/create-tricycle",
+    "/renew-tricycle",
+    "/home",
   ];
 
   const { pathname } = request.nextUrl;
 
-  if (
-    !user &&
-    (pathname.startsWith('/home') || pathname.startsWith('/account-setup'))
-  ) {
+  // Redirect unauthenticated users away from private routes
+  if (!user && privateRoutes.some((route) => pathname.startsWith(route))) {
     const url = request.nextUrl.clone();
-    url.pathname = '/sign-in';
+    url.pathname = "/sign-in";
     return NextResponse.redirect(url);
   }
 
-  if (user?.user_metadata?.is_new_user && pathname.startsWith('/home')) {
+  // FIXED: Allow officers to access any admin route (not just /admin exactly)
+  if (user?.role === "officer" && !pathname.startsWith("/admin")) {
     const url = request.nextUrl.clone();
-    url.pathname = '/account-setup';
+    url.pathname = "/admin";
     return NextResponse.redirect(url);
   }
 
+  // Redirect non-officers away from admin routes
+  if (user?.role !== "officer" && pathname.startsWith("/admin")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect new users to account setup
+  if (user?.user_metadata?.is_new_user && pathname.startsWith("/home")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/account-setup";
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect existing users away from account setup
   if (
     !user?.user_metadata?.is_new_user &&
-    pathname.startsWith('/account-setup')
+    pathname.startsWith("/account-setup")
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = '/home';
-    return NextResponse.redirect(url);
-  }
-  if (user && publicRoutes.includes(pathname)) {
-    // Authenticated users should not access public pages
-    const url = request.nextUrl.clone();
-    url.pathname = '/home';
+    url.pathname = "/home";
     return NextResponse.redirect(url);
   }
 
-  if (!user && privateRoutes.includes(pathname)) {
+  // Redirect authenticated users away from public routes
+  if (user && publicRoutes.includes(pathname)) {
     const url = request.nextUrl.clone();
-    url.pathname = '/sign-in';
+    url.pathname = "/home";
     return NextResponse.redirect(url);
   }
 
