@@ -37,10 +37,10 @@ export default function AddressForm() {
     resolver: zodResolver(AddressSchema),
     mode: 'onBlur',
     defaultValues: {
-      province: formData.addressDetails?.province || '',
-      municipality: formData.addressDetails?.municipality || '',
-      address: formData.addressDetails?.address || '',
-      postal_code: formData.addressDetails?.postal_code || '',
+      province: formData.addressDetails?.province || 'Camarines Sur',
+      municipality: formData.addressDetails?.municipality || 'Naga City',
+      address: formData.addressDetails?.address || 'Zone 1, Brgy. Triangulo',
+      postal_code: formData.addressDetails?.postal_code || '4400',
     },
   });
 
@@ -73,6 +73,7 @@ export default function AddressForm() {
                     <Select
                       onValueChange={field.onChange}
                       disabled={readonly}
+                      value={field.value}
                       defaultValue={formData.addressDetails?.province}
                     >
                       <FormControl>
@@ -100,6 +101,7 @@ export default function AddressForm() {
                   <FormItem>
                     <Select
                       disabled={readonly}
+                      value={field.value}
                       onValueChange={field.onChange}
                       defaultValue={formData.addressDetails?.municipality}
                     >

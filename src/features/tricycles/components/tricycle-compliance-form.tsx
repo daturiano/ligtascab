@@ -7,6 +7,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -32,12 +33,14 @@ export default function TricycleComplianceForm() {
     resolver: zodResolver(ComplianceSchema),
     mode: 'onBlur',
     defaultValues: {
-      plate_number: formData.complianceDetails?.plate_number || '',
-      or_number: formData.complianceDetails?.or_number || '',
-      cr_number: formData.complianceDetails?.cr_number || '',
-      franchise_number: formData.complianceDetails?.franchise_number || '',
+      plate_number: formData.complianceDetails?.plate_number || 'NGA-3042',
+      or_number: formData.complianceDetails?.or_number || 'OR-03493',
+      cr_number: formData.complianceDetails?.cr_number || 'CR-30943',
+      franchise_number:
+        formData.complianceDetails?.franchise_number || 'FN-093492',
       franchise_expiration:
-        formData.complianceDetails?.franchise_expiration || undefined,
+        formData.complianceDetails?.franchise_expiration ||
+        new Date('2026-01-01'),
     },
   });
 
@@ -50,7 +53,7 @@ export default function TricycleComplianceForm() {
     <div>
       <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
         <CardHeader>
-          <CardTitle className="text-sm font-normal">
+          <CardTitle className="text-base font-medium">
             Triycle Compliance
           </CardTitle>
         </CardHeader>
@@ -66,6 +69,7 @@ export default function TricycleComplianceForm() {
                 name="plate_number"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Plate Number</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Plate number*"
@@ -85,6 +89,7 @@ export default function TricycleComplianceForm() {
                 name="or_number"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>OR Number</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Official Receipt number (OR)*"
@@ -104,6 +109,7 @@ export default function TricycleComplianceForm() {
                 name="cr_number"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>CR Number</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Certificate of Registration number (CR)*"
@@ -123,6 +129,7 @@ export default function TricycleComplianceForm() {
                 name="franchise_number"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Franchise Number</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Franchise number*"
@@ -142,6 +149,7 @@ export default function TricycleComplianceForm() {
                 name="franchise_expiration"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
+                    <FormLabel>Franchise Expiration</FormLabel>
                     <Popover>
                       <PopoverTrigger
                         asChild

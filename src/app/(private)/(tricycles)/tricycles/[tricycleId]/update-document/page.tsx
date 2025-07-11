@@ -3,14 +3,12 @@
 import LogoWithName from '@/components/ui/logo-with-name';
 import UpdateFranchiseForm from '@/features/tricycles/components/update-franchise-form';
 import UpdateMaintenanceForm from '@/features/tricycles/components/update-maintenance-form';
-import UpdateReceiptForm from '@/features/tricycles/components/update-receipt-form';
 import UpdateRegistrationForm from '@/features/tricycles/components/update-registration-form';
 import { X } from 'lucide-react';
-import { useSearchParams, useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 const formMap: Record<string, React.ComponentType<{ tricycleId: string }>> = {
-  'update-registration': UpdateRegistrationForm,
-  'update-or': UpdateReceiptForm,
+  'update-or/cr': UpdateRegistrationForm,
   'update-franchise': UpdateFranchiseForm,
   'update-maintenance': UpdateMaintenanceForm,
 };

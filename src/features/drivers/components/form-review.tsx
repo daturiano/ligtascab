@@ -20,10 +20,10 @@ export default function FormReview() {
   const onSubmit = async () => {
     try {
       const { data: driver } = await createDriverMutation.mutateAsync(formData);
-      await uploadDriverDocument(
-        formData.complianceDetails!.license_number,
-        formData.attachmentDetails!
-      );
+      // await uploadDriverDocument(
+      //   formData.complianceDetails!.license_number,
+      //   formData.attachmentDetails!
+      // );
       queryClient.invalidateQueries({ queryKey: ['drivers'] });
       toast.success(
         `${driver.first_name} ${driver.last_name} created Successfully!`

@@ -7,6 +7,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -39,14 +40,16 @@ export default function TricycleDetailsForm() {
     resolver: zodResolver(TricycleInfoSchema),
     mode: 'onBlur',
     defaultValues: {
-      model: formData.tricycleDetails?.model || '',
-      year: formData.tricycleDetails?.year || '',
-      registration_number: formData.tricycleDetails?.registration_number || '',
+      model: formData.tricycleDetails?.model || 'Yamaha Aerox',
+      year: formData.tricycleDetails?.year || '2024',
+      registration_number:
+        formData.tricycleDetails?.registration_number || 'RN-0239212',
       registration_expiration:
-        formData.tricycleDetails?.registration_expiration || undefined,
-      body_number: formData.tricycleDetails?.body_number || '',
-      seating_capacity: formData.tricycleDetails?.seating_capacity || '',
-      fuel_type: formData.tricycleDetails?.fuel_type || '',
+        formData.tricycleDetails?.registration_expiration ||
+        new Date('2026-01-01'),
+      body_number: formData.tricycleDetails?.body_number || 'BD-0234',
+      seating_capacity: formData.tricycleDetails?.seating_capacity || '4',
+      fuel_type: formData.tricycleDetails?.fuel_type || 'unleaded',
     },
   });
 
@@ -59,7 +62,9 @@ export default function TricycleDetailsForm() {
     <div>
       <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
         <CardHeader>
-          <CardTitle className="text-sm font-medium">Triycle Details</CardTitle>
+          <CardTitle className="text-base font-medium">
+            Triycle Details
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -74,6 +79,7 @@ export default function TricycleDetailsForm() {
                   name="model"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>Model</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Model*"
@@ -92,6 +98,7 @@ export default function TricycleDetailsForm() {
                   name="year"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>Year</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Year*"
@@ -112,6 +119,7 @@ export default function TricycleDetailsForm() {
                 name="registration_number"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Registration Number</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Registration number*"
@@ -131,6 +139,7 @@ export default function TricycleDetailsForm() {
                 name="registration_expiration"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
+                    <FormLabel>Registration Expiration</FormLabel>
                     <Popover>
                       <PopoverTrigger
                         asChild
@@ -178,6 +187,7 @@ export default function TricycleDetailsForm() {
                   name="body_number"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>Body Number</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Body number* "
@@ -196,6 +206,7 @@ export default function TricycleDetailsForm() {
                   name="seating_capacity"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>Seating Capacity</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Seating capacity*"
@@ -214,10 +225,12 @@ export default function TricycleDetailsForm() {
                   name="fuel_type"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>Fuel Type</FormLabel>
                       <Select
                         onValueChange={field.onChange}
+                        value={field.value}
                         disabled={readonly}
-                        defaultValue={formData.tricycleDetails?.fuel_type}
+                        defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="py-6 w-full text-xs lg:text-sm">

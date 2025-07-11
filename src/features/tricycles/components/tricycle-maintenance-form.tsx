@@ -7,6 +7,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -40,9 +41,11 @@ export default function TricycleMaintenanceForm() {
     mode: 'onBlur',
     defaultValues: {
       last_maintenance_date:
-        formData.maintenanceDetails?.last_maintenance_date || undefined,
-      maintenance_status: formData.maintenanceDetails?.maintenance_status,
-      mileage: formData.maintenanceDetails?.mileage || '',
+        formData.maintenanceDetails?.last_maintenance_date ||
+        new Date('2026-01-01'),
+      maintenance_status:
+        formData.maintenanceDetails?.maintenance_status || 'ok',
+      mileage: formData.maintenanceDetails?.mileage || '26432',
     },
   });
 
@@ -55,8 +58,8 @@ export default function TricycleMaintenanceForm() {
     <div>
       <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
         <CardHeader>
-          <CardTitle className="text-sm font-normal">
-            Tricycle Meintenance
+          <CardTitle className="text-base font-medium">
+            Tricycle Maintenance
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -71,6 +74,7 @@ export default function TricycleMaintenanceForm() {
                 name="last_maintenance_date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
+                    <FormLabel>Last Maintenance Date</FormLabel>
                     <Popover>
                       <PopoverTrigger
                         asChild
@@ -116,8 +120,10 @@ export default function TricycleMaintenanceForm() {
                 name="maintenance_status"
                 render={({ field }) => (
                   <FormItem className="w-full">
+                    <FormLabel>Maintenance Status</FormLabel>
                     <Select
                       onValueChange={field.onChange}
+                      value={field.value}
                       defaultValue={
                         formData.maintenanceDetails?.maintenance_status
                       }
@@ -143,6 +149,7 @@ export default function TricycleMaintenanceForm() {
                 name="mileage"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Mileage</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Mileage"

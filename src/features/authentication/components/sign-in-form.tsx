@@ -50,8 +50,8 @@ export default function SignInForm() {
     resolver: zodResolver(CredentialsSchema),
     mode: 'onBlur',
     defaultValues: {
-      email: '',
-      password: '',
+      email: 'danieljoshuaturiano.r@gmail.com',
+      password: 'miami24t',
     },
   });
 

@@ -7,6 +7,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -34,24 +35,26 @@ export default function DriverLicenseForm() {
     resolver: zodResolver(DriverComplianceSchema),
     mode: 'onBlur',
     defaultValues: {
-      license_number: formData.complianceDetails?.license_number || '',
+      license_number:
+        formData.complianceDetails?.license_number || 'LN-0329432',
       license_expiration:
-        formData.complianceDetails?.license_expiration || undefined,
+        formData.complianceDetails?.license_expiration ||
+        new Date('2026-01-01'),
     },
   });
 
   // Check if both required documents are uploaded
-  const canContinue = useMemo(() => {
-    const attachmentDetails = formData.attachmentDetails || {};
-    const hasLicenseFront =
-      attachmentDetails['license-front']?.file instanceof File;
-    const hasLicenseBack =
-      attachmentDetails['license-back']?.file instanceof File;
-    return hasLicenseFront && hasLicenseBack;
-  }, [formData.attachmentDetails]);
+  // const canContinue = useMemo(() => {
+  //   const attachmentDetails = formData.attachmentDetails || {};
+  //   const hasLicenseFront =
+  //     attachmentDetails['license-front']?.file instanceof File;
+  //   const hasLicenseBack =
+  //     attachmentDetails['license-back']?.file instanceof File;
+  //   return hasLicenseFront && hasLicenseBack;
+  // }, [formData.attachmentDetails]);
 
   const onSubmit = (values: z.infer<typeof DriverComplianceSchema>) => {
-    if (!canContinue) return;
+    // if (!canContinue) return;
     setData({ complianceDetails: values });
     nextStep();
   };
@@ -76,6 +79,7 @@ export default function DriverLicenseForm() {
                 name="license_number"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>License Number</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="License number*"
@@ -95,6 +99,7 @@ export default function DriverLicenseForm() {
                 name="license_expiration"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
+                    <FormLabel>License Expiration</FormLabel>
                     <Popover>
                       <PopoverTrigger
                         asChild

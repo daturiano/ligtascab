@@ -47,19 +47,19 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // FIXED: Allow officers to access any admin route (not just /admin exactly)
-  if (user?.role === "officer" && !pathname.startsWith("/admin")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin";
-    return NextResponse.redirect(url);
-  }
+  // // FIXED: Allow officers to access any admin route (not just /admin exactly)
+  // if (user?.role === "officer" && !pathname.startsWith("/admin")) {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = "/admin";
+  //   return NextResponse.redirect(url);
+  // }
 
-  // Redirect non-officers away from admin routes
-  if (user?.role !== "officer" && pathname.startsWith("/admin")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/";
-    return NextResponse.redirect(url);
-  }
+  // // Redirect non-officers away from admin routes
+  // if (user?.role !== "officer" && pathname.startsWith("/admin")) {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = "/";
+  //   return NextResponse.redirect(url);
+  // }
 
   // Redirect new users to account setup
   if (user?.user_metadata?.is_new_user && pathname.startsWith("/home")) {

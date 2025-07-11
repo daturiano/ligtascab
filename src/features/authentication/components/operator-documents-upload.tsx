@@ -76,10 +76,10 @@ export default function OperatorDocumentsUpload() {
   };
 
   const handleContinue = () => {
-    if (!areRequiredDocumentsUploaded()) {
-      alert('Please upload all required documents before continuing.');
-      return;
-    }
+    // if (!areRequiredDocumentsUploaded()) {
+    //   alert('Please upload all required documents before continuing.');
+    //   return;
+    // }
     nextStep();
   };
 
@@ -101,7 +101,7 @@ export default function OperatorDocumentsUpload() {
       <FormBottomNavigation
         onSubmit={handleContinue}
         prevStep={prevStep}
-        disabled={!areRequiredDocumentsUploaded()}
+        // disabled={!areRequiredDocumentsUploaded()}
       />
     </div>
   );

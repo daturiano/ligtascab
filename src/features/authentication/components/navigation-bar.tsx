@@ -11,7 +11,7 @@ export default function NavigationBar() {
 
   return (
     <div className="w-full px-4 pt-4 lg:px-6 lg:pt-6 flex justify-between items-center">
-      <p className="font-nunito font-extrabold tracking-tighter text-2xl lg:text-4xl">
+      <p className="font-nunito text-primary font-extrabold tracking-tighter text-2xl lg:text-4xl">
         ligtascab.
       </p>
       <div className="flex items-center gap-2">

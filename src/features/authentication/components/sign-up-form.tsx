@@ -27,16 +27,12 @@ export default function SignUpForm() {
   const registerCredentials = async (data: z.infer<typeof UserSchema>) => {
     const response = await registerWithCredentials(data);
     if (response?.error) {
-      toast.error(response.error, {
-        description: getFormattedDate(),
-      });
+      toast.error(response.error);
       return;
     }
     if (response?.message) {
-      toast.success(response.message, {
-        description: getFormattedDate(),
-      });
-      redirect('/account-setup');
+      toast.success(response.message);
+      redirect('/sign-in');
     }
   };
 
@@ -50,9 +46,9 @@ export default function SignUpForm() {
     resolver: zodResolver(UserSchema),
     mode: 'onBlur',
     defaultValues: {
-      email: '',
-      password: '',
-      confirm_password: '',
+      email: 'testaccount@gmail.com',
+      password: 'miami24t',
+      confirm_password: 'miami24t',
     },
   });
 

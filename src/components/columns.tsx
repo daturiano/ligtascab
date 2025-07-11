@@ -15,7 +15,7 @@ export const columns: ColumnDef<ShiftLog>[] = [
       return (
         <div className="ml-2 mr-4">
           {type === 'Time-in' ? (
-            <Badge>{type}</Badge>
+            <Badge className="w-full">{type}</Badge>
           ) : (
             <Badge variant={'outline'} className="w-full">
               {type}

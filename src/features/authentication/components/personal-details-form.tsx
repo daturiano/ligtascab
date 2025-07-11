@@ -40,11 +40,12 @@ export default function PersonalDetailsForm() {
     resolver: zodResolver(PersonalDetailsSchema),
     mode: 'onBlur',
     defaultValues: {
-      first_name: formData.personalDetails?.first_name || '',
-      last_name: formData.personalDetails?.last_name || '',
-      birth_date: formData.personalDetails?.birth_date || undefined,
-      phone_number: formData.personalDetails?.phone_number || '',
-      dial_code: formData.personalDetails?.dial_code || '',
+      first_name: formData.personalDetails?.first_name || 'Daniel Joshua',
+      last_name: formData.personalDetails?.last_name || 'Turiano',
+      birth_date:
+        formData.personalDetails?.birth_date || new Date('2000-01-01'),
+      phone_number: formData.personalDetails?.phone_number || '1248392392',
+      dial_code: formData.personalDetails?.dial_code || '+63',
     },
   });
 
@@ -157,6 +158,7 @@ export default function PersonalDetailsForm() {
                     <FormItem className="min-w-24">
                       <Select
                         onValueChange={field.onChange}
+                        value={field.value}
                         disabled={readonly}
                         defaultValue={formData.personalDetails?.dial_code}
                       >

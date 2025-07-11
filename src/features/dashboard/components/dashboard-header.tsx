@@ -11,6 +11,7 @@ import { getOperator } from '../db/dashboard';
 import MobileNavigation from './mobile-navigation';
 import Notifications from './notification';
 import SearchBar from './search-bar';
+import { signOut } from '@/features/authentication/actions/authentication';
 
 export const navData = {
   navMain: [
@@ -113,7 +114,10 @@ export default function DashboardHeader() {
             <CircleHelp size={20} className="text-gray-600" />
           </div> */}
           <Notifications />
-          <Avatar className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
+          <Avatar
+            className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center cursor-pointer"
+            onClick={() => signOut()}
+          >
             <AvatarImage
               src={operator.image ?? undefined}
               alt={operator.first_name}

@@ -40,6 +40,12 @@ const MAX_FILE_SIZE_MB = 5;
 
 const document_type: DocumentType[] = [
   {
+    id: 'official-receipt',
+    title: 'Official Receipt (OR)',
+    description: 'Upload the tricycles Official Receipt (OR)',
+    required: true,
+  },
+  {
     id: 'certificate-of-registration',
     title: 'Certificate of Registration (CR)',
     description: 'Upload the tricycles Certificate of Registration (CR)',

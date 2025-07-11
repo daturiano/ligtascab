@@ -7,6 +7,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -32,15 +33,15 @@ export default function DriverDetailsForm() {
     resolver: zodResolver(DriverInfoSchema),
     mode: 'onBlur',
     defaultValues: {
-      first_name: formData.driverDetails?.first_name || '',
-      last_name: formData.driverDetails?.last_name || '',
-      birth_date: formData.driverDetails?.birth_date || undefined,
-      phone_number: formData.driverDetails?.phone_number || '',
-      address: formData.driverDetails?.address || '',
+      first_name: formData.driverDetails?.first_name || 'Daniel Joshua',
+      last_name: formData.driverDetails?.last_name || 'Turiano',
+      birth_date: formData.driverDetails?.birth_date || new Date('2026-01-01'),
+      phone_number: formData.driverDetails?.phone_number || '+6393933483',
+      address: formData.driverDetails?.address || 'Naga City',
       emergency_contact_name:
-        formData.driverDetails?.emergency_contact_name || '',
+        formData.driverDetails?.emergency_contact_name || 'Daniel Turiano',
       emergency_contact_number:
-        formData.driverDetails?.emergency_contact_number || '',
+        formData.driverDetails?.emergency_contact_number || '+6326972483',
     },
   });
 
@@ -68,6 +69,7 @@ export default function DriverDetailsForm() {
                   name="first_name"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>First Name</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="First name*"
@@ -86,6 +88,7 @@ export default function DriverDetailsForm() {
                   name="last_name"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>Last Name</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Last name*"
@@ -106,6 +109,7 @@ export default function DriverDetailsForm() {
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Phone number*"
@@ -125,6 +129,7 @@ export default function DriverDetailsForm() {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Address</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Current address*"
@@ -144,6 +149,7 @@ export default function DriverDetailsForm() {
                 name="birth_date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
+                    <FormLabel>Birth Date</FormLabel>
                     <Popover>
                       <PopoverTrigger
                         asChild
@@ -191,6 +197,7 @@ export default function DriverDetailsForm() {
                   name="emergency_contact_name"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>Emergency Contact Name</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Emergency contact name* "
@@ -209,6 +216,7 @@ export default function DriverDetailsForm() {
                   name="emergency_contact_number"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>Emergency Contact Number</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Emergency contact number*"

@@ -89,13 +89,9 @@ export default function QRCodeReader({ setIsScanning }: QRCodeReaderProps) {
         </div>
       )}
       <div className="flex flex-col gap-2">
-        {!scanError ? (
-          <Button variant={'outline'}>Manual Entry</Button>
-        ) : (
-          <Button variant={'outline'} onClick={tryAgain}>
-            Try Again
-          </Button>
-        )}
+        <Button variant={'outline'} onClick={tryAgain}>
+          Try Again
+        </Button>
         <Button variant={'outline'} onClick={() => setIsScanning(false)}>
           Cancel
         </Button>
