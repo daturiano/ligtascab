@@ -23,18 +23,20 @@ export default function CreateOperatorLayout({
   return (
     <QueryClientProvider client={queryClient}>
       <CreateOperatorProvider>
-        <div className="flex flex-col gap-4 mb-24">
-          <div className="flex flex-col gap-2">
-            <h1 className="lg:text-3xl text-xl font-semibold">
-              Create your account
-            </h1>
-            <p className="text-muted-foreground text-sm lg:text-lg">
-              Create a operator information for operational use
-            </p>
-          </div>
-          <div className="flex gap-8 items-start">
-            {children}
-            {!isSmallScreen && <OperatorFormProgress />}
+        <div className="w-full px-4 mt-10">
+          <div className="w-full max-w-screen-lg mx-auto flex flex-col gap-4 mb-24">
+            <div className="flex flex-col gap-2">
+              <h1 className="lg:text-2xl xl:text-3xl text-xl font-semibold">
+                Create your account
+              </h1>
+              <p className="text-muted-foreground text-sm lg:text-lg xl:text-xl">
+                Create a operator information for operational use
+              </p>
+            </div>
+            <div className="flex gap-4 items-start">
+              <div className="flex-1">{children}</div>
+              {!isSmallScreen && <OperatorFormProgress />}
+            </div>
           </div>
         </div>
       </CreateOperatorProvider>

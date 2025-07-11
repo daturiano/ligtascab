@@ -10,11 +10,11 @@ export default function AccountSetupPage() {
   const { step } = useCreateOperator();
 
   return (
-    <div>
+    <>
       {step === 1 && <PersonalDetailsForm />}
       {step === 2 && <AddressForm />}
       {step === 3 && <OperatorDocumentsUpload />}
       {step === 4 && <FormReview />}
-    </div>
+    </>
   );
 }

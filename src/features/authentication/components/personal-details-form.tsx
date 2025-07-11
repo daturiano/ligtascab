@@ -9,7 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
   Popover,
@@ -54,8 +61,8 @@ export default function PersonalDetailsForm() {
   };
 
   return (
-    <div>
-      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
+    <>
+      <Card className="w-full lg:max-w-[650px]">
         <CardHeader>
           <CardTitle className="text-2xl">Personal Details</CardTitle>
           <CardDescription>
@@ -75,15 +82,17 @@ export default function PersonalDetailsForm() {
                 name="first_name"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>First Name*</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="First name"
+                        placeholder="John"
                         type="text"
                         {...field}
                         readOnly={readonly}
                         className="h-12"
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -93,15 +102,17 @@ export default function PersonalDetailsForm() {
                 name="last_name"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Last Name*</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Last name"
+                        placeholder="Doe"
                         type="text"
                         {...field}
                         readOnly={readonly}
                         className="h-12"
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -111,6 +122,7 @@ export default function PersonalDetailsForm() {
                 name="birth_date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
+                    <FormLabel>Date of birth</FormLabel>
                     <Popover>
                       <PopoverTrigger
                         asChild
@@ -128,33 +140,35 @@ export default function PersonalDetailsForm() {
                             {field.value ? (
                               format(field.value, 'PPP')
                             ) : (
-                              <span>Date of birth</span>
+                              <span>Pick a date</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-full p-0" align="end">
+                      <PopoverContent className="w-auto p-0" align="end">
                         <Calendar
                           mode="single"
-                          captionLayout="dropdown"
-                          fromYear={1970}
-                          toYear={2007}
                           selected={field.value}
                           onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date('1900-01-01')
+                          }
+                          captionLayout="dropdown"
                         />
                       </PopoverContent>
                     </Popover>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
-
               <div className="flex items-center gap-6 w-full">
                 <FormField
                   control={form.control}
                   name="dial_code"
                   render={({ field }) => (
                     <FormItem className="min-w-24">
+                      <FormLabel>Dial Code*</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         disabled={readonly}
@@ -173,6 +187,7 @@ export default function PersonalDetailsForm() {
                           ))}
                         </SelectContent>
                       </Select>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -181,9 +196,10 @@ export default function PersonalDetailsForm() {
                   name="phone_number"
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FormLabel>Phone Number*</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Phone number"
+                          placeholder="9391234567"
                           type="text"
                           {...field}
                           maxLength={10}
@@ -192,13 +208,10 @@ export default function PersonalDetailsForm() {
                           disabled={readonly}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="min-h-5 text-sm font-medium text-red-500">
-                {(Object.values(form.formState.errors)[0]?.message as string) ||
-                  ' '}
               </div>
             </form>
           </Form>
@@ -209,6 +222,6 @@ export default function PersonalDetailsForm() {
         step={step}
         formName="personal-form"
       />
-    </div>
+    </>
   );
 }

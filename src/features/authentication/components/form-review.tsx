@@ -20,7 +20,8 @@ export default function FormReview() {
       const { success, error, data: operator } = await createNewOperator(data);
 
       if (!success || !operator?.id || error) {
-        throw new Error('Failed to create operator account');
+        console.log(error);
+        throw new Error(error.message || 'Failed to create operator account');
       }
 
       const { success: uploadSuccess, error: UploadError } =

@@ -12,6 +12,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -50,8 +51,8 @@ export default function AddressForm() {
   };
 
   return (
-    <div>
-      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
+    <>
+      <Card className="w-full lg:max-w-[650px]">
         <CardHeader>
           <CardTitle className="text-2xl">Your work address</CardTitle>
           <CardDescription>
@@ -70,6 +71,7 @@ export default function AddressForm() {
                 name="province"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Province*</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       disabled={readonly}
@@ -98,6 +100,7 @@ export default function AddressForm() {
                 name="municipality"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Municipality*</FormLabel>
                     <Select
                       disabled={readonly}
                       onValueChange={field.onChange}
@@ -116,6 +119,7 @@ export default function AddressForm() {
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -125,6 +129,7 @@ export default function AddressForm() {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Address*</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Street name, building, barangay"
@@ -134,6 +139,7 @@ export default function AddressForm() {
                         readOnly={readonly}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -143,6 +149,7 @@ export default function AddressForm() {
                 name="postal_code"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Postal Code*</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Postal code"
@@ -157,6 +164,7 @@ export default function AddressForm() {
                         }}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -170,6 +178,6 @@ export default function AddressForm() {
         prevStep={prevStep}
         formName="address-form"
       />
-    </div>
+    </>
   );
 }

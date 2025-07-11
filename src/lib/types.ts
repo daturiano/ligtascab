@@ -50,8 +50,6 @@ export type Operator = {
   first_name: string;
   last_name: string;
   phone_number: string;
-  is_new_user: boolean;
-  subscribe_to_newsletter?: boolean;
   email?: string;
   image?: string;
   address: Address;

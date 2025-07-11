@@ -84,8 +84,8 @@ export default function OperatorDocumentsUpload() {
   };
 
   return (
-    <div>
-      <div className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] mb-24 lg:mb-0 w-full">
+    <>
+      <div className="w-full lg:max-w-[650px]">
         <div className="flex flex-col gap-4 w-full">
           {document_types.map((docType) => (
             <DocumentCard
@@ -103,6 +103,6 @@ export default function OperatorDocumentsUpload() {
         prevStep={prevStep}
         disabled={!areRequiredDocumentsUploaded()}
       />
-    </div>
+    </>
   );
 }
