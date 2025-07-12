@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import GoogleButton from '@/features/authentication/components/google-btn';
 import SignInForm from '@/features/authentication/components/sign-in-form';
 import Link from 'next/link';
@@ -18,9 +19,9 @@ export default function SignInPage() {
       <CardContent>
         <GoogleButton option="sign-in" />
         <div className="my-8 flex items-center gap-6">
-          {/* <Separator /> */}
+          <Separator className="shrink-1" />
           <p className="text-muted-foreground">or</p>
-          {/* <Separator /> */}
+          <Separator className="shrink-1" />
         </div>
         <SignInForm />
       </CardContent>

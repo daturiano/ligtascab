@@ -9,7 +9,7 @@ export default function AuthenticationLayout({
   return (
     <div className="min-h-screen flex flex-col">
       <NavigationBar />
-      <div className="flex flex-grow items-center justify-center">
+      <div className="flex flex-grow items-center justify-center px-4">
         {children}
       </div>
     </div>
