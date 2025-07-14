@@ -10,41 +10,35 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Spinner from '@/components/ui/spinner';
-import { getFormattedDate } from '@/lib/utils';
+import { getErrorMessage, getFormattedDate } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { WarningCircle } from '@phosphor-icons/react';
-import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
-import { CredentialsSchema } from '../schemas/authentication';
 import { signInWithCredentials } from '../actions/authentication';
-import { redirect } from 'next/navigation';
+import { CredentialsSchema } from '../schemas/authentication';
 
 export default function SignInForm() {
-  const [isPending, startTransition] = useTransition();
-
-  const loginCredentials = async (data: z.infer<typeof CredentialsSchema>) => {
-    const response = await signInWithCredentials(data);
-    if (response?.error) {
-      toast.error(response.error, {
+  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
+  const onSubmit = async (data: z.infer<typeof CredentialsSchema>) => {
+    setIsPending(true);
+    try {
+      const { data: user } = await signInWithCredentials(data);
+      if (user) {
+        router.push('/home');
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error), {
         description: getFormattedDate(),
       });
-      return;
-    }
-    if (response?.message) {
-      toast.success(response.message, {
-        description: getFormattedDate(),
-      });
-      redirect('/home');
+    } finally {
+      setIsPending(false);
     }
   };
-
-  function onSubmit(data: z.infer<typeof CredentialsSchema>) {
-    startTransition(() => {
-      loginCredentials(data);
-    });
-  }
 
   const form = useForm<z.infer<typeof CredentialsSchema>>({
     resolver: zodResolver(CredentialsSchema),
@@ -117,7 +111,7 @@ export default function SignInForm() {
         <Button
           type="submit"
           className="w-full"
-          disabled={!form.formState.isValid || isPending}
+          disabled={!form.formState.isValid}
         >
           {!isPending ? 'Log in' : <Spinner />}
         </Button>

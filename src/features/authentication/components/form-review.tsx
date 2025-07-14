@@ -1,4 +1,5 @@
 import FormBottomNavigation from '@/components/form-bottom-navigation';
+import { getErrorMessage } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -16,39 +17,20 @@ export default function FormReview() {
   const router = useRouter();
 
   const createOperatorMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
-      const { success, error, data: operator } = await createNewOperator(data);
-
-      if (!success || !operator?.id || error) {
-        console.log(error);
-        throw new Error(error.message || 'Failed to create operator account');
-      }
-
-      const { success: uploadSuccess, error: UploadError } =
-        await uploadOperatorDocument(operator.id, data.attachmentDetails!);
-
-      if (!uploadSuccess || UploadError) {
-        throw new Error('Failed to upload documents');
-      }
-
-      return { operator };
-    },
-    onSuccess: (data) => {
-      console.log('Operator created:', data.operator);
-      toast.success('Operator account created successfully!');
-      router.push('/home');
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to create operator account');
-    },
+    mutationFn: async (data: typeof formData) => createNewOperator(data),
   });
 
   const onSubmit = async () => {
-    if (!formData) {
-      toast.error('Form data is missing');
-      return;
+    try {
+      const { data: operator } = await createOperatorMutation.mutateAsync(
+        formData
+      );
+      await uploadOperatorDocument(formData.attachmentDetails!);
+      toast.success(`Welcome ${operator.first_name} ${operator.last_name}!`);
+      router.push('/home');
+    } catch (error) {
+      toast.error(getErrorMessage(error));
     }
-    createOperatorMutation.mutate(formData);
   };
 
   return (

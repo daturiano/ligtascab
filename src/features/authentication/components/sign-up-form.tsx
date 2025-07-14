@@ -11,40 +11,19 @@ import {
 import { Input } from '@/components/ui/input';
 import Spinner from '@/components/ui/spinner';
 import { UserSchema } from '@/features/authentication/schemas/authentication';
-import { getFormattedDate } from '@/lib/utils';
+import { getErrorMessage, getFormattedDate } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { WarningCircle } from '@phosphor-icons/react';
-import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 import { registerWithCredentials } from '../actions/authentication';
-import { redirect } from 'next/navigation';
 
 export default function SignUpForm() {
-  const [isPending, startTransition] = useTransition();
-
-  const registerCredentials = async (data: z.infer<typeof UserSchema>) => {
-    const response = await registerWithCredentials(data);
-    if (response?.error) {
-      toast.error(response.error, {
-        description: getFormattedDate(),
-      });
-      return;
-    }
-    if (response?.message) {
-      toast.success(response.message, {
-        description: getFormattedDate(),
-      });
-      redirect('/account-setup');
-    }
-  };
-
-  function onSubmit(data: z.infer<typeof UserSchema>) {
-    startTransition(() => {
-      registerCredentials(data);
-    });
-  }
+  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
@@ -55,6 +34,22 @@ export default function SignUpForm() {
       confirm_password: '',
     },
   });
+
+  const onSubmit = async (data: z.infer<typeof UserSchema>) => {
+    setIsPending(true);
+    try {
+      const { data: user } = await registerWithCredentials(data);
+      if (user) {
+        router.push('/account-setup');
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error), {
+        description: getFormattedDate(),
+      });
+    } finally {
+      setIsPending(false);
+    }
+  };
 
   return (
     <Form {...form}>

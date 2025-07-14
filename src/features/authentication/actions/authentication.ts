@@ -5,13 +5,12 @@ import {
   CredentialsSchema,
   UserSchema,
 } from "@/features/authentication/schemas/authentication";
-import { AttachmentDetails } from "@/lib/types";
+import { AttachmentDetails, Operator } from "@/lib/types";
 import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
 import { AccountSetupFormData } from "../components/create-operator-provider";
 import { createOperator } from "../db/authentication";
-
-type AuthResponse = { error?: string; message?: string };
+import { getErrorMessage } from "@/lib/utils";
 
 export const signInWithGoogle = async () => {
   const supabase = await createClient();
@@ -40,7 +39,7 @@ export const signOut = async () => {
 
 export const signInWithCredentials = async (
   User: unknown,
-): Promise<AuthResponse> => {
+) => {
   const result = CredentialsSchema.safeParse(User);
 
   if (!result.success) {
@@ -56,39 +55,36 @@ export const signInWithCredentials = async (
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: result.data.email,
     password: result.data.password,
   });
 
-  if (error) {
-    console.error("Authentication Error:", error.message);
-    return { error: error.message };
+  if (error || !data) {
+    throw new Error(error?.message || "Unable to sign in to account");
   }
 
-  return { message: "Log in successful" };
+  return { data };
 };
 
 export const registerWithCredentials = async (
   User: unknown,
-): Promise<AuthResponse> => {
+) => {
   const result = UserSchema.safeParse(User);
   if (!result.success) {
     let errorMessage = "";
     result.error.issues.forEach((issue) => {
       errorMessage = errorMessage + issue.path[0] + ": " + issue.message + ". ";
     });
-    return {
-      error: errorMessage,
-    };
+    throw new Error(errorMessage);
   }
 
   if (result.data.password !== result.data.confirm_password) {
-    return { error: "Password does not match." };
+    throw new Error("Password does not match.");
   }
 
   const supabase = await createClient();
-  const { error: signUpError } = await supabase.auth.signUp({
+  const { data, error: signUpError } = await supabase.auth.signUp({
     email: result.data.email,
     password: result.data.password,
     options: {
@@ -100,16 +96,15 @@ export const registerWithCredentials = async (
   });
 
   if (signUpError) {
-    console.error("Supabase signUp error:", signUpError);
-    return { error: signUpError.message };
+    throw new Error(signUpError.message);
   }
 
-  return { message: "Sign up successful" };
+  return { data };
 };
 
 export async function createNewOperator(
   operatorFormData: AccountSetupFormData,
-) {
+): Promise<{ data: Operator }> {
   try {
     const { personalDetails, addressDetails } = operatorFormData as {
       personalDetails: NonNullable<typeof operatorFormData.personalDetails>;
@@ -143,7 +138,7 @@ export async function createNewOperator(
     );
 
     if (error || !operator) {
-      return { success: false, error: error };
+      throw new Error(error?.message || "Unable to create new operator");
     }
 
     const logData = {
@@ -155,7 +150,7 @@ export async function createNewOperator(
     const { error: logError } = await createLog(logData);
 
     if (logError) {
-      return { success: false, error: "Failed to log event." };
+      throw new Error(logError.message || "Unable to log create operator");
     }
 
     const { error: updateError } = await supabase.auth.updateUser({
@@ -163,22 +158,18 @@ export async function createNewOperator(
     });
 
     if (updateError) {
-      return { success: false, error: "Failed to update user metadata." };
+      throw new Error(
+        updateError.message || "Unable to update operator metadata",
+      );
     }
 
-    return { success: true, data: operator };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err: any) {
-    console.error("Creating new operator error:", err);
-    return {
-      success: false,
-      error: err.message || "An unexpected error occurred.",
-    };
+    return { data: operator };
+  } catch (err) {
+    throw new Error(getErrorMessage(err));
   }
 }
 
 export const uploadOperatorDocument = async (
-  operator_id: string,
   attachmentDetails: AttachmentDetails,
 ) => {
   const supabase = await createClient();
@@ -187,36 +178,25 @@ export const uploadOperatorDocument = async (
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { success: false, error: "User not authenticated." };
+    throw new Error("User not authenticated");
   }
 
-  console.log("Starting document upload for operator:", operator_id);
-  console.log("Attachment details:", attachmentDetails);
+  const results = await uploadDocument(
+    attachmentDetails,
+    "documents",
+    "documents",
+  );
 
-  try {
-    const results = await uploadDocument(
-      attachmentDetails,
-      "documents",
-      "documents",
+  const logData = {
+    data: { results },
+    operator_id: user.id,
+    log_event: "operator_documents",
+  };
+
+  const { error: logError } = await createLog(logData);
+  if (logError) {
+    throw new Error(
+      logError.message || "unable to create log for update document",
     );
-
-    console.log("Upload results:", results);
-
-    const logData = {
-      data: { results },
-      operator_id: user.id,
-      log_event: "operator_documents",
-    };
-
-    const { error: logError } = await createLog(logData);
-    if (logError) {
-      console.error("Failed to create audit log:", logError);
-      return { success: false, error: "Failed to create audit log." };
-    }
-
-    return { success: true, data: results };
-  } catch (error) {
-    console.error("Upload failed:", error);
-    return { success: false, error: "Failed to upload documents." };
   }
 };

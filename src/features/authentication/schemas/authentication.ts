@@ -49,3 +49,13 @@ export const CredentialsSchema = z.object({
     message: "password must be at least 6 characters",
   }),
 });
+
+export const CreateOperatorSchema = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  phone_number: z.string(),
+  birth_date: z.date(),
+  address: AddressSchema,
+});
+
+export type CreateOperator = z.infer<typeof CreateOperatorSchema>;
