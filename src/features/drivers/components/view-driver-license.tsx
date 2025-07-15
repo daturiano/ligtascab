@@ -28,11 +28,11 @@ export default function ViewDriverLicense({
   const supabase = createClient();
   const { data: back_url } = supabase.storage
     .from('documents')
-    .getPublicUrl(`${path}/license-back/driver_s_license_back.jpg`);
+    .getPublicUrl(`${path}/license-back/license_back.jpg`);
 
   const { data: front_url } = supabase.storage
     .from('documents')
-    .getPublicUrl(`${path}/license-front/driver_s_license_front.jpg`);
+    .getPublicUrl(`${path}/license-front/license_front.jpg`);
 
   return (
     <Dialog>
