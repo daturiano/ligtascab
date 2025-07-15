@@ -3,7 +3,12 @@
 import FormProgress from '@/components/form-progress';
 import { useCreateDriver } from './create-driver-provider';
 
-const stepsData = ['Driver & Emergency Details', 'License Details', 'Review'];
+const stepsData = [
+  'Driver & Emergency Details',
+  'License Details',
+  'Review',
+  'Driver Account Setup',
+];
 
 export default function DriverFormProgress() {
   const { step } = useCreateDriver();

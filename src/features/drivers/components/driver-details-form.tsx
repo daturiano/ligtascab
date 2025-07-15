@@ -35,7 +35,6 @@ export default function DriverDetailsForm() {
       first_name: formData.driverDetails?.first_name || '',
       last_name: formData.driverDetails?.last_name || '',
       birth_date: formData.driverDetails?.birth_date || undefined,
-      phone_number: formData.driverDetails?.phone_number || '',
       address: formData.driverDetails?.address || '',
       emergency_contact_name:
         formData.driverDetails?.emergency_contact_name || '',
@@ -100,25 +99,6 @@ export default function DriverDetailsForm() {
                   )}
                 />
               </div>
-
-              <FormField
-                control={form.control}
-                name="phone_number"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Phone number*"
-                        type="text"
-                        {...field}
-                        readOnly={readonly}
-                        className="h-12"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
 
               <FormField
                 control={form.control}

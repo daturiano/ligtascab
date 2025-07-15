@@ -1,12 +1,13 @@
-'use server';
+"use server";
 
-import { createLog, uploadDocument } from '@/db/db';
-import { AttachmentDetails, Driver } from '@/lib/types';
-import { getErrorMessage } from '@/lib/utils';
-import { createClient } from '@/supabase/server';
-import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
-import { DriverFormData } from '../components/create-driver-provider';
+import { createLog, uploadDocument } from "@/db/db";
+import { AttachmentDetails, Driver } from "@/lib/types";
+import { getErrorMessage } from "@/lib/utils";
+import supabaseAdmin from "@/supabase/admin";
+import { createClient } from "@/supabase/server";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import { DriverFormData } from "../components/create-driver-provider";
 import {
   createDriver,
   deleteDriver,
@@ -14,15 +15,19 @@ import {
   getDriverById,
   updateDriverById,
   updateLicense,
-} from '../db/drivers';
-import { DriverComplianceSchema, DriverDetails } from '../schemas/drivers';
+} from "../db/drivers";
+import {
+  DriverComplianceSchema,
+  DriverCredentialsSchema,
+  DriverDetails,
+} from "../schemas/drivers";
 
 export const fetchDriverDetails = async (
-  id: string
+  id: string,
 ): Promise<{ data: Driver }> => {
   const { data, error } = await getDriverById(id);
 
-  if (error || !data) throw new Error(error?.message || 'Driver not found');
+  if (error || !data) throw new Error(error?.message || "Driver not found");
 
   return { data };
 };
@@ -32,7 +37,7 @@ export const fetchAllDriversFromOperator = async (): Promise<{
 }> => {
   const { data, error } = await getAllDrivers();
 
-  if (error || !data) throw new Error(error?.message || 'No available drivers');
+  if (error || !data) throw new Error(error?.message || "No available drivers");
 
   return { data };
 };
@@ -53,7 +58,7 @@ export async function createNewDriver(driverFormData: DriverFormData): Promise<{
     } = await supabase.auth.getUser();
 
     if (!user) {
-      throw new Error('User is not authenticated');
+      throw new Error("User is not authenticated");
     }
 
     const driverData = {
@@ -66,26 +71,25 @@ export async function createNewDriver(driverFormData: DriverFormData): Promise<{
       emergency_contact_number: driverDetails.emergency_contact_number,
       license_number: complianceDetails.license_number,
       license_expiration: complianceDetails.license_expiration,
-      phone_number: driverDetails.phone_number,
     };
 
     const { data: driver, error } = await createDriver(driverData);
 
     if (error || !driver) {
-      throw new Error(error?.message || 'Unable to create new driver');
+      throw new Error(error?.message || "Unable to create new driver");
     }
 
     const logData = {
       data: driverData,
       operator_id: user.id,
       driver_id: driver.id,
-      log_event: 'create_driver',
+      log_event: "create_driver",
     };
 
     const { error: logError } = await createLog(logData);
 
     if (logError) {
-      throw new Error(logError.message || 'Unable to log create new driver');
+      throw new Error(logError.message || "Unable to log create new driver");
     }
 
     return { data: driver };
@@ -95,25 +99,25 @@ export async function createNewDriver(driverFormData: DriverFormData): Promise<{
 }
 
 export const removeDriverFromOperator = async (
-  driver: Driver
+  driver: Driver,
 ): Promise<{ data: Driver }> => {
   const { data, error } = await deleteDriver(driver.id);
 
   if (error || !data) {
-    throw new Error(error?.message || 'Unable to delete driver');
+    throw new Error(error?.message || "Unable to delete driver");
   }
 
   const logData = {
     data: { data },
     operator_id: driver.operator_id,
     driver_id: driver.id,
-    log_event: 'delete_driver',
+    log_event: "delete_driver",
   };
 
   const { error: logError } = await createLog(logData);
 
   if (logError) {
-    throw new Error(logError.message || 'Unable to log delete driver');
+    throw new Error(logError.message || "Unable to log delete driver");
   }
 
   return { data: data };
@@ -121,7 +125,7 @@ export const removeDriverFromOperator = async (
 
 export const uploadDriverDocument = async (
   driver_id: string,
-  attachmentDetails: AttachmentDetails
+  attachmentDetails: AttachmentDetails,
 ) => {
   const supabase = await createClient();
 
@@ -130,42 +134,36 @@ export const uploadDriverDocument = async (
   } = await supabase.auth.getUser();
 
   if (!user) {
-    throw new Error('User not authenticated');
+    throw new Error("User not authenticated");
   }
 
-  const { data: driver, error } = await getDriverById(driver_id);
-
-  if (error || !driver) {
-    throw new Error(error?.message || 'Unable to get driver by id');
-  }
-
-  const bucket_name = 'documents';
+  const bucket_name = "documents";
   const results = await uploadDocument(
     attachmentDetails,
     bucket_name,
-    'drivers',
-    driver.id
+    "drivers",
+    driver_id,
   );
 
   const logData = {
     data: { results },
     operator_id: user.id,
-    driver_id: driver.id,
-    log_event: 'driver_documents',
+    driver_id: driver_id,
+    log_event: "driver_documents",
   };
 
   const { error: LogError } = await createLog(logData);
 
   if (LogError) {
     throw new Error(
-      LogError.message || 'unable to create log for update document'
+      LogError.message || "unable to create log for update document",
     );
   }
 };
 
 export const updateDriverLicense = async (
   driver_id: string,
-  data: z.infer<typeof DriverComplianceSchema>
+  data: z.infer<typeof DriverComplianceSchema>,
 ): Promise<{ data: Driver }> => {
   try {
     const supabase = await createClient();
@@ -175,37 +173,37 @@ export const updateDriverLicense = async (
     } = await supabase.auth.getUser();
 
     if (!user) {
-      throw new Error('User not authenticated');
+      throw new Error("User not authenticated");
     }
 
     const { data: prevData, error: getDriverError } = await getDriverById(
-      driver_id
+      driver_id,
     );
 
     if (getDriverError || !prevData) {
       throw new Error(
-        getDriverError?.message || 'Unable to get driver previous data'
+        getDriverError?.message || "Unable to get driver previous data",
       );
     }
 
     const { data: driver, error } = await updateLicense(data, driver_id);
 
     if (error || !driver) {
-      throw new Error(error?.message || 'Unable to update driver license');
+      throw new Error(error?.message || "Unable to update driver license");
     }
 
     const logData = {
       data: { prevData: prevData, updatedData: driver },
       operator_id: user.id,
       driver_id: prevData.id,
-      log_event: 'update_driver',
+      log_event: "update_driver",
     };
 
     const { error: LogError } = await createLog(logData);
 
     if (LogError) {
       throw new Error(
-        LogError.message || 'unable to create log for update document'
+        LogError.message || "unable to create log for update document",
       );
     }
 
@@ -219,33 +217,75 @@ export const updateDriverLicense = async (
 
 export const updateDriverDetails = async (
   prevData: Driver,
-  updatedData: DriverDetails
+  updatedData: DriverDetails,
 ): Promise<{ data: Driver }> => {
   const { data: driver, error } = await updateDriverById(
     prevData.id,
-    updatedData
+    updatedData,
   );
 
   if (error || !driver) {
-    throw new Error(error?.message || 'Unable to update driver by id');
+    throw new Error(error?.message || "Unable to update driver by id");
   }
 
   const logData = {
     data: { prevData: prevData, updatedData: updatedData },
     operator_id: prevData.id,
     driver_id: prevData.id,
-    log_event: 'update_driver',
+    log_event: "update_driver",
   };
 
   const { error: LogError } = await createLog(logData);
 
   if (LogError) {
     throw new Error(
-      LogError.message || 'unable to create log for update document'
+      LogError.message || "unable to create log for update document",
     );
   }
 
   revalidatePath(`/drivers/${driver.id}`);
 
   return { data: driver };
+};
+
+export const registerDriverWithPhone = async (
+  User: unknown,
+  driver_id: string,
+) => {
+  const result = DriverCredentialsSchema.safeParse(User);
+  if (!result.success) {
+    let errorMessage = "";
+    result.error.issues.forEach((issue) => {
+      errorMessage = errorMessage + issue.path[0] + ": " + issue.message + ". ";
+    });
+    throw new Error(errorMessage);
+  }
+
+  if (result.data.password !== result.data.confirm_password) {
+    throw new Error("Password does not match.");
+  }
+
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    phone: result.data.phone,
+    password: result.data.password,
+    user_metadata: {
+      is_new_user: true,
+      role: "driver",
+    },
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const { error: updateError } = await updateDriverById(driver_id, {
+    phone_number: data.user.phone,
+    user_id: data.user.id,
+  });
+
+  if (updateError) {
+    throw new Error(updateError.message);
+  }
+
+  return data.user;
 };

@@ -69,6 +69,7 @@ export type Driver = {
   status?: string;
   email?: string;
   image?: string;
+  user_id?: string;
   address: string;
   birth_date: Date;
 };

@@ -1,14 +1,10 @@
 "use server";
 
-import { createClient } from "@/supabase/server";
-import { cache } from "react";
-import {
-  CreateDriver,
-  DriverComplianceDetails,
-  DriverDetails,
-} from "../schemas/drivers";
 import { Driver } from "@/lib/types";
+import { createClient } from "@/supabase/server";
 import { PostgrestError } from "@supabase/supabase-js";
+import { cache } from "react";
+import { CreateDriver, DriverComplianceDetails } from "../schemas/drivers";
 
 export const getAllDrivers = cache(async () => {
   const supabase = await createClient();
@@ -75,7 +71,10 @@ export const getDriverById = async (
   return { data, error };
 };
 
-export async function updateDriverById(id: string, updatedData: DriverDetails) {
+export async function updateDriverById(
+  id: string,
+  updatedData: Partial<Driver>,
+) {
   const supabase = await createClient();
 
   const { data, error } = await supabase

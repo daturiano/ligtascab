@@ -3,6 +3,7 @@
 import { useCreateDriver } from '@/features/drivers/components/create-driver-provider';
 import DriverDetailsForm from '@/features/drivers/components/driver-details-form';
 import DriverLicenseForm from '@/features/drivers/components/driver-license-form';
+import DriverSignUpForm from '@/features/drivers/components/driver-sign-up-form';
 import FormReview from '@/features/drivers/components/form-review';
 
 export default function CreateDriverPage() {
@@ -13,6 +14,7 @@ export default function CreateDriverPage() {
       {step == 1 && <DriverDetailsForm />}
       {step == 2 && <DriverLicenseForm />}
       {step == 3 && <FormReview />}
+      {step == 4 && <DriverSignUpForm />}
     </>
   );
 }

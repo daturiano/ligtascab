@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from 'react';
 import { DriverComplianceDetails, DriverDetails } from '../schemas/drivers';
-import { AttachmentDetails } from '@/lib/types';
+import { AttachmentDetails, Driver } from '@/lib/types';
 
 export type DriverFormData = {
   type: 'Driver';
@@ -18,6 +18,8 @@ type CreateDriverContextType = {
   readonly: boolean;
   formData: DriverFormData;
   setData: (newData: Partial<DriverFormData>) => void;
+  driver: Driver | null;
+  setDriver: (data: Driver) => void;
 };
 
 const CreateDriverContext = createContext<CreateDriverContextType | undefined>(
@@ -33,11 +35,10 @@ export default function CreateDriverProvider({
     type: 'Driver',
   });
   const [step, setStep] = useState(1);
+  const [driver, setDriver] = useState<Driver | null>(null);
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(1, prev - 1));
   let readonly = false;
-
-  console.log(formData);
 
   const setData = (values: Partial<DriverFormData>) => {
     setFormData((prev) => ({ ...prev, ...values }));
@@ -56,6 +57,8 @@ export default function CreateDriverProvider({
         nextStep,
         prevStep,
         readonly,
+        driver,
+        setDriver,
       }}
     >
       {children}
