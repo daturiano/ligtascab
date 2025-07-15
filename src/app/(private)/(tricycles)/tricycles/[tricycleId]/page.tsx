@@ -1,6 +1,12 @@
 import docuimg from '@/app/public/approve.png';
 import qrcode from '@/app/public/qr-code.png';
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import ViewQRCode from '@/components/view-qr-code';
 import { fetchTricycleDetails } from '@/features/tricycles/actions/tricycles';
 import TricycleProfileCard from '@/features/tricycles/components/tricycle-profile-card';
@@ -39,9 +45,12 @@ export default async function TricycleProfilePage({
         </div>
         <div className="flex flex-col gap-4 md:justify-between xl:flex-row xl:col-start-2 xl:col-end-3 xl:row-start-1 xl:row-end-2">
           <Card className="w-full grow xl:grow-0 max-w-[500px] xl:max-w-[600px]">
-            <CardTitle className="px-6">
-              Tricycle&apos;s Compliance Documents
-            </CardTitle>
+            <CardHeader>
+              <CardTitle>Tricycle&apos;s Compliance Documents</CardTitle>
+              <CardDescription>
+                Keep the tricycle&apos;s documents always up to date.
+              </CardDescription>
+            </CardHeader>
             <CardContent className="flex grow gap-4">
               <div className="min-h-32 min-w-32 bg-gray-300/60 flex items-center justify-center rounded-md">
                 <Image
@@ -69,7 +78,8 @@ export default async function TricycleProfilePage({
               </div>
               <div className="w-full flex flex-col justify-between gap-4">
                 <p className="text-muted-foreground text-sm">
-                  Make sure to attach this QR Code to the correct tricycle.
+                  Make sure to only attach this QR Code to the correct tricycle.
+                  Please do not share this to others.
                 </p>
                 <div className="flex flex-row gap-2">
                   <ViewQRCode id={tricycle.id}>

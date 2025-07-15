@@ -113,3 +113,17 @@ export const updateLicense = async (
 
   return { data, error };
 };
+
+export const getDriverPlateNumber = async (
+  driver_id: string,
+) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("drivers")
+    .select("plate_number")
+    .eq("id", driver_id)
+    .single();
+
+  return { data, error };
+};

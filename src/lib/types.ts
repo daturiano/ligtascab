@@ -100,3 +100,16 @@ export type Notification = {
   created_at: string;
   expiration_date: Date;
 };
+
+export type MaintenanceRecords = {
+  id: string;
+  tricycle_id: string;
+  operator_id: string;
+  type: string;
+  plate_number: string;
+  issue_description?: string;
+  service_performed: string;
+  cost: number;
+  date: Date;
+  created_at: Date;
+};
