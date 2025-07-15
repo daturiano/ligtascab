@@ -31,7 +31,6 @@ export default function EditProfileForm({ driver }: { driver: Driver }) {
       first_name: driver.first_name,
       last_name: driver.last_name,
       birth_date: new Date(driver.birth_date),
-      phone_number: driver.phone_number,
       address: driver.address,
       emergency_contact_name: driver.emergency_contact_name,
       emergency_contact_number: driver.emergency_contact_number,
@@ -112,23 +111,6 @@ export default function EditProfileForm({ driver }: { driver: Driver }) {
                   )}
                 />
               </div>
-
-              <FormField
-                control={form.control}
-                name="phone_number"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Phone number*"
-                        type="text"
-                        {...field}
-                        className="h-12"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
 
               <FormField
                 control={form.control}

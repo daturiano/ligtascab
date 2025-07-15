@@ -19,7 +19,7 @@ export default function UpdateLicenseLayout({
           <X onClick={() => router.back()} className="cursor-pointer" />
         </div>
       </div>
-      <div className="flex flex-1 mx-auto items-center gap-8 px-2 mt-20">
+      <div className="flex flex-1 mx-auto items-center gap-8 px-2">
         {children}
       </div>
     </div>

@@ -107,10 +107,12 @@ export default function DriverCard({ driver }: DriversProps) {
               title="Name"
               description={driver.first_name + ' ' + driver.last_name}
             />
-            <DriverInformation
-              title="Phone Number"
-              description={driver.phone_number}
-            />
+            {driver.phone_number && (
+              <DriverInformation
+                title="Phone Number"
+                description={driver.phone_number}
+              />
+            )}
             <DriverInformation title="License Expiration">
               <p className="tracking-wide font-medium">
                 {formatDate(driver.license_expiration.toLocaleString(), 'long')}

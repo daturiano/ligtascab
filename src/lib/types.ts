@@ -63,7 +63,7 @@ export type Driver = {
   last_name: string;
   emergency_contact_number: string;
   emergency_contact_name: string;
-  phone_number: string;
+  phone_number?: string;
   license_number: string;
   license_expiration: Date;
   status?: string;

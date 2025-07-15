@@ -52,12 +52,14 @@ export default function DriverCardMobile({ driver }: DriverCardMobileProps) {
             </span>
             {`${driver.first_name} ${driver.last_name}`}
           </p>
-          <p>
-            <span className="font-normal text-muted-foreground">
-              Phone Number:{' '}
-            </span>
-            {driver.phone_number}
-          </p>
+          {driver.phone_number && (
+            <p>
+              <span className="font-normal text-muted-foreground">
+                Phone Number:{' '}
+              </span>
+              {driver.phone_number}
+            </p>
+          )}
           <p>
             <span className="tracking-wide text-muted-foreground">
               License Expiration: {'  '}
