@@ -77,9 +77,9 @@ export default function TricycleMaintenancePage() {
             Maintenance Records
           </h1>
           {maintenance_records && (
-            <Button>
-              <Link href={'/create-tricycle'}>Create maintenance record</Link>
-            </Button>
+            <Link href={`tricycle-maintenance/create-record`}>
+              <Button>Create New Record</Button>
+            </Link>
           )}
         </div>
         <div className="w-full flex flex-col gap-2 items-center lg:flex-row lg:gap-6">

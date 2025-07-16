@@ -102,14 +102,14 @@ export type Notification = {
 };
 
 export type MaintenanceRecords = {
-  id: string;
+  id?: string;
   tricycle_id: string;
   operator_id: string;
   type: string;
   plate_number: string;
   issue_description?: string;
   service_performed: string;
-  cost: number;
+  cost: string;
   date: Date;
-  created_at: Date;
+  created_at?: Date;
 };

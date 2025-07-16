@@ -1,6 +1,11 @@
 "use server";
 
-import { AttachmentDetails, ShiftLog, Tricycle } from "@/lib/types";
+import {
+  AttachmentDetails,
+  MaintenanceRecords,
+  ShiftLog,
+  Tricycle,
+} from "@/lib/types";
 import { createClient } from "@/supabase/server";
 import { PostgrestError } from "@supabase/supabase-js";
 import { cache } from "react";
@@ -23,7 +28,7 @@ export const getAllTricycles = cache(
 
 export const getTricycleByPlateNumber = async (
   plate_number: string,
-): Promise<{ data: Tricycle; error: PostgrestError | null }> => {
+) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -158,3 +163,14 @@ export const getAllMaintenanceRecords = cache(
     return { data: records || [], error };
   },
 );
+
+export const createMaintenanceRecord = async (record: MaintenanceRecords) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("maintenance")
+    .insert([record])
+    .select()
+    .single();
+
+  return { data, error };
+};

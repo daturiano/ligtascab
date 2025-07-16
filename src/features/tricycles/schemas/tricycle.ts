@@ -1,31 +1,31 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const TricycleInfoSchema = z.object({
-  model: z.string().min(1, 'Model is required'),
-  year: z.string().min(1, 'Year is required'),
-  registration_number: z.string().min(1, 'Registration number is required'),
+  model: z.string().min(1, "Model is required"),
+  year: z.string().min(1, "Year is required"),
+  registration_number: z.string().min(1, "Registration number is required"),
   registration_expiration: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
-      message: 'Registration expiry is required',
+      message: "Registration expiry is required",
     }),
-  body_number: z.string().min(1, 'Body number is required'),
+  body_number: z.string().min(1, "Body number is required"),
   seating_capacity: z
-    .string({ invalid_type_error: 'Seating capacity is required' })
-    .min(1, 'Must be at least 1'),
-  fuel_type: z.string().min(1, 'Fuel type is required'),
+    .string({ invalid_type_error: "Seating capacity is required" })
+    .min(1, "Must be at least 1"),
+  fuel_type: z.string().min(1, "Fuel type is required"),
 });
 
 export type TricycleDetails = z.infer<typeof TricycleInfoSchema>;
 
 export const TricycleRegistrationSchema = z.object({
-  registration_number: z.string().min(1, 'Registration number is required'),
+  registration_number: z.string().min(1, "Registration number is required"),
   registration_expiration: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
-      message: 'Registration expiry is required',
+      message: "Registration expiry is required",
     }),
 });
 
@@ -34,25 +34,25 @@ export type TricycleRegistrationDetails = z.infer<
 >;
 
 export const ComplianceSchema = z.object({
-  plate_number: z.string().min(1, 'Plate number is required'),
-  or_number: z.string().min(1, 'Official Receipt is required'),
-  cr_number: z.string().min(1, 'Certificate of Registration is required'),
-  franchise_number: z.string().min(1, 'Franchise Number is required'),
+  plate_number: z.string().min(1, "Plate number is required"),
+  or_number: z.string().min(1, "Official Receipt is required"),
+  cr_number: z.string().min(1, "Certificate of Registration is required"),
+  franchise_number: z.string().min(1, "Franchise Number is required"),
   franchise_expiration: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
-      message: 'Franchise expiry is required',
+      message: "Franchise expiry is required",
     }),
 });
 
 export const TricycleFranchiseSchema = z.object({
-  franchise_number: z.string().min(1, 'Franchise Number is required'),
+  franchise_number: z.string().min(1, "Franchise Number is required"),
   franchise_expiration: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
-      message: 'Franchise expiry is required',
+      message: "Franchise expiry is required",
     }),
 });
 
@@ -63,9 +63,9 @@ export const TricycleMaintenanceSchema = z.object({
     .date()
     .nullable()
     .refine((val) => val !== null, {
-      message: 'Last maintenance daet is required',
+      message: "Last maintenance daet is required",
     }),
-  mileage: z.string().min(1, 'Estimated mileage is required'),
+  mileage: z.string().min(1, "Estimated mileage is required"),
 });
 
 export const MaintenanceSchema = z.object({
@@ -73,16 +73,16 @@ export const MaintenanceSchema = z.object({
     .date()
     .nullable()
     .refine((val) => val !== null, {
-      message: 'Last maintenance daet is required',
+      message: "Last maintenance daet is required",
     }),
-  maintenance_status: z.enum(['ok', 'due', 'critical']),
-  mileage: z.string().min(1, 'Estimated mileage is required'),
+  maintenance_status: z.enum(["ok", "due", "critical"]),
+  mileage: z.string().min(1, "Estimated mileage is required"),
 });
 
 export type MaintenanceDetails = z.infer<typeof MaintenanceSchema>;
 
 export const TricycleReceiptSchema = z.object({
-  or_number: z.string().min(1, 'Official receipt number is required'),
+  or_number: z.string().min(1, "Official receipt number is required"),
 });
 
 export const CreateTricycleSchema = z.object({
@@ -94,13 +94,13 @@ export const CreateTricycleSchema = z.object({
     seating_capacity: z.string(),
     fuel_type: z.string(),
     mileage: z.string(),
-    maintenance_status: z.enum(['ok', 'due', 'critical']),
+    maintenance_status: z.enum(["ok", "due", "critical"]),
   }),
   compliance_details: z.object({
-    or_number: z.string().min(1, 'Official Receipt is required'),
-    cr_number: z.string().min(1, 'Certificate of Registration is required'),
-    franchise_number: z.string().min(1, 'Franchise Number is required'),
-    registration_number: z.string().min(1, 'Registration number is required'),
+    or_number: z.string().min(1, "Official Receipt is required"),
+    cr_number: z.string().min(1, "Certificate of Registration is required"),
+    franchise_number: z.string().min(1, "Franchise Number is required"),
+    registration_number: z.string().min(1, "Registration number is required"),
   }),
   plate_number: z.string(),
   registration_expiration: z.date(),
@@ -109,6 +109,17 @@ export const CreateTricycleSchema = z.object({
 });
 
 export type CreateTricycle = z.infer<typeof CreateTricycleSchema>;
+
+export const MaintenanceRecordSchema = z.object({
+  plate_number: z.string(),
+  type: z.enum(["regular", "repair"]),
+  issue_description: z.string(),
+  service_performed: z.string(),
+  cost: z.string(),
+  date: z.date(),
+});
+
+export type CreateMaintenance = z.infer<typeof MaintenanceRecordSchema>;
 
 export const TricycleSchema = z.object({
   id: z.string(),

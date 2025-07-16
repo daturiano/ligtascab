@@ -2,21 +2,23 @@
 
 import { createLog, uploadDocument } from "@/db/db";
 import { AttachmentDetails, MaintenanceRecords, Tricycle } from "@/lib/types";
+import { getErrorMessage } from "@/lib/utils";
 import { createClient } from "@/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { TricycleFormData } from "../components/create-tricycle-provider";
 import {
+  createMaintenanceRecord,
   createTricycle,
   deleteTricycle,
   getAllMaintenanceRecords,
   getAllTricycles,
   getAllTricycleShiftLogs,
   getTricycleById,
+  getTricycleByPlateNumber,
   updateTricycle,
 } from "../db/tricycles";
-import { TricycleUpdateSchema } from "../schemas/tricycle";
-import { getErrorMessage } from "@/lib/utils";
+import { CreateMaintenance, TricycleUpdateSchema } from "../schemas/tricycle";
 
 export const fetchTricycleDetails = async (
   id: string,
@@ -236,4 +238,55 @@ export const fetchAllMaintenanceRecords = async (): Promise<
   if (error) throw new Error("Unable to fetch all maintenance records");
 
   return records;
+};
+
+export const createNewMaintenanceRecord = async (
+  data: CreateMaintenance,
+): Promise<{ createdRecord: MaintenanceRecords }> => {
+  try {
+    const { data: tricycle, error: tricycleError } =
+      await getTricycleByPlateNumber(
+        data.plate_number,
+      );
+
+    if (tricycleError || !tricycle) {
+      throw new Error(tricycleError?.message || "no tricycle found");
+    }
+
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      throw new Error("User is not authenticated");
+    }
+
+    const record = {
+      plate_number: tricycle.plate_number,
+      tricycle_id: tricycle.id,
+      operator_id: user.id,
+      type: data.type,
+      issue_description: data.issue_description,
+      service_performed: data.service_performed,
+      cost: data.cost,
+      date: data.date,
+    };
+
+    const { data: createdRecord, error: createError } =
+      await createMaintenanceRecord(
+        record,
+      );
+
+    if (createError || !createdRecord) {
+      throw new Error(
+        "unable to create new maintenance record",
+      );
+    }
+
+    return { createdRecord };
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
 };
