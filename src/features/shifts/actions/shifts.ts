@@ -154,7 +154,7 @@ export const createNewShiftLog = async (
   }
 };
 
-export const fetchAllShiftLogs = async () => {
+export const fetchAllShiftLogs = async (): Promise<ShiftLog[]> => {
   const { data: shift_logs, error } = await getAllShiftLogs();
 
   if (error) throw new Error("Unable to fetch all tricycles");
