@@ -1,45 +1,30 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Logo from '@/components/ui/logo';
 import LogoWithName from '@/components/ui/logo-with-name';
-import { useQuery } from '@tanstack/react-query';
 import { CarFront, House, SquareChartGantt, SquareUser } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { getOperator } from '../db/dashboard';
 import MobileNavigation from './mobile-navigation';
-import Notifications from './notification';
-import SearchBar from './search-bar';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export const navData = {
-  navMain: [
-    {
-      title: 'Home',
-      url: '/home',
-      pathname: 'home',
-      icon: House,
-    },
-    {
-      title: 'Shift',
-      url: '/shifts',
-      pathname: 'shift',
-      icon: SquareChartGantt,
-    },
-    {
-      title: 'Tricycles',
-      url: '/tricycles',
-      pathname: 'tricycle',
-      icon: CarFront,
-    },
-    {
-      title: 'Drivers',
-      url: '/drivers',
-      pathname: 'driver',
-      icon: SquareUser,
-    },
-  ],
-};
+const SearchBar = dynamic(() => import('./search-bar'), {
+  loading: () => (
+    <Skeleton className="w-[100px] h-[40px] rounded-4xl py-2 px-4" />
+  ),
+  ssr: false,
+});
+
+const Notifications = dynamic(() => import('./notification'), {
+  loading: () => <Skeleton className="size-10 rounded-full" />,
+  ssr: false,
+});
+
+const UserProfile = dynamic(() => import('./user-profile'), {
+  loading: () => <Skeleton className="size-10 rounded-full" />,
+  ssr: false,
+});
 
 export default function DashboardHeader() {
   const pathname = usePathname();
@@ -48,17 +33,10 @@ export default function DashboardHeader() {
     return pathname.toLowerCase().includes(substring.toLowerCase());
   };
 
-  const { data: operator } = useQuery({
-    queryKey: ['operator'],
-    queryFn: getOperator,
-  });
-
-  if (!operator) return null;
-
   return (
     <div className="mx-auto w-full px-4 border-b border-muted-foreground/15 md:px-8 lg:border-none">
       <div className="flex h-14 md:h-16 items-center justify-between">
-        <Link className="transition-all hidden md:block" href="/dashboard">
+        <Link className="transition-all hidden md:block" href="/home">
           <div className="flex max-w-fit items-center">
             <LogoWithName />
           </div>
@@ -107,26 +85,41 @@ export default function DashboardHeader() {
             );
           })}
         </div>
-        <div className="flex items-center lg:space-x-3 space-x-1">
+        <div className="flex items-center lg:space-x-3 space-x-2">
           <SearchBar />
-          {/* <div className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
-            <CircleHelp size={20} className="text-gray-600" />
-          </div> */}
           <Notifications />
-          <Avatar className="size-10 rounded-full bg-muted-foreground/20 flex items-center justify-center">
-            <AvatarImage
-              src={operator.image ?? undefined}
-              alt={operator.first_name}
-            />
-            <AvatarFallback className="size-10 rounded-full bg-muted-foreground/10 flex items-center justify-center">
-              <p className="font-medium">
-                {operator.first_name.charAt(0).toUpperCase()}
-                {operator.last_name.charAt(0).toUpperCase()}
-              </p>
-            </AvatarFallback>
-          </Avatar>
+          <UserProfile />
         </div>
       </div>
     </div>
   );
 }
+
+export const navData = {
+  navMain: [
+    {
+      title: 'Home',
+      url: '/home',
+      pathname: 'home',
+      icon: House,
+    },
+    {
+      title: 'Shift',
+      url: '/shifts',
+      pathname: 'shift',
+      icon: SquareChartGantt,
+    },
+    {
+      title: 'Tricycles',
+      url: '/tricycles',
+      pathname: 'tricycle',
+      icon: CarFront,
+    },
+    {
+      title: 'Drivers',
+      url: '/drivers',
+      pathname: 'driver',
+      icon: SquareUser,
+    },
+  ],
+};
