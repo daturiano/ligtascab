@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 import MobileNavigation from '@/components/private/mobile-navigation';
 
-const SearchBar = dynamic(() => import('./search-bar'), {
+const SearchBar = dynamic(() => import('@/components/private/search-bar'), {
   loading: () => (
     <Skeleton className="w-[100px] h-[40px] rounded-4xl py-2 px-4" />
   ),
@@ -29,7 +29,7 @@ const UserProfile = dynamic(() => import('@/components/private/user-profile'), {
   ssr: false,
 });
 
-export default function DashboardHeader() {
+export default function Navigation() {
   const pathname = usePathname();
 
   const isPathMatch = (substring: string): boolean => {
@@ -67,7 +67,7 @@ export default function DashboardHeader() {
               >
                 {
                   <item.icon
-                    size={18}
+                    size={20}
                     className={`${
                       isPathMatch(item.pathname)
                         ? 'text-foreground'

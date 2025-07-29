@@ -2,7 +2,6 @@ import { Notification } from '@/lib/types';
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 
-// Import all icons
 import license from '@/app/public/notification-icons/driver-license.png';
 import franchise from '@/app/public/notification-icons/franchise.png';
 import maintenance from '@/app/public/notification-icons/maintenance.png';
@@ -17,7 +16,6 @@ type NotificationCardProps = {
   notification: Notification;
 };
 
-// Single configuration object - much cleaner!
 const notificationConfig: Record<
   string,
   {

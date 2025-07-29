@@ -1,6 +1,6 @@
 'use client';
 
-import SecondaryNavigation from '@/components/private/secondary-header';
+import SecondaryNavigation from '@/components/private/secondary-navigation';
 import { CalendarClock } from 'lucide-react';
 import { ReactNode } from 'react';
 
