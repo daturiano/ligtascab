@@ -1,6 +1,7 @@
 'use client';
 
 import emptyImage from '@/app/public/empty.svg';
+import SkeletonPage from '@/components/skeleton-page';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -55,13 +56,21 @@ export default function DriverPage() {
     setSearch('');
   };
 
-  const { data: driver, error } = useQuery({
+  const {
+    data: driver,
+    error,
+    isLoading,
+  } = useQuery({
     queryKey: ['drivers'],
     queryFn: fetchAllDriversFromOperator,
   });
 
   if (error) {
     return <div>Error loading drivers: {error.message}</div>;
+  }
+
+  if (isLoading) {
+    return <SkeletonPage />;
   }
 
   if (!driver) return null;

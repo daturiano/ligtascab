@@ -1,9 +1,9 @@
 'use client';
 
 import { columns } from '@/components/columns';
+import SkeletonPage from '@/components/skeleton-page';
 import { fetchAllShiftLogs } from '@/features/shifts/actions/shifts';
 import QRReaderCard from '@/features/shifts/components/qr-reader-card';
-import ShiftPageSkeleton from '@/features/shifts/components/shift-page-skeleton';
 import { ShiftTable } from '@/features/shifts/components/shift-table';
 import { useQuery } from '@tanstack/react-query';
 
@@ -13,7 +13,7 @@ export default function ShiftPage() {
     queryFn: fetchAllShiftLogs,
   });
 
-  if (isLoading) return <ShiftPageSkeleton />;
+  if (isLoading) return <SkeletonPage />;
 
   return (
     <div className="space-y-4 gap-4 mx-auto mb-12">

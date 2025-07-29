@@ -1,6 +1,7 @@
 'use client';
 
 import emptyImage from '@/app/public/empty.svg';
+import SkeletonPage from '@/components/skeleton-page';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -55,7 +56,11 @@ export default function TricyclesPage() {
     setSearch('');
   };
 
-  const { data: tricycles, error } = useQuery({
+  const {
+    data: tricycles,
+    error,
+    isLoading,
+  } = useQuery({
     queryKey: ['tricycles'],
     queryFn: fetchAllTricyclesFromOperator,
   });
@@ -63,6 +68,8 @@ export default function TricyclesPage() {
   if (error) {
     return <div>Error loading tricycles: {error.message}</div>;
   }
+
+  if (isLoading) return <SkeletonPage />;
 
   if (!tricycles) return null;
 
