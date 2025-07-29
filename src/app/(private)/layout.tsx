@@ -24,7 +24,7 @@ export default function AuthenticatedLayout({
         <div className="absolute bg-gradient-to-b from-[#1fab89]/20 to-transparent -z-50 w-full h-64"></div>
         <div className="lg:max-w-screen-2xl mx-auto">
           <DashboardHeader />
-          <div className="flex-1">{children}</div>
+          <div className="flex-1 pt-4 mx-4 md:mx-6 space-y-10">{children}</div>
         </div>
       </div>
       <ReactQueryDevtools initialIsOpen={false} />

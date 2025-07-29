@@ -49,6 +49,7 @@ export type Operator = {
   id: string;
   first_name: string;
   last_name: string;
+  coop_name?: string;
   phone_number: string;
   email?: string;
   image?: string;
