@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import GenerateQRCode from '@/components/view-qr-code';
+import GenerateQRCode from '@/components/private/view-qr-code';
 import OptionsButton from '@/features/tricycles/components/options-button';
 import { useMobile } from '@/hooks/useMobile';
 import { Driver } from '@/lib/types';

@@ -12,7 +12,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { ChevronDown, Loader2, Search } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDebounce } from 'use-debounce';
-import { searchDrivers, searchTricycles } from '../db/dashboard';
+import { searchDrivers, searchTricycles } from '@/db/db';
 import DriverSearchCard from './driver-search-card';
 import TricycleSearchCard from './tricycle-search-card';
 

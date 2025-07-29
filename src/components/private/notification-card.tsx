@@ -11,7 +11,7 @@ import birthday from '@/app/public/notification-icons/birthday.png';
 import { formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { markAsRead } from '../db/dashboard';
+import { markAsRead } from '@/db/db';
 
 type NotificationCardProps = {
   notification: Notification;

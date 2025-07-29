@@ -9,10 +9,10 @@ import { Notification } from '@/lib/types';
 import { useQuery } from '@tanstack/react-query';
 import { Bell, X } from 'lucide-react';
 import { useState } from 'react';
-import { getNotifications } from '../db/dashboard';
-import NotificationCard from './notification-card';
+import NotificationCard from '@/components/private/notification-card';
 import image from '@/app/public/no-notif.svg';
 import Image from 'next/image';
+import { getNotifications } from '@/db/db';
 
 export default function Notifications() {
   const [totalCount, setTotalCount] = useState(0);

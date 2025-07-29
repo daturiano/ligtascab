@@ -1,6 +1,6 @@
 'use client';
 
-import { columns } from '@/components/columns';
+import { columns } from '@/components/private/columns';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {

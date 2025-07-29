@@ -1,6 +1,6 @@
 'use client';
 
-import SecondaryNavigation from '@/components/secondary-navigation';
+import SecondaryNavigation from '@/components/private/secondary-header';
 import { SquarePlus, Users } from 'lucide-react';
 import { ReactNode } from 'react';
 

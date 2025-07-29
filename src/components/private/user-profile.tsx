@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useQuery } from '@tanstack/react-query';
-import { getOperator } from '../db/dashboard';
+import { getOperator } from '@/db/db';
 
 export default function UserProfile() {
   const { data: operator } = useQuery({

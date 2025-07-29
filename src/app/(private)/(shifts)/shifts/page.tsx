@@ -1,7 +1,7 @@
 'use client';
 
-import { columns } from '@/components/columns';
-import SkeletonPage from '@/components/skeleton-page';
+import { columns } from '@/components/private/columns';
+import SkeletonPage from '@/components/private/page-skeleton';
 import { fetchAllShiftLogs } from '@/features/shifts/actions/shifts';
 import QRReaderCard from '@/features/shifts/components/qr-reader-card';
 import { ShiftTable } from '@/features/shifts/components/shift-table';

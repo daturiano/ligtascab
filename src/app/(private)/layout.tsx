@@ -1,6 +1,6 @@
 'use client';
 
-import DashboardHeader from '@/features/dashboard/components/dashboard-header';
+import DashboardHeader from '@/components/private/header';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactNode } from 'react';

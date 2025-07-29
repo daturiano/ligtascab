@@ -1,7 +1,7 @@
 'use client';
 
 import emptyImage from '@/app/public/empty.svg';
-import SkeletonPage from '@/components/skeleton-page';
+import SkeletonPage from '@/components/private/page-skeleton';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';

@@ -3,7 +3,7 @@ import qrcode from '@/app/public/qr-code.png';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
-import ViewQRCode from '@/components/view-qr-code';
+import ViewQRCode from '@/components/private/view-qr-code';
 import { fetchDriverDetails } from '@/features/drivers/actions/drivers';
 import DriverProfileCard from '@/features/drivers/components/driver-profile-card';
 import { DriverShiftsTable } from '@/features/drivers/components/driver-shifts-table';

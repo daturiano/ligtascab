@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import ViewQRCode from '@/components/view-qr-code';
+import ViewQRCode from '@/components/private/view-qr-code';
 import { fetchTricycleDetails } from '@/features/tricycles/actions/tricycles';
 import TricycleProfileCard from '@/features/tricycles/components/tricycle-profile-card';
 import { TricycleShiftsTable } from '@/features/tricycles/components/tricycle-shifts-table';

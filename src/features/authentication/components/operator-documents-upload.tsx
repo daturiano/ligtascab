@@ -2,7 +2,7 @@ import DocumentCard from '@/features/authentication/components/document-card';
 import { DocumentType } from '@/lib/types';
 import { useState, useEffect } from 'react';
 import { useCreateOperator } from './create-operator-provider';
-import FormBottomNavigation from '@/components/form-bottom-navigation';
+import FormBottomNavigation from '@/components/private/form-bottom-navigation';
 
 const MAX_FILE_SIZE_MB = 5;
 

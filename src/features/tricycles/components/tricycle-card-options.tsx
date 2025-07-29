@@ -17,7 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import GenerateQRCode from '@/components/view-qr-code';
+import GenerateQRCode from '@/components/private/view-qr-code';
 import { useMobile } from '@/hooks/useMobile';
 import { ChevronDown, Ellipsis, Loader2, QrCode, Trash } from 'lucide-react';
 import OptionsButton from './options-button';

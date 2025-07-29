@@ -5,9 +5,9 @@ import LogoWithName from '@/components/ui/logo-with-name';
 import { CarFront, House, SquareChartGantt, SquareUser } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import MobileNavigation from './mobile-navigation';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
+import MobileNavigation from '@/components/private/mobile-navigation';
 
 const SearchBar = dynamic(() => import('./search-bar'), {
   loading: () => (
@@ -16,12 +16,15 @@ const SearchBar = dynamic(() => import('./search-bar'), {
   ssr: false,
 });
 
-const Notifications = dynamic(() => import('./notification'), {
-  loading: () => <Skeleton className="size-10 rounded-full" />,
-  ssr: false,
-});
+const Notifications = dynamic(
+  () => import('@/components/private/notification'),
+  {
+    loading: () => <Skeleton className="size-10 rounded-full" />,
+    ssr: false,
+  }
+);
 
-const UserProfile = dynamic(() => import('./user-profile'), {
+const UserProfile = dynamic(() => import('@/components/private/user-profile'), {
   loading: () => <Skeleton className="size-10 rounded-full" />,
   ssr: false,
 });

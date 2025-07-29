@@ -1,6 +1,6 @@
 'use client';
 
-import FormProgress from '@/components/form-progress';
+import FormProgress from '@/components/private/form-progress';
 import { useCreateDriver } from './create-driver-provider';
 
 const stepsData = [

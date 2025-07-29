@@ -22,14 +22,14 @@ interface DocumentCardProps {
   document: DocumentType;
   onFileSelect: (docId: string, file: File | null) => void;
   selectedFile: File | null;
-  readonly: boolean;
+  readonly?: boolean;
 }
 
 export default function DocumentCard({
   document,
   onFileSelect,
   selectedFile,
-  readonly,
+  readonly = false,
 }: DocumentCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 

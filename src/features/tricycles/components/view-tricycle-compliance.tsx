@@ -15,7 +15,7 @@ import { createClient } from '@/supabase/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Tricycle } from '@/lib/types';
-import DocumentStatusBadge from '../../../components/document-status-badge';
+import DocumentStatusBadge from '../../../components/private/document-status-badge';
 
 type ViewTricycleComplianceProps = {
   path: string;

@@ -1,6 +1,6 @@
 'use client';
 
-import DocumentStatusBadge from '@/components/document-status-badge';
+import DocumentStatusBadge from '@/components/private/document-status-badge';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

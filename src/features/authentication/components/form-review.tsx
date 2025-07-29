@@ -1,4 +1,4 @@
-import FormBottomNavigation from '@/components/form-bottom-navigation';
+import FormBottomNavigation from '@/components/private/form-bottom-navigation';
 import { getErrorMessage } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';

@@ -1,5 +1,5 @@
 'use client';
-import FormBottomNavigation from '@/components/form-bottom-navigation';
+import FormBottomNavigation from '@/components/private/form-bottom-navigation';
 import {
   Card,
   CardContent,

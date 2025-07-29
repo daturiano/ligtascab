@@ -7,7 +7,7 @@ import {
 import { AlignJustify } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { navData } from './dashboard-header';
+import { navData } from '@/components/private/header';
 
 export default function MobileNavigation() {
   const [open, setOpen] = useState(false);

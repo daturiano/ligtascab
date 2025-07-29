@@ -1,6 +1,6 @@
 'use client';
 
-import FormProgress from '@/components/form-progress';
+import FormProgress from '@/components/private/form-progress';
 import { useCreateOperator } from './create-operator-provider';
 const stepsData = [
   'Personal Details',
