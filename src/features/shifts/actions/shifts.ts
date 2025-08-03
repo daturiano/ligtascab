@@ -15,6 +15,7 @@ import {
 import { getErrorMessage, isPastDue } from "@/lib/utils";
 import { PostgrestError } from "@supabase/supabase-js";
 import { getDriverById } from "@/features/drivers/db/drivers";
+import { createLog } from "@/db/db";
 
 export const fetchDriverDetails = async (
   id: string,
@@ -73,6 +74,22 @@ export const createNewShiftLog = async (
         throw new Error(logError?.message || "Unable to create shift log");
       }
       logDetails = { data: shiftLogDetails };
+
+      const logData = {
+        data: shiftLogDetails,
+        driver_id: data.driver_id,
+        tricycle_id: assignedVehicle.tricycle_id,
+        operator_id: data.operator_id,
+        log_event: "time_out",
+      };
+
+      const { error: createLogError } = await createLog(logData);
+
+      if (createLogError) {
+        throw new Error(
+          createLogError.message || "Unable to log create operator",
+        );
+      }
     }
 
     if (log.shift_type === "Time-in") {
@@ -130,6 +147,22 @@ export const createNewShiftLog = async (
         throw new Error(logError?.message || "Unable to create shift log");
       }
       logDetails = { data: shiftLogDetails };
+
+      const logData = {
+        data: shiftLogDetails,
+        driver_id: driver.id,
+        tricycle_id: tricycle.id,
+        operator_id: data.operator_id,
+        log_event: "time_in",
+      };
+
+      const { error: createLogError } = await createLog(logData);
+
+      if (createLogError) {
+        throw new Error(
+          createLogError.message || "Unable to log create operator",
+        );
+      }
     }
 
     const isDriverUpdated = await updateDriverStatus(log.driver_id, status);
