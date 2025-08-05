@@ -17,8 +17,23 @@ export function getFormattedDate(): string {
   });
 }
 
-export function formatDateTime(timestamp: string): string {
+export function formatDateTime(
+  timestamp: string,
+  isFormatted?: boolean,
+): string {
   const date = new Date(timestamp);
+
+  if (isFormatted) {
+    const formatted = date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return formatted;
+  }
 
   const options: Intl.DateTimeFormatOptions = {
     month: "2-digit",

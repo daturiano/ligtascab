@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Operator } from '@/lib/types';
 import { HelpCircle, House } from 'lucide-react';
 
-export default function Header({ operator }: { operator: Operator }) {
+export default function DashboardHeader({ operator }: { operator: Operator }) {
   return (
     <Card
       className="shadow-none rounded-md"

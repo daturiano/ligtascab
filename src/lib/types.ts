@@ -114,3 +114,14 @@ export type MaintenanceRecords = {
   date: Date;
   created_at?: Date;
 };
+
+export type Log = {
+  id: string;
+  log_event: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
+  driver_id: string;
+  tricycle_id: string;
+  operator_id: string;
+  created_at: Date;
+};
