@@ -3,13 +3,14 @@
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { Ellipsis, Loader2 } from 'lucide-react';
-import { fetchRecentLogs } from '../db/home';
-import RecentActivityCard from './recent-activity-card';
+import React from 'react';
+import { fetchActiveShifts } from '../db/home';
+import ActiveShiftCard from './active-shift-card';
 
-export default function RecentActivities() {
+export default function ActiveShifts() {
   const { data, error, isLoading } = useQuery({
-    queryKey: ['recent_logs'],
-    queryFn: fetchRecentLogs,
+    queryKey: ['active_shifts'],
+    queryFn: fetchActiveShifts,
   });
 
   if (error) {
@@ -20,15 +21,16 @@ export default function RecentActivities() {
     return <Loader2 className="h-4 w-4 animate-spin mx-auto mb-2" />;
   }
 
+  if (!data) return null;
   return (
-    <Card className="p-0 gap-0 rounded-md shadow-none max-w-[500px] max-h-[530px]">
+    <Card className="p-0 gap-0 rounded-md shadow-none max-h-[265px]">
       <CardTitle className="border-b-1 p-6 flex flex-row justify-between">
-        Recent Activities
+        Active Shifts
         <Ellipsis />
       </CardTitle>
-      <CardContent className="flex-1 flex flex-col justify-between py-6">
-        {data?.map((activity, index) => (
-          <RecentActivityCard activity={activity} key={index} />
+      <CardContent className="flex-1 flex flex-col justify-between gap-2 py-6 overflow-y-auto">
+        {data.map((shift, index) => (
+          <ActiveShiftCard shift={shift} key={index} />
         ))}
       </CardContent>
     </Card>

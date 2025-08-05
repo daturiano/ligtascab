@@ -144,3 +144,34 @@ export function isTwoMonthFromNow(date: Date): boolean {
     targetDate.getDate() === twoMonthsFromNow.getDate()
   );
 }
+
+export const calculateElapsedDuration = (createdAt: Date | string): string => {
+  const startTime = new Date(createdAt);
+  const currentTime = new Date();
+
+  const diffInMs = currentTime.getTime() - startTime.getTime();
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+
+  const roundedMinutes = Math.round(diffInMinutes / 15) * 15;
+
+  const hours = Math.floor(roundedMinutes / 60);
+  const minutes = roundedMinutes % 60;
+
+  if (hours === 0) {
+    return `${minutes}mins`;
+  } else if (minutes === 0) {
+    return `${hours}hr${hours > 1 ? "s" : ""}`;
+  } else {
+    return `${hours}hr${hours > 1 ? "s" : ""} ${minutes}mins`;
+  }
+};
+
+export const extractTime = (dateInput: Date | string): string => {
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+};

@@ -40,7 +40,7 @@ export type ShiftLog = {
   operator_id: string;
   driver_id: string;
   tricycle_id: string;
-  created_at?: string;
+  created_at: Date | string;
   revenue_collected?: string;
   shift_description?: string;
 };
