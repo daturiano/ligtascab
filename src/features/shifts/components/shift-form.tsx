@@ -2,14 +2,6 @@
 
 import { Button } from '@/components/ui/button';
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
-import {
   Form,
   FormControl,
   FormField,
@@ -19,11 +11,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -32,10 +19,8 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Driver } from '@/lib/types';
-import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -89,6 +74,9 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
       });
       queryClient.invalidateQueries({
         queryKey: ['available_vehicles'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['active_shifts'],
       });
       toast.success(
         `${log.shift_type} of ${log.driver_name} in tricycle ${log.plate_number} completed.`
@@ -162,48 +150,25 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
                   <FormLabel className="text-sm md:text-base">
                     Select Tricycle
                   </FormLabel>
-                  <Popover onOpenChange={() => setIsOpen(true)}>
-                    <PopoverTrigger asChild disabled={isTimeOut}>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            'w-full justify-between text-sm',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          {field.value
-                            ? availableTricycles?.find(
-                                (tricycle) => tricycle === field.value
-                              )
-                            : 'Select tricycle'}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent align="center" className="w-[195px]">
-                      <Command>
-                        <CommandInput placeholder="Search tricycle..." />
-                        <CommandList>
-                          <CommandEmpty>No tricycle found.</CommandEmpty>
-                          <CommandGroup>
-                            {availableTricycles?.map((tricycle) => (
-                              <CommandItem
-                                value={tricycle}
-                                key={tricycle}
-                                onSelect={() => {
-                                  form.setValue('plate_number', tricycle);
-                                }}
-                              >
-                                {tricycle}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={isTimeOut}
+                    onOpenChange={() => setIsOpen(true)}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select tricycle" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="z-[100] max-h-[300px]">
+                      {availableTricycles?.map((tricycle) => (
+                        <SelectItem value={tricycle} key={tricycle}>
+                          {tricycle}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

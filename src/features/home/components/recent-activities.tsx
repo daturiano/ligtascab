@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
-import { Ellipsis, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { fetchRecentLogs } from '../db/home';
 import RecentActivityCard from './recent-activity-card';
 
@@ -22,10 +22,7 @@ export default function RecentActivities() {
 
   return (
     <Card className="p-0 gap-0 rounded-md shadow-none max-w-[500px] max-h-[530px]">
-      <CardTitle className="border-b-1 p-6 flex flex-row justify-between">
-        Recent Activities
-        <Ellipsis />
-      </CardTitle>
+      <CardTitle className="border-b-1 p-6">Recent Activities</CardTitle>
       <CardContent className="flex-1 flex flex-col justify-between py-6">
         {data?.map((activity, index) => (
           <RecentActivityCard activity={activity} key={index} />

@@ -144,7 +144,7 @@ export default function RecentActivityCard({
         <Icon size={20} />
       </div>
       <div className="flex flex-col flex-1 justify-between gap-1">
-        <p className="text-sm font-medium">{getMessage(activity)}</p>
+        <p className="text-sm font-normal">{getMessage(activity)}</p>
         <p className="text-muted-foreground text-sm text-pretty">
           {getDate(activity)}
         </p>

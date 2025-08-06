@@ -1,7 +1,7 @@
 import { useElapsedTime } from '@/hooks/useElapsedTime';
 import { ShiftLog } from '@/lib/types';
 import { extractTime } from '@/lib/utils';
-import { UserRound } from 'lucide-react';
+import { UsersRound } from 'lucide-react';
 
 type ActiveShiftCardProps = {
   shift: ShiftLog;
@@ -13,7 +13,7 @@ export default function ActiveShiftCard({ shift }: ActiveShiftCardProps) {
     <div className="bg-background w-full p-3 rounded-md flex justify-between">
       <div className="flex flex-row gap-4 items-center">
         <div className="size-12 flex items-center justify-center bg-primary/20 rounded-4xl">
-          <UserRound />
+          <UsersRound size={20} />
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-sm">{shift.driver_name}</p>

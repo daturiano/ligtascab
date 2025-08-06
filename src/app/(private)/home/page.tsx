@@ -12,7 +12,8 @@ export default async function HomePage() {
       <DashboardHeader operator={operator} />
       <div className="grid grid-cols-[auto_1fr] gap-4">
         <RecentActivities />
-        <div className="grid grid-rows-2">
+        <div className="grid grid-rows-[auto_1fr]">
+          <div></div>
           <ActiveShifts />
         </div>
       </div>

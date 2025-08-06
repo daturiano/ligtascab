@@ -1,16 +1,16 @@
-'use server';
+"use server";
 
-import { ShiftLog } from '@/lib/types';
-import { createClient } from '@/supabase/server';
-import { PostgrestError } from '@supabase/supabase-js';
-import { cache } from 'react';
+import { ShiftLog } from "@/lib/types";
+import { createClient } from "@/supabase/server";
+import { PostgrestError } from "@supabase/supabase-js";
+import { cache } from "react";
 
 export const getAvailableTricycles = cache(async () => {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from('tricycles')
-    .select('plate_number')
-    .eq('status', 'inactive');
+    .from("tricycles")
+    .select("plate_number")
+    .eq("status", "inactive");
 
   return {
     data: data ? data.map((tricycle) => tricycle.plate_number) : [],
@@ -21,10 +21,10 @@ export const getAvailableTricycles = cache(async () => {
 export const checkDriverStatus = async (id: string) => {
   const supabase = await createClient();
   const { error } = await supabase
-    .from('drivers')
-    .select('status')
-    .eq('id', id)
-    .eq('status', 'active')
+    .from("drivers")
+    .select("status")
+    .eq("id", id)
+    .eq("status", "active")
     .single();
 
   if (error) {
@@ -37,10 +37,10 @@ export const checkDriverStatus = async (id: string) => {
 export const getDriverAssignedVehicle = async (id: string) => {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from('shifts')
-    .select('*')
-    .eq('driver_id', id)
-    .order('created_at', { ascending: false })
+    .from("shifts")
+    .select("*")
+    .eq("driver_id", id)
+    .order("created_at", { ascending: false })
     .limit(1)
     .single();
 
@@ -50,7 +50,7 @@ export const getDriverAssignedVehicle = async (id: string) => {
 export const createShiftLog = async (newLog: ShiftLog) => {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from('shifts')
+    .from("shifts")
     .insert([newLog])
     .select()
     .single();
@@ -61,15 +61,15 @@ export const createShiftLog = async (newLog: ShiftLog) => {
 export const updateDriverStatus = async (id: string, status: string) => {
   const supabase = await createClient();
   const { error } = await supabase
-    .from('drivers')
+    .from("drivers")
     .update({ status: status })
-    .eq('id', id)
+    .eq("id", id)
     .select();
 
   console.log(id, status);
 
   if (error) {
-    console.error('Error updating driver status:', error);
+    console.error("Error updating driver status:", error);
     return false;
   }
 
@@ -78,17 +78,17 @@ export const updateDriverStatus = async (id: string, status: string) => {
 
 export const updateTricycleStatus = async (
   plate_number: string,
-  status: string
+  status: string,
 ) => {
   const supabase = await createClient();
   const { error } = await supabase
-    .from('tricycles')
+    .from("tricycles")
     .update({ status: status })
-    .eq('plate_number', plate_number)
+    .eq("plate_number", plate_number)
     .select();
 
   if (error) {
-    console.error('Error updating driver status:', error);
+    console.error("Error updating driver status:", error);
     return false;
   }
 
@@ -99,24 +99,24 @@ export const getAllShiftLogs = cache(
   async (): Promise<{ data: ShiftLog[]; error: PostgrestError | null }> => {
     const supabase = await createClient();
     const { data: logs, error } = await supabase
-      .from('shifts')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("shifts")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     return { data: logs || [], error };
-  }
+  },
 );
 
 export const getDriverMostRecentLog = async (
-  id: string
+  id: string,
 ): Promise<{ data: ShiftLog; error: PostgrestError | null }> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from('shifts')
-    .select('*')
-    .eq('driver_id', id)
-    .order('created_at', { ascending: false })
+    .from("shifts")
+    .select("*")
+    .eq("driver_id", id)
+    .order("created_at", { ascending: false })
     .limit(1)
     .single();
 

@@ -12,9 +12,10 @@ type DriverDetailsCardProps = {
 };
 
 export default function DriverDetailsCard({ driver }: DriverDetailsCardProps) {
-  const { data: recent_log } = useQuery({
-    queryKey: ['recent_log'],
+  const { data: recent_log, isError } = useQuery({
+    queryKey: ['driver_recent_log'],
     queryFn: () => fetchDriverMostRecentLog(driver.id),
+    retry: false,
   });
 
   return (
@@ -73,7 +74,7 @@ export default function DriverDetailsCard({ driver }: DriverDetailsCardProps) {
           <div className="flex flex-col">
             <p className="text-sm md:text-base">
               <span className="text-muted-foreground">Previous Shift: </span>
-              {!recent_log?.data.created_at
+              {!recent_log?.data.created_at || isError
                 ? 'No data avaialble'
                 : formatDateTime(recent_log.data.created_at.toLocaleString())}
             </p>
@@ -81,7 +82,7 @@ export default function DriverDetailsCard({ driver }: DriverDetailsCardProps) {
               <span className="text-muted-foreground">
                 Last Used Tricycle:{' '}
               </span>
-              {!recent_log?.data.plate_number
+              {!recent_log?.data.plate_number || isError
                 ? 'No data avaialble'
                 : `${recent_log.data.plate_number}`}
             </p>

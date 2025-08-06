@@ -145,17 +145,20 @@ export function isTwoMonthFromNow(date: Date): boolean {
   );
 }
 
-export const calculateElapsedDuration = (createdAt: Date | string): string => {
+export const calculateActualElapsedDuration = (
+  createdAt: Date | string,
+): string => {
   const startTime = new Date(createdAt);
   const currentTime = new Date();
-
   const diffInMs = currentTime.getTime() - startTime.getTime();
   const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
 
-  const roundedMinutes = Math.round(diffInMinutes / 15) * 15;
+  if (diffInMinutes < 0) {
+    return "0mins";
+  }
 
-  const hours = Math.floor(roundedMinutes / 60);
-  const minutes = roundedMinutes % 60;
+  const hours = Math.floor(diffInMinutes / 60);
+  const minutes = diffInMinutes % 60;
 
   if (hours === 0) {
     return `${minutes}mins`;
