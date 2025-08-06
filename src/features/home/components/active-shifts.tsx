@@ -1,7 +1,6 @@
 'use client';
 
 import empty_shift from '@/app/public/empty_shift.svg';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
@@ -37,23 +36,25 @@ export default function ActiveShifts() {
     <Card className="p-0 gap-0 rounded-md  border-0">
       <CardHeader className="border-b-1 p-6 gap-0 flex flex-row items-center justify-between max-h-[65px]">
         <CardTitle>Active Shifts</CardTitle>
-        <Dialog>
-          <DialogTrigger className="flex justify-end">
-            <div className="bg-primary rounded-md py-2 px-4 cursor-pointer">
-              <p className="text-white text-sm">Create New Shift</p>
-            </div>
-          </DialogTrigger>
-          <DialogContent
-            showCloseButton={false}
-            className="flex flex-col items-center"
-          >
-            <DialogHeader className="hidden">
-              <DialogTitle></DialogTitle>
-              <DialogDescription></DialogDescription>
-            </DialogHeader>
-            <QRReaderCard />
-          </DialogContent>
-        </Dialog>
+        {data.length > 0 && (
+          <Dialog>
+            <DialogTrigger className="flex justify-end">
+              <div className="bg-primary rounded-md py-2 px-4 cursor-pointer">
+                <p className="text-white text-sm">Create New Shift</p>
+              </div>
+            </DialogTrigger>
+            <DialogContent
+              showCloseButton={false}
+              className="flex flex-col items-center"
+            >
+              <DialogHeader className="hidden">
+                <DialogTitle></DialogTitle>
+                <DialogDescription></DialogDescription>
+              </DialogHeader>
+              <QRReaderCard />
+            </DialogContent>
+          </Dialog>
+        )}
       </CardHeader>
       <CardContent className="flex-1 flex flex-col gap-2 py-6 overflow-y-auto">
         {data.length > 0 ? (
@@ -91,9 +92,25 @@ export default function ActiveShifts() {
               height={140}
               width={140}
             />
-            <div className="space-y-2">
+            <div className="space-y-2 flex flex-col">
               <p className="font-normal">No active shifts right now.</p>
-              <Button className="px-16">Start Shift</Button>
+              <Dialog>
+                <DialogTrigger className="flex justify-center">
+                  <div className="bg-primary rounded-md py-2 px-4 cursor-pointer min-w-44">
+                    <p className="text-white text-sm">Create New Shift</p>
+                  </div>
+                </DialogTrigger>
+                <DialogContent
+                  showCloseButton={false}
+                  className="flex flex-col items-center"
+                >
+                  <DialogHeader className="hidden">
+                    <DialogTitle></DialogTitle>
+                    <DialogDescription></DialogDescription>
+                  </DialogHeader>
+                  <QRReaderCard />
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         )}

@@ -37,7 +37,7 @@ const recentActivityConfig: Record<
   time_out: {
     icon: AlarmClockMinus,
     getMessage: (log) =>
-      `Shift completed - ${log.data.driver_name} earned ₱450`,
+      `Shift completed - ${log.data.driver_name} earned ₱${log.data.revenue_collected}`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
     color: '#b9e1d7',
