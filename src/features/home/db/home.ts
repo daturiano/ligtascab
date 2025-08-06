@@ -1,6 +1,5 @@
 "use server";
 
-import { ShiftLog } from "@/lib/types";
 import { createClient } from "@/supabase/server";
 
 export const fetchRecentLogs = async () => {
@@ -19,17 +18,6 @@ export const fetchRecentLogs = async () => {
 
   return data || [];
 };
-
-// export const fetchActiveShifts = async () => {
-//   const supabase = await createClient();
-
-//   const { data } = await supabase.rpc("fetch_active_shifts_today");
-//   const activeOnly = data.filter((shift: ShiftLog) =>
-//     shift.shift_type === "Time-in"
-//   );
-
-//   return activeOnly;
-// };
 
 export const fetchActiveShifts = async () => {
   const supabase = await createClient();
@@ -78,4 +66,14 @@ export const fetchActiveShifts = async () => {
   );
 
   return activeShifts;
+};
+
+export const getActiveDrivers = async () => {
+  const supabase = await createClient();
+  const { data: driver, error } = await supabase
+    .from("drivers")
+    .select("*")
+    .eq("status", "active");
+
+  return { data: driver || [], error };
 };

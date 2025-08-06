@@ -21,7 +21,7 @@ export default function RecentActivities() {
   }
 
   return (
-    <Card className="p-0 gap-0 rounded-md shadow-none max-w-[500px] max-h-[530px]">
+    <Card className="p-0 gap-0 rounded-md border-0 max-w-[500px]">
       <CardTitle className="border-b-1 p-6">Recent Activities</CardTitle>
       <CardContent className="flex-1 flex flex-col justify-between py-6">
         {data?.map((activity, index) => (

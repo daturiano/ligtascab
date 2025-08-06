@@ -34,7 +34,7 @@ export default function ActiveShifts() {
 
   if (!data) return null;
   return (
-    <Card className="p-0 gap-0 rounded-md shadow-none max-h-[340px]">
+    <Card className="p-0 gap-0 rounded-md  border-0">
       <CardHeader className="border-b-1 p-6 gap-0 flex flex-row items-center justify-between max-h-[65px]">
         <CardTitle>Active Shifts</CardTitle>
         <Dialog>
@@ -58,7 +58,7 @@ export default function ActiveShifts() {
       <CardContent className="flex-1 flex flex-col gap-2 py-6 overflow-y-auto">
         {data.length > 0 ? (
           <div className="flex-1 flex flex-col justify-between gap-2">
-            <div className="space-y-2">
+            <div className="space-y-4">
               {data.map((shift, index) => (
                 <ActiveShiftCard shift={shift} key={index} />
               ))}
