@@ -1,6 +1,9 @@
 "use server";
 
+import { ShiftLog } from "@/lib/types";
 import { createClient } from "@/supabase/server";
+import { PostgrestError } from "@supabase/supabase-js";
+import { cache } from "react";
 
 export const fetchRecentLogs = async () => {
   const supabase = await createClient();
@@ -77,3 +80,30 @@ export const getActiveDrivers = async () => {
 
   return { data: driver || [], error };
 };
+
+export const getAllShiftLogsToday = cache(
+  async (): Promise<{ data: ShiftLog[]; error: PostgrestError | null }> => {
+    const supabase = await createClient();
+
+    const now = new Date();
+    const startOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    const endOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1,
+    );
+
+    const { data: logs, error } = await supabase
+      .from("shifts")
+      .select("*")
+      .gte("created_at", startOfDay.toISOString())
+      .lt("created_at", endOfDay.toISOString())
+      .order("created_at", { ascending: false });
+
+    return { data: logs || [], error };
+  },
+);

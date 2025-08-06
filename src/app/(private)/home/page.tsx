@@ -1,10 +1,10 @@
-import { Card } from '@/components/ui/card';
 import { getOperator } from '@/db/db';
 import ActiveDriversCard from '@/features/home/components/active-drivers-card';
 import ActiveShifts from '@/features/home/components/active-shifts';
 import ActiveTricycleCard from '@/features/home/components/active-tricycles.card';
 import DashboardHeader from '@/features/home/components/dashboard-header';
 import RecentActivities from '@/features/home/components/recent-activities';
+import TodaysRevenue from '@/features/home/components/todays-revenue';
 
 export default async function HomePage() {
   const operator = await getOperator();
@@ -19,7 +19,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-3 gap-4">
             <ActiveDriversCard />
             <ActiveTricycleCard />
-            <Card className="rounded-md border-0"></Card>
+            <TodaysRevenue />
           </div>
           <ActiveShifts />
         </div>

@@ -78,6 +78,18 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
       queryClient.invalidateQueries({
         queryKey: ['active_shifts'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['recent_logs'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['active_drivers'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['active_tricycles'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['shifts_today'],
+      });
       toast.success(
         `${log.shift_type} of ${log.driver_name} in tricycle ${log.plate_number} completed.`
       );
