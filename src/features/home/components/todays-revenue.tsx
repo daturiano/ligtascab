@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { PhilippinePeso, TrendingUp } from 'lucide-react';
 import { fetchAllShiftLogsToday } from '../actions/home';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function TodaysRevenue() {
-  const { data: shifts_today } = useQuery({
+  const { data: shifts_today, isLoading } = useQuery({
     queryKey: ['shifts_today'],
     queryFn: fetchAllShiftLogsToday,
   });
@@ -18,6 +19,10 @@ export default function TodaysRevenue() {
         (total, shift) => total + Number(shift.revenue_collected || 0),
         0
       ) ?? 0;
+
+  if (isLoading) {
+    return <Skeleton className="h-[136px] w-[310px] rounded-md" />;
+  }
 
   return (
     <Card className="rounded-md px-0 py-4 max-h-[140px] border-0">

@@ -1,12 +1,13 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { fetchAllTricyclesFromOperator } from '@/features/tricycles/actions/tricycles';
 import { useQuery } from '@tanstack/react-query';
 import { CarFront, TrendingUp } from 'lucide-react';
 
 export default function ActiveTricycleCard() {
-  const { data: tricycles } = useQuery({
+  const { data: tricycles, isLoading } = useQuery({
     queryKey: ['active_tricycles'],
     queryFn: fetchAllTricyclesFromOperator,
   });
@@ -14,6 +15,10 @@ export default function ActiveTricycleCard() {
   const active_tricycles = tricycles?.data.filter(
     (tricycle) => tricycle.status === 'active'
   );
+
+  if (isLoading) {
+    return <Skeleton className="h-[136px] w-[310px] rounded-md" />;
+  }
 
   return (
     <Card className="rounded-md px-0 py-4 max-h-[140px] border-0">

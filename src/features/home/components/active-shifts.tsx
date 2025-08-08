@@ -10,25 +10,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 import QRReaderCard from '@/features/shifts/components/qr-reader-card';
 import { useQuery } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { fetchActiveShifts } from '../db/home';
 import ActiveShiftCard from './active-shift-card';
 
 export default function ActiveShifts() {
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['active_shifts'],
     queryFn: fetchActiveShifts,
   });
 
-  if (error) {
-    return <div>Error loading drivers: {error.message}</div>;
-  }
-
   if (isLoading) {
-    return <Loader2 className="h-4 w-4 animate-spin mx-auto mb-2" />;
+    return <Skeleton className="h-[368px] w-[961px] rounded-md" />;
   }
 
   if (!data) return null;

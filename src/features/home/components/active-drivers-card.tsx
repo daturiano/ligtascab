@@ -1,12 +1,13 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { fetchAllDriversFromOperator } from '@/features/drivers/actions/drivers';
 import { useQuery } from '@tanstack/react-query';
 import { Contact, TrendingUp } from 'lucide-react';
 
 export default function ActiveDriversCard() {
-  const { data: drivers } = useQuery({
+  const { data: drivers, isLoading } = useQuery({
     queryKey: ['active_drivers'],
     queryFn: fetchAllDriversFromOperator,
   });
@@ -14,6 +15,10 @@ export default function ActiveDriversCard() {
   const active_drivers = drivers?.data.filter(
     (driver) => driver.status === 'active'
   );
+
+  if (isLoading) {
+    return <Skeleton className="h-[136px] w-[310px] rounded-md" />;
+  }
 
   return (
     <Card className="rounded-md px-0 py-4 max-h-[140px] border-0">

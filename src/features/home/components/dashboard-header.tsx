@@ -3,10 +3,22 @@ import CopyButton from '@/components/private/copy-button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Operator } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
+import { getOperator } from '@/db/db';
+import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, House } from 'lucide-react';
 
-export default function DashboardHeader({ operator }: { operator: Operator }) {
+export default function DashboardHeader() {
+  const { data: operator, isLoading } = useQuery({
+    queryKey: ['operator_header'],
+    queryFn: getOperator,
+  });
+
+  if (isLoading)
+    return <Skeleton className="w-[1396px] h-[251px] rounded-md" />;
+
+  if (!operator) return null;
+
   return (
     <Card
       className="shadow-none rounded-md"
@@ -18,12 +30,12 @@ export default function DashboardHeader({ operator }: { operator: Operator }) {
       }}
     >
       <CardContent className="flex flex-col gap-10">
-        <div className="flex flex-row justify-between">
+        <div className="hidden md:flex flex-row justify-between">
           <div className="flex items-center gap-2 text-white font-medium text-sm">
             <House size={16} />
             <p>Home</p>
             <p>/</p>
-            <p>{operator?.coop_name}</p>
+            <p>{operator.coop_name}</p>
           </div>
           <div className="flex items-center gap-2 text-white text-sm font-medium">
             <HelpCircle />
@@ -33,7 +45,7 @@ export default function DashboardHeader({ operator }: { operator: Operator }) {
         <Card className="shadow-none rounded-md py-4 max-w-min">
           <CardContent className="text-sm px-0 flex flex-col space-y-2">
             <div className="flex flex-col px-4 gap-2">
-              <h1 className="text-nowrap font-medium">{operator?.coop_name}</h1>
+              <h1 className="text-nowrap font-medium">{operator.coop_name}</h1>
               <Badge className="text-xs px-4">Verified</Badge>
             </div>
             <Separator />

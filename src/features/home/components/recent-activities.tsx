@@ -1,23 +1,19 @@
 'use client';
 
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useQuery } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
 import { fetchRecentLogs } from '../db/home';
 import RecentActivityCard from './recent-activity-card';
 
 export default function RecentActivities() {
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['recent_logs'],
     queryFn: fetchRecentLogs,
   });
 
-  if (error) {
-    return <div>Error loading drivers: {error.message}</div>;
-  }
-
   if (isLoading) {
-    return <Loader2 className="h-4 w-4 animate-spin mx-auto mb-2" />;
+    return <Skeleton className="w-[418px] h-[520px] rounded-md" />;
   }
 
   return (
