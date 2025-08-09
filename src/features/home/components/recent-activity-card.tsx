@@ -1,5 +1,5 @@
-import { Log } from '@/lib/types';
-import { formatDateTime } from '@/lib/utils';
+import { Log } from "@/lib/types";
+import { formatDateTime } from "@/lib/utils";
 import {
   AlarmClockMinus,
   CarFront,
@@ -11,7 +11,7 @@ import {
   Upload,
   UserMinus,
   UserPlus,
-} from 'lucide-react';
+} from "lucide-react";
 
 type RecentActivityCardProps = {
   activity: Log;
@@ -32,15 +32,15 @@ const recentActivityConfig: Record<
       `${log.data.driver_name} started shift - ${log.data.plate_number}`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7',
+    color: "#b9e1d7",
   },
   time_out: {
     icon: AlarmClockMinus,
     getMessage: (log) =>
-      `Shift completed - ${log.data.driver_name} earned ₱${log.data.revenue_collected}`,
+      `${log.data.driver_name} earned ₱${log.data.revenue_collected}`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7',
+    color: "#b9e1d7",
   },
   delete_driver: {
     icon: UserMinus,
@@ -48,7 +48,7 @@ const recentActivityConfig: Record<
       `Driver ${log.data.driver_name} was removed from the system`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7',
+    color: "#b9e1d7",
   },
   create_driver: {
     icon: UserPlus,
@@ -56,7 +56,7 @@ const recentActivityConfig: Record<
       `New driver added: ${log.data.first_name} ${log.data.last_name}`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7',
+    color: "#b9e1d7",
   },
   delete_tricycle: {
     icon: Trash2,
@@ -66,7 +66,7 @@ const recentActivityConfig: Record<
       } was removed from the system`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7',
+    color: "#b9e1d7",
   },
   update_tricycle: {
     icon: Edit,
@@ -76,7 +76,7 @@ const recentActivityConfig: Record<
       } information was updated`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7',
+    color: "#b9e1d7",
   },
   create_tricycle: {
     icon: CarFront,
@@ -86,37 +86,37 @@ const recentActivityConfig: Record<
       }`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7',
+    color: "#b9e1d7",
   },
   operator_documents: {
     icon: FileText,
     getMessage: (log) =>
       `Operator documents updated: ${
-        log.data.document_type || 'Document uploaded'
+        log.data.document_type || "Document uploaded"
       }`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7 ',
+    color: "#b9e1d7 ",
   },
   driver_documents: {
     icon: Upload,
     getMessage: (log) =>
-      `Driver ${log.data.driver_name || 'document'} updated: ${
-        log.data.document_type || 'Document uploaded'
+      `Driver ${log.data.driver_name || "document"} updated: ${
+        log.data.document_type || "Document uploaded"
       }`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7',
+    color: "#b9e1d7",
   },
   tricycle_documents: {
     icon: FileText,
     getMessage: (log) =>
       `Tricycle ${
         log.data.plate_number || log.data.vehicle_id
-      } documents updated: ${log.data.document_type || 'Document uploaded'}`,
+      } documents updated: ${log.data.document_type || "Document uploaded"}`,
     getDate: (log) =>
       `${formatDateTime(log.created_at.toLocaleString(), true)}`,
-    color: '#b9e1d7',
+    color: "#b9e1d7",
   },
 };
 
@@ -134,18 +134,17 @@ export default function RecentActivityCard({
 
   return (
     <div
-      className={`flex flex-row text-start items-center justify-between rounded-lg gap-4
-      `}
+      className={`flex flex-row items-center justify-between gap-4 rounded-lg text-start`}
     >
       <div
-        className={`size-12 rounded-xl flex items-center justify-center`}
+        className={`flex size-10 items-center justify-center rounded-xl md:size-12`}
         style={{ backgroundColor: color }}
       >
         <Icon size={20} />
       </div>
-      <div className="flex flex-col flex-1 justify-between gap-1">
-        <p className="text-sm font-normal">{getMessage(activity)}</p>
-        <p className="text-muted-foreground text-sm text-pretty">
+      <div className="flex flex-1 flex-col justify-between gap-1">
+        <p className="text-xs font-normal md:text-sm">{getMessage(activity)}</p>
+        <p className="text-muted-foreground text-xs text-pretty md:text-sm">
           {getDate(activity)}
         </p>
       </div>

@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { Badge } from '@/components/ui/badge';
-import { ShiftLog } from '@/lib/types';
-import { formatDateTime } from '@/lib/utils';
-import { ColumnDef } from '@tanstack/react-table';
-import Link from 'next/link';
+import { Badge } from "@/components/ui/badge";
+import { ShiftLog } from "@/lib/types";
+import { formatDateTime } from "@/lib/utils";
+import { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 
 export const columns: ColumnDef<ShiftLog>[] = [
   {
-    accessorKey: 'shift_type',
+    accessorKey: "shift_type",
     header: () => <div className="ml-4">Status</div>,
     cell: ({ row }) => {
-      const type = row.getValue('shift_type') as string;
+      const type = row.getValue("shift_type") as string;
       return (
-        <div className="ml-2 mr-4">
-          {type === 'Time-in' ? (
-            <Badge>{type}</Badge>
+        <div className="mr-4 ml-2">
+          {type === "Time-in" ? (
+            <Badge className="bg-primary w-full">{type}</Badge>
           ) : (
-            <Badge variant={'outline'} className="w-full">
+            <Badge variant={"secondary"} className="w-full">
               {type}
             </Badge>
           )}
@@ -26,37 +26,29 @@ export const columns: ColumnDef<ShiftLog>[] = [
     },
   },
   {
-    accessorKey: 'created_at',
+    accessorKey: "created_at",
     header: () => <div>Time & Date</div>,
     cell: ({ row }) => {
-      const formattedDate = formatDateTime(row.getValue('created_at'));
+      const formattedDate = formatDateTime(row.getValue("created_at"), true);
       return <div>{formattedDate}</div>;
     },
   },
   {
-    accessorKey: 'driver_name',
-    header: 'Full name',
+    accessorKey: "driver_name",
+    header: () => <div>Driver Name</div>,
     cell: ({ row }) => {
       return (
         <Link
           href={`/drivers/${row.original.driver_id}`}
           className="hover:text-blue-500 hover:underline"
         >
-          {row.getValue('driver_name')}
+          {row.getValue("driver_name")}
         </Link>
       );
     },
   },
   {
-    accessorKey: 'plate_number',
-    header: 'Plate Number',
-  },
-  {
-    accessorKey: 'revenue_collected',
-    header: 'Revenue',
-  },
-  {
-    accessorKey: 'shift_description',
-    header: 'Shift Description',
+    accessorKey: "plate_number",
+    header: () => <div>Plate Number</div>,
   },
 ];
