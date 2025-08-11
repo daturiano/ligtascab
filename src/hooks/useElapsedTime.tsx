@@ -1,9 +1,9 @@
-import { calculateActualElapsedDuration } from '@/lib/utils';
-import { useEffect, useState } from 'react';
+import { calculateActualElapsedDuration } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 export const useElapsedTime = (createdAt: Date | string) => {
   const [duration, setDuration] = useState(() =>
-    calculateActualElapsedDuration(createdAt)
+    calculateActualElapsedDuration(createdAt),
   );
 
   useEffect(() => {
@@ -11,7 +11,7 @@ export const useElapsedTime = (createdAt: Date | string) => {
 
     const interval = setInterval(() => {
       const newDuration = calculateActualElapsedDuration(createdAt);
-      console.log('Updating duration:', newDuration);
+      console.log("Updating duration:", newDuration);
       setDuration(newDuration);
     }, 60000);
 
