@@ -6,8 +6,8 @@ import apple from "@/app/public/apple-brand.svg";
 
 export default function CallToAction() {
   return (
-    <section className="mt-24 flex w-full items-center justify-center">
-      <div className="bg-primary flex w-full flex-row items-center justify-between gap-32 rounded-md p-14 lg:max-w-(--breakpoint-xl)">
+    <section className="flex w-full items-center justify-center">
+      <div className="bg-primary flex w-full flex-col items-center justify-between gap-12 rounded-md p-14 md:flex-row md:gap-32 lg:max-w-(--breakpoint-xl)">
         <div className="flex flex-col gap-4">
           <h4 className="text-primary-foreground text-lg leading-tight font-semibold md:text-start md:text-2xl lg:text-4xl">
             Whether it’s a quick trip or a long journey, your ride is just a tap
@@ -19,7 +19,7 @@ export default function CallToAction() {
             drivers and operators with powerful digital tools.
           </p>
         </div>
-        <div className="flex flex-row gap-4 md:flex-col">
+        <div className="flex flex-col gap-4">
           <Button
             size="lg"
             className="gap-2 border-0 bg-black px-4 py-6 duration-200 hover:bg-black/70 md:gap-4 md:px-10 md:py-10"

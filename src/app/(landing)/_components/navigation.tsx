@@ -39,12 +39,10 @@ export default function Navigation() {
       }`}
     >
       <div className="flex h-14 items-center justify-between md:h-16">
-        <div className="flex flex-row gap-12">
-          <Link className="hidden transition-all md:block" href="/home">
-            <div className="flex max-w-fit items-center">
-              <LogoWithName />
-            </div>
-          </Link>
+        <div className="flex-row gap-12 md:flex">
+          <div className="max-w-fit items-center transition-all md:block">
+            <LogoWithName />
+          </div>
           <div className="hidden items-center justify-center gap-4 md:flex">
             {navData.map((item) => (
               <Button

@@ -4,9 +4,9 @@ export default function HeaderSection() {
   return (
     <section
       id="home"
-      className="flex translate-y-24 flex-col items-center justify-center gap-8 px-4 text-center"
+      className="flex translate-y-1 flex-col items-center justify-center gap-8 px-4 text-center"
     >
-      <div className="text-5xl font-bold tracking-tighter md:text-7xl">
+      <div className="text-5xl font-bold tracking-tighter md:text-6xl lg:text-7xl">
         <h1>Ligtascab, A Smarter Way To</h1>
         <h1 className="text-primary">Commute With Ease.</h1>
       </div>

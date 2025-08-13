@@ -13,10 +13,10 @@ export default function SectionHeader({
     <div className="flex flex-col gap-4 md:gap-8">
       <h3 className="text-primary font-bold md:text-2xl">{title}</h3>
       <div className="space-y-2 tracking-tight md:space-y-6">
-        <h4 className="text-xl leading-tight font-semibold tracking-tighter text-pretty md:text-5xl">
+        <h4 className="leading-tighter text-xl font-semibold tracking-tighter text-balance md:text-5xl md:text-pretty">
           {subtitle}
         </h4>
-        <h5 className="text-sm leading-tight font-normal text-pretty text-black/80 md:text-xl md:text-balance">
+        <h5 className="text-sm leading-tight font-normal text-balance text-black/80 md:text-xl">
           {description}
         </h5>
       </div>

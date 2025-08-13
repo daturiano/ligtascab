@@ -7,9 +7,8 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="flex flex-col items-center justify-center gap-8 text-center"
+      className="z-10 flex flex-col items-center justify-center gap-8 text-center"
     >
-      <h1>Features</h1>
       <SectionHeader
         title="Features"
         subtitle="Key features that make your commute effortless"
@@ -17,7 +16,7 @@ export default function Features() {
                 fees, and comfortable transport options. Enjoy connections and
                 convenient amenities for a stress-free journey!"
       />
-      <div className="flex flex-col gap-6 md:py-8 lg:flex lg:flex-row lg:gap-10">
+      <div className="flex flex-col gap-6 md:py-8 lg:flex-row lg:gap-4">
         <FeatureCard
           heading="Secure Rides"
           subheading="Feel safe with QR code verification and driver information at your

@@ -8,9 +8,9 @@ import HeaderSection from "./_components/header-section";
 
 export default function LandingPage() {
   return (
-    <div className="mt-16">
+    <div className="mt-12 md:mt-16">
       <div className="absolute inset-0 z-0 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
-      <div>
+      <div className="mt-36 flex flex-col gap-24">
         <HeaderSection />
         <AppDemo />
         <Features />

@@ -8,7 +8,7 @@ export default function About() {
   return (
     <section
       id="about"
-      className="flex flex-col items-center justify-center gap-4 px-16 text-center lg:grid lg:grid-cols-2 lg:text-start"
+      className="relative grid grid-cols-[1fr_auto] flex-col items-center justify-center gap-24 text-balance lg:grid-cols-2 lg:px-16 lg:text-start"
     >
       <div className="space-y-4 lg:space-y-10">
         <SectionHeader
@@ -18,11 +18,20 @@ export default function About() {
         />
         <Button className="py-6">Be our partner</Button>
       </div>
-      <Image
-        src={phone}
-        alt="picture of a phone with ligtascab app"
-        className="ml-42 lg:mt-16"
-      />
+      <div>
+        <Image
+          src={phone}
+          alt="picture of a phone with ligtascab app"
+          width={240}
+          height={240}
+          className="absolute top-0 -right-30 z-10 mt-16 -rotate-z-90 lg:hidden"
+        />
+        <Image
+          src={phone}
+          alt="picture of a phone with ligtascab app"
+          className="ml-42 hidden lg:mt-16 lg:block"
+        />
+      </div>
     </section>
   );
 }
