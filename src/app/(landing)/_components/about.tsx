@@ -8,7 +8,7 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative grid grid-cols-[1fr_auto] flex-col items-center justify-center gap-24 text-balance lg:grid-cols-2 lg:px-16 lg:text-start"
+      className="relative grid grid-cols-[1fr_auto] flex-col items-center justify-center gap-24 overflow-x-hidden text-balance lg:grid-cols-2 lg:px-16 lg:text-start"
     >
       <div className="space-y-4 lg:space-y-10">
         <SectionHeader
@@ -29,7 +29,7 @@ export default function About() {
         <Image
           src={phone}
           alt="picture of a phone with ligtascab app"
-          className="ml-42 hidden lg:mt-16 lg:block"
+          className="z-50 ml-42 hidden lg:mt-16 lg:block"
         />
       </div>
     </section>
