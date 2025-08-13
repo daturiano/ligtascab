@@ -24,7 +24,7 @@ export default function ActiveShifts() {
   });
 
   if (isLoading) {
-    return <Skeleton className="h-[368px] w-[961px] rounded-md" />;
+    return <Skeleton className="h-[333px] w-[990px] rounded-md" />;
   }
 
   if (!data) return null;

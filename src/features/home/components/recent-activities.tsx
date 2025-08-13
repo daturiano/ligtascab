@@ -13,7 +13,7 @@ export default function RecentActivities() {
   });
 
   if (isLoading) {
-    return <Skeleton className="h-[520px] w-[418px] rounded-md" />;
+    return <Skeleton className="h-[485px] w-[380px] rounded-md" />;
   }
 
   return (
