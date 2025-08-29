@@ -13,11 +13,13 @@ export default function RecentActivities() {
   });
 
   if (isLoading) {
-    return <Skeleton className="h-[485px] w-[380px] rounded-md" />;
+    return (
+      <Skeleton className="h-full max-h-[650px] w-full max-w-[400px] rounded-md" />
+    );
   }
 
   return (
-    <Card className="h-full max-h-[650px] w-full max-w-[350px] gap-0 rounded-md border-0 p-0 lg:max-w-[500px]">
+    <Card className="h-full max-h-[650px] w-full max-w-[400px] gap-0 rounded-md border-0 p-0">
       <CardTitle className="border-b-1 p-4 text-sm md:p-4 md:text-base">
         Recent Activities
       </CardTitle>

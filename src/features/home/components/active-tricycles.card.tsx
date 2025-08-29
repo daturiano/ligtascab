@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchAllTricyclesFromOperator } from "@/features/tricycles/actions/tricycles";
 import { useQuery } from "@tanstack/react-query";
-import { CarFront, TrendingUp } from "lucide-react";
+import { CarFront } from "lucide-react";
 
 export default function ActiveTricycleCard() {
   const { data: tricycles, isLoading } = useQuery({
@@ -17,8 +17,10 @@ export default function ActiveTricycleCard() {
   );
 
   if (isLoading) {
-    return <Skeleton className="h-[136px] w-[310px] rounded-md" />;
+    return <Skeleton className="max-h-[140px] min-w-[300px] rounded-md" />;
   }
+
+  if (!tricycles) return null;
 
   return (
     <Card className="max-h-[140px] min-w-[300px] rounded-md border-0 px-0 py-4">
@@ -35,13 +37,6 @@ export default function ActiveTricycleCard() {
             /{tricycles?.data.length}
           </span>
         </p>
-        <div className="flex flex-row items-center gap-1">
-          <div className="text-primary/60 flex flex-row items-center gap-1">
-            <TrendingUp size={16} />
-            <p className="text-sm">+1.25% </p>
-          </div>
-          <p className="text-muted-foreground text-sm">from last week</p>
-        </div>
       </CardContent>
     </Card>
   );

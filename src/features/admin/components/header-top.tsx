@@ -1,18 +1,18 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import LogoWithName from '@/components/ui/logo-with-name';
-import { createClient } from '@/supabase/client';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import LogoWithName from "@/components/ui/logo-with-name";
+import { createClient } from "@/supabase/client";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function HeaderTop() {
   return (
     <div className="flex h-16 items-center justify-between">
       <div className="flex items-center">
-        <a className="hidden transition-all sm:block" href="/app">
+        <div className="hidden transition-all sm:block">
           <div className="flex max-w-fit items-center gap-2">
             <LogoWithName />
           </div>
-        </a>
+        </div>
       </div>
       <div className="flex items-center space-x-6">
         {/* <ExpiryNotifications /> */}
@@ -27,9 +27,9 @@ export default function HeaderTop() {
           onClick={() => {
             const supabase = createClient();
             supabase.auth.signOut();
-            redirect('/sign-in');
+            redirect("/sign-in");
           }}
-          className="hidden text-sm cursor-pointer text-slate-500 transition-colors hover:text-slate-700 sm:block"
+          className="hidden cursor-pointer text-sm text-slate-500 transition-colors hover:text-slate-700 sm:block"
         >
           Sign Out
         </button>
@@ -44,7 +44,7 @@ export default function HeaderTop() {
                 <div className="size-10"></div>
               </AvatarFallback>
             </Avatar>
-            <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-white bg-blue-500"></div>
+            <div className="absolute -right-0.5 -bottom-0.5 h-4 w-4 rounded-full border-2 border-white bg-blue-500"></div>
           </button>
         </Link>
       </div>

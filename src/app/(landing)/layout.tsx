@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import Navigation from "./_components/navigation";
 export default function LandingLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto min-h-screen max-w-screen min-w-screen bg-white">
+    <div className="mx-auto min-h-screen w-full overflow-x-hidden bg-white">
       <div className="absolute z-50 h-64 w-full bg-gradient-to-b from-[#1fab89]/20 to-transparent"></div>
       <div>
         <Navigation />

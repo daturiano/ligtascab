@@ -1,10 +1,10 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { PhilippinePeso, TrendingUp } from "lucide-react";
-import { fetchAllShiftLogsToday } from "../actions/home";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { PhilippinePeso } from "lucide-react";
+import { fetchAllShiftLogsToday } from "../actions/home";
 
 export default function TodaysRevenue() {
   const { data: shifts_today, isLoading } = useQuery({
@@ -21,7 +21,7 @@ export default function TodaysRevenue() {
       ) ?? 0;
 
   if (isLoading) {
-    return <Skeleton className="h-[136px] w-[310px] rounded-md" />;
+    return <Skeleton className="max-h-[140px] min-w-[300px] rounded-md" />;
   }
 
   return (
@@ -36,13 +36,6 @@ export default function TodaysRevenue() {
       </CardHeader>
       <CardContent className="flex items-end justify-between">
         <p className="text-primary text-4xl font-bold">₱{todaysRevenue}</p>
-        <div className="flex flex-col items-start gap-0">
-          <div className="text-primary/60 flex flex-row items-center gap-1">
-            <TrendingUp size={16} />
-            <p className="text-sm">+1.25% </p>
-          </div>
-          <p className="text-muted-foreground text-sm">than last month</p>
-        </div>
       </CardContent>
     </Card>
   );

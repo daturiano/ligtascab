@@ -24,12 +24,13 @@ export default function ActiveShifts() {
   });
 
   if (isLoading) {
-    return <Skeleton className="h-[333px] w-[990px] rounded-md" />;
+    return <Skeleton className="h-full w-full rounded-md" />;
   }
 
   if (!data) return null;
+
   return (
-    <Card className="gap-0 rounded-md border-0 p-0">
+    <Card className="h-full gap-0 rounded-md border-0 p-0">
       <CardHeader className="flex max-h-[65px] flex-row items-center justify-between gap-0 border-b-1 p-6">
         <CardTitle className="text-sm md:text-base">Active Shifts</CardTitle>
         {data.length > 0 && (

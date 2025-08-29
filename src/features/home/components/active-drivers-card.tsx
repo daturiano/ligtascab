@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchAllDriversFromOperator } from "@/features/drivers/actions/drivers";
 import { useQuery } from "@tanstack/react-query";
-import { Contact, TrendingUp } from "lucide-react";
+import { Contact } from "lucide-react";
 
 export default function ActiveDriversCard() {
   const { data: drivers, isLoading } = useQuery({
@@ -17,7 +17,9 @@ export default function ActiveDriversCard() {
   );
 
   if (isLoading) {
-    return <Skeleton className="h-[136px] w-[310px] rounded-md" />;
+    return (
+      <Skeleton className="max-h-[140px] min-h-[140px] w-full min-w-[300px] rounded-md" />
+    );
   }
 
   return (
@@ -35,13 +37,6 @@ export default function ActiveDriversCard() {
             /{drivers?.data.length}
           </span>
         </p>
-        <div className="flex flex-row items-center gap-1">
-          <div className="text-primary/60 flex flex-row items-center gap-1">
-            <TrendingUp size={16} />
-            <p className="text-sm">+1.25% </p>
-          </div>
-          <p className="text-muted-foreground text-sm">from last week</p>
-        </div>
       </CardContent>
     </Card>
   );

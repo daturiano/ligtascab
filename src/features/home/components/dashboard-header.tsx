@@ -14,8 +14,11 @@ export default function DashboardHeader() {
     queryFn: getOperator,
   });
 
-  if (isLoading)
-    return <Skeleton className="h-[251px] w-[1396px] rounded-md" />;
+  if (isLoading) {
+    return (
+      <Skeleton className="h-full max-h-[250px] min-h-[250px] w-full rounded-md" />
+    );
+  }
 
   if (!operator) return null;
 
