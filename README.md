@@ -27,6 +27,15 @@ Key Stakeholders:
 
 - Authorities – get real-time data for better regulation, monitoring, and complaint handling.
 
+## Features
+
+✔ Verified tricycle & driver details for commuter safety
+✔ Real-time fleet and driver monitoring
+✔ QR-based shift logging system
+✔ Automated reminders for permits and maintenance
+
+If you’d like to see the project in action, feel free to reach out. I can walk you through a demo showcasing ligtascab web application.
+
 ### Built With
 
 [![React][React.js]][React-url]
