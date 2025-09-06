@@ -11,23 +11,6 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/daturiano/ligtascab">
-    <img src="/src/app/public/logo.svg" alt="Logo" width="80" height="80">
-  </a>
-
-<h3 align="center">ligtascab</h3>
-
-  <p align="center">
-    <br />
-    <br />
-    <!-- <a href="https://github.com/github_username/repo_name">View Demo</a>
-    &middot; -->
-  </p>
-</div>
-
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
