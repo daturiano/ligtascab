@@ -47,17 +47,21 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // FIXED: Allow officers to access any admin route (not just /admin exactly)
-  if (user?.role === "officer" && !pathname.startsWith("/admin")) {
+  if (
+    user?.user_metadata?.role === "authority" &&
+    !pathname.startsWith("/authority")
+  ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/admin";
+    url.pathname = "/authority";
     return NextResponse.redirect(url);
   }
 
-  // Redirect non-officers away from admin routes
-  if (user?.role !== "officer" && pathname.startsWith("/admin")) {
+  if (
+    user?.user_metadata?.role !== "authority" &&
+    pathname.startsWith("/authority")
+  ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/authority";
     return NextResponse.redirect(url);
   }
 

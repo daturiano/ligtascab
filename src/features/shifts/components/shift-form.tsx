@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -8,29 +8,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Driver } from '@/lib/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Driver } from "@/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 import {
   createNewShiftLog,
   fetchAllAvailableTricyclesFromOperator,
-} from '../actions/shifts';
-import { ShiftSchema } from '../schemas/shifts';
-import DriverDetailsCard from './driver-details-card';
+} from "../actions/shifts";
+import { ShiftSchema } from "../schemas/shifts";
+import DriverDetailsCard from "./driver-details-card";
 
 type LogFormProps = {
   driver: Driver;
@@ -39,24 +39,23 @@ type LogFormProps = {
 
 export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isTimeOut, setIsTimeOut] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof ShiftSchema>>({
     resolver: zodResolver(ShiftSchema),
     defaultValues: {
       driver_name: `${driver.first_name} ${driver.last_name}`,
-      plate_number: '',
-      shift_type: 'Time-in',
+      plate_number: "",
+      shift_type: `${driver.status === "active" ? "Time-out" : "Time-in"}`,
       operator_id: driver.operator_id,
       driver_id: driver.id,
-      tricycle_id: '',
+      tricycle_id: "",
       revenue_collected: undefined,
-      shift_description: '',
+      shift_description: "",
     },
   });
 
   const { data: availableTricycles } = useQuery({
-    queryKey: ['available_vehicles'],
+    queryKey: ["available_vehicles"],
     queryFn: fetchAllAvailableTricyclesFromOperator,
     enabled: isOpen,
   });
@@ -70,28 +69,28 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
     },
     onSuccess: (log) => {
       queryClient.invalidateQueries({
-        queryKey: ['shift_logs'],
+        queryKey: ["shift_logs"],
       });
       queryClient.invalidateQueries({
-        queryKey: ['available_vehicles'],
+        queryKey: ["available_vehicles"],
       });
       queryClient.invalidateQueries({
-        queryKey: ['active_shifts'],
+        queryKey: ["active_shifts"],
       });
       queryClient.invalidateQueries({
-        queryKey: ['recent_logs'],
+        queryKey: ["recent_logs"],
       });
       queryClient.invalidateQueries({
-        queryKey: ['active_drivers'],
+        queryKey: ["active_drivers"],
       });
       queryClient.invalidateQueries({
-        queryKey: ['active_tricycles'],
+        queryKey: ["active_tricycles"],
       });
       queryClient.invalidateQueries({
-        queryKey: ['shifts_today'],
+        queryKey: ["shifts_today"],
       });
       toast.success(
-        `${log.shift_type} of ${log.driver_name} in tricycle ${log.plate_number} completed.`
+        `${log.shift_type} of ${log.driver_name} in tricycle ${log.plate_number} completed.`,
       );
       form.reset();
       setIsScanning(false);
@@ -107,11 +106,11 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      {!isTimeOut && <DriverDetailsCard driver={driver} />}
+      {driver.status === "inactive" && <DriverDetailsCard driver={driver} />}
       <Form {...form}>
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-          {isTimeOut && (
-            <div className="space-y-4">
+          {driver.status === "active" ? (
+            <div className="flex-1 space-y-4">
               <FormField
                 control={form.control}
                 name="revenue_collected"
@@ -143,7 +142,7 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
                     <FormControl>
                       <Textarea
                         placeholder="Vehicle condition report, leave blank if none"
-                        className="resize-none"
+                        className="resize-none text-sm md:text-base"
                         {...field}
                       />
                     </FormControl>
@@ -151,9 +150,39 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="plate_number"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm md:text-base">
+                      Select Tricycle
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      disabled={driver.status === "active"}
+                      value={field.value}
+                      onOpenChange={() => setIsOpen(true)}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select tricycle" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="z-[100] max-h-[300px]">
+                        {availableTricycles?.map((tricycle) => (
+                          <SelectItem value={tricycle} key={tricycle}>
+                            {tricycle}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          )}
-          <div className="flex gap-4">
+          ) : (
             <FormField
               control={form.control}
               name="plate_number"
@@ -165,7 +194,6 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
-                    disabled={isTimeOut}
                     onOpenChange={() => setIsOpen(true)}
                   >
                     <FormControl>
@@ -185,42 +213,7 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="shift_type"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel className="text-sm md:text-base">
-                    Log Type
-                  </FormLabel>
-                  <Select
-                    onValueChange={(value) => {
-                      if (value === 'Time-out') {
-                        form.setValue('shift_type', value);
-                        form.setValue('plate_number', '');
-                        setIsTimeOut(true);
-                        return;
-                      }
-                      form.setValue('shift_type', value);
-                      setIsTimeOut(false);
-                    }}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue defaultValue={'Time-in'} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Time-in">Time-in</SelectItem>
-                      <SelectItem value="Time-out">Time-out</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          )}
           {form.formState.errors.root && (
             <div className="text-sm font-medium text-red-500">
               {form.formState.errors.root.message}
@@ -229,7 +222,7 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
           <div className="flex gap-4">
             <Button
               onClick={() => setIsScanning(false)}
-              variant={'outline'}
+              variant={"outline"}
               className="flex-1"
             >
               Cancel
@@ -237,13 +230,13 @@ export default function ShiftForm({ driver, setIsScanning }: LogFormProps) {
             <Button
               className="flex-1"
               disabled={
-                (form.watch('plate_number') === '' &&
-                  form.watch('shift_type') !== 'Time-out') ||
-                form.watch('driver_id') === '' ||
+                (form.watch("plate_number") === "" &&
+                  form.watch("shift_type") !== "Time-out") ||
+                form.watch("driver_id") === "" ||
                 createLogMutation.isPending
               }
             >
-              {!createLogMutation.isPending ? 'Continue' : 'Pending'}
+              {!createLogMutation.isPending ? "Continue" : "Pending"}
             </Button>
           </div>
         </form>

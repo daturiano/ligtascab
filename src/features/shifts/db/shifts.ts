@@ -95,6 +95,25 @@ export const updateTricycleStatus = async (
   return true;
 };
 
+export const updateTricycleAssignedDriver = async (
+  id: string | null,
+  plate_number: string,
+) => {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("tricycles")
+    .update({ assigned_driver: id })
+    .eq("plate_number", plate_number)
+    .select();
+
+  if (error) {
+    console.error("Error updating driver status:", error);
+    return false;
+  }
+
+  return true;
+};
+
 export const getAllShiftLogs = cache(
   async (): Promise<{ data: ShiftLog[]; error: PostgrestError | null }> => {
     const supabase = await createClient();

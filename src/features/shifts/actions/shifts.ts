@@ -10,6 +10,7 @@ import {
   getDriverAssignedVehicle,
   getDriverMostRecentLog,
   updateDriverStatus,
+  updateTricycleAssignedDriver,
   updateTricycleStatus,
 } from "../db/shifts";
 import { getErrorMessage, isPastDue } from "@/lib/utils";
@@ -90,6 +91,16 @@ export const createNewShiftLog = async (
           createLogError.message || "Unable to log create operator",
         );
       }
+
+      const isTricycleAssignedDriverUpdated =
+        await updateTricycleAssignedDriver(
+          null,
+          log.plate_number,
+        );
+
+      if (!isTricycleAssignedDriverUpdated) {
+        throw new Error("Cannot update tricycle assigned driver.");
+      }
     }
 
     if (log.shift_type === "Time-in") {
@@ -165,6 +176,15 @@ export const createNewShiftLog = async (
       }
     }
 
+    const isTricycleAssignedDriverUpdated = await updateTricycleAssignedDriver(
+      log.driver_id,
+      log.plate_number,
+    );
+
+    if (!isTricycleAssignedDriverUpdated) {
+      throw new Error("Cannot update tricycle assigned driver.");
+    }
+
     const isDriverUpdated = await updateDriverStatus(log.driver_id, status);
     if (!isDriverUpdated) {
       throw new Error("Cannot update driver status.");
@@ -173,6 +193,7 @@ export const createNewShiftLog = async (
       log.plate_number,
       status,
     );
+
     if (!isTricycleUpdated) {
       throw new Error("Cannot update tricycle status.");
     }
