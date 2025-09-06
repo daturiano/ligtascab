@@ -29,12 +29,13 @@ Key Stakeholders:
 
 ## Features
 
-✔ Verified tricycle & driver details for commuter safety
-✔ Real-time fleet and driver monitoring
-✔ QR-based shift logging system
-✔ Automated reminders for permits and maintenance
+- Verified tricycle & driver details for commuter safety
 
-If you’d like to see the project in action, feel free to reach out. I can walk you through a demo showcasing ligtascab web application.
+- Real-time fleet and driver monitoring
+
+- QR-based shift logging system
+
+- Automated reminders for permits and maintenance
 
 ### Built With
 
@@ -49,7 +50,7 @@ If you’d like to see the project in action, feel free to reach out. I can walk
 
 ## Contact
 
-Daniel Joshua Turiano - dturiano.r@gmail.com
+Daniel Joshua Turiano - dturiano.r@gmail.com - If you’d like to see the project in action, feel free to reach out. I can walk you through a demo showcasing ligtascab web application.
 
 <!-- ACKNOWLEDGMENTS -->
 <!-- MARKDOWN LINKS & IMAGES -->
