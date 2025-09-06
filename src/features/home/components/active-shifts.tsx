@@ -30,7 +30,7 @@ export default function ActiveShifts() {
   if (!data) return null;
 
   return (
-    <Card className="h-full gap-0 rounded-md border-0 p-0">
+    <Card className="h-full max-h-[24rem] gap-0 rounded-md border-0 p-0">
       <CardHeader className="flex max-h-[65px] flex-row items-center justify-between gap-0 border-b-1 p-6">
         <CardTitle className="text-sm md:text-base">Active Shifts</CardTitle>
         {data.length > 0 && (

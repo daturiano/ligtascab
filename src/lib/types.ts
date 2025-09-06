@@ -30,6 +30,8 @@ export type Tricycle = {
   franchise_expiration: Date;
   last_maintenance_date: Date;
   image?: string;
+  assigned_driver?: string;
+  last_used_by?: string;
 };
 
 export type ShiftLog = {

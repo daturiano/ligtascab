@@ -19,7 +19,7 @@ export default function RecentActivities() {
   }
 
   return (
-    <Card className="h-full max-h-[650px] w-full max-w-[400px] gap-0 rounded-md border-0 p-0">
+    <Card className="h-full max-h-[650px] w-full max-w-[400px] gap-0 overflow-y-auto rounded-md border-0 p-0">
       <CardTitle className="border-b-1 p-4 text-sm md:p-4 md:text-base">
         Recent Activities
       </CardTitle>

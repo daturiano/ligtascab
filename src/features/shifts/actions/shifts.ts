@@ -55,10 +55,6 @@ export const createNewShiftLog = async (
     const status = `${data.shift_type === "Time-in" ? "active" : "inactive"}`;
 
     if (log.shift_type === "Time-out") {
-      const isActive = await checkDriverStatus(log.driver_id);
-      if (!isActive) {
-        throw new Error("Driver is not active");
-      }
       const { data: assignedVehicle, error: assignedError } =
         await getDriverAssignedVehicle(log.driver_id);
       if (assignedError || !assignedVehicle) {
@@ -90,16 +86,6 @@ export const createNewShiftLog = async (
         throw new Error(
           createLogError.message || "Unable to log create operator",
         );
-      }
-
-      const isTricycleAssignedDriverUpdated =
-        await updateTricycleAssignedDriver(
-          null,
-          log.plate_number,
-        );
-
-      if (!isTricycleAssignedDriverUpdated) {
-        throw new Error("Cannot update tricycle assigned driver.");
       }
     }
 
