@@ -21,7 +21,6 @@
 <h3 align="center">ligtascab</h3>
 
   <p align="center">
-    LigtasCab aims to modernize Naga City’s tricycle sector by addressing safety, efficiency, and regulatory challenges. It provides commuters with safer and more transparent rides, helps operators manage fleets and maintenance, and gives authorities better tools for monitoring and regulation.
     <br />
     <br />
     <!-- <a href="https://github.com/github_username/repo_name">View Demo</a>
@@ -33,20 +32,26 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]]
+[![Product Name Screen Shot][product-screenshot]](https://github.com/daturiano/ligtascab)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+LigtasCab aims to modernize Naga City’s tricycle sector by addressing safety, efficiency, and regulatory challenges. It provides commuters with safer and more transparent rides, helps operators manage fleets and maintenance, and gives authorities better tools for monitoring and regulation.
+
+Key Stakeholders:
+
+- Commuters – gain safer, more reliable rides, fare transparency, and an easy way to report issues.
+
+- Operators – benefit from fleet management tools, QR-based driver logging, digital record-keeping, and maintenance reminders.
+
+- Authorities – get real-time data for better regulation, monitoring, and complaint handling.
 
 ### Built With
 
-- [![React][React.js]][React-url]
-- [![Next][Next.js]][Next-url]
-- [![Typescript][Typescript]][Typescript-url]
-- [![Tailwind][Tailwind]][Tailwind-url]
-- [![Shadcn][Shadcn]][Shadcn-url]
-- [![Supabase][Supabase]][Supabase-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+[![React][React.js]][React-url]
+[![Next][Next.js]][Next-url]
+[![Typescript][Typescript]][Typescript-url]
+[![Tailwind][Tailwind]][Tailwind-url]
+[![Shadcn][Shadcn]][Shadcn-url]
+[![Supabase][Supabase]][Supabase-url]
 
 <!-- CONTACT -->
 
