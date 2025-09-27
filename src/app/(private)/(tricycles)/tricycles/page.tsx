@@ -160,7 +160,6 @@ export default function TricyclesPage() {
               src={emptyImage}
               alt="empty image"
               className="size-36"
-              placeholder="blur"
               loading="lazy"
             />
             <div className="mb-8 flex flex-col space-y-4 text-center">

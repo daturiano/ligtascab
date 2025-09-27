@@ -18,12 +18,12 @@ export async function GET(request: Request) {
 
       // Update user metadata
       if (user) {
-        const isReturningUser =
-          user.user_metadata && user.user_metadata.is_new_user;
+        const isReturningUser = user.user_metadata.is_new_user === false;
         if (!isReturningUser) {
           // This is a first-time login
           const { error: updateError } = await supabase.auth.updateUser({
             data: {
+              role: "operator",
               is_new_user: true,
             },
           });

@@ -71,7 +71,6 @@ export default function DriverProfileView({
                   alt="license"
                   width={80}
                   height={80}
-                  placeholder="blur"
                   loading="lazy"
                 />
               </div>
@@ -103,7 +102,6 @@ export default function DriverProfileView({
                   alt="license"
                   width={60}
                   height={60}
-                  placeholder="blur"
                   loading="lazy"
                 />
               </div>

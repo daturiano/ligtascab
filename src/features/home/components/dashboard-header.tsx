@@ -30,7 +30,6 @@ export default function DashboardHeader() {
         alt="Dashboard header background"
         fill
         className="object-cover object-bottom"
-        placeholder="blur"
         loading="lazy"
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
         priority={false}
@@ -41,7 +40,11 @@ export default function DashboardHeader() {
             <House size={16} />
             <p>Home</p>
             <p>/</p>
-            <p>{operator.coop_name}</p>
+            <p>
+              {operator.coop_name !== ""
+                ? operator.coop_name
+                : `${operator.first_name} ${operator.last_name}'s Fleet`}
+            </p>
           </div>
           <div className="flex items-center gap-2 text-sm font-medium text-white">
             <HelpCircle />
@@ -53,7 +56,9 @@ export default function DashboardHeader() {
           <CardContent className="flex flex-col space-y-2 px-0 text-sm">
             <div className="flex flex-col gap-2 px-4">
               <h1 className="font-medium md:text-nowrap">
-                {operator.coop_name}
+                {operator.coop_name !== ""
+                  ? operator.coop_name
+                  : `${operator.first_name} ${operator.last_name}'s Fleet`}
               </h1>
               <Badge className="px-4 text-xs">Verified</Badge>
             </div>

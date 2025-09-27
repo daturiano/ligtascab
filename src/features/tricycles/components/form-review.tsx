@@ -1,20 +1,20 @@
-import TricycleComplianceForm from '@/features/tricycles/components/tricycle-compliance-form';
-import TricycleDetailsForm from '@/features/tricycles/components/tricycle-details-form';
-import TricycleDocumentsUpload from '@/features/tricycles/components/tricycle-documents-upload';
-import TricycleMaintenanceForm from '@/features/tricycles/components/tricycle-maintenance-form';
-import { toast } from 'sonner';
+import TricycleComplianceForm from "@/features/tricycles/components/tricycle-compliance-form";
+import TricycleDetailsForm from "@/features/tricycles/components/tricycle-details-form";
+import TricycleDocumentsUpload from "@/features/tricycles/components/tricycle-documents-upload";
+import TricycleMaintenanceForm from "@/features/tricycles/components/tricycle-maintenance-form";
+import { toast } from "sonner";
 import {
   createNewTricycle,
   uploadTricycleDocument,
-} from '../actions/tricycles';
+} from "../actions/tricycles";
 import {
   TricycleFormData,
   useCreateTricycle,
-} from './create-tricycle-provider';
-import FormBottomNavigation from './form-bottom-navigation';
-import { useRouter } from 'next/navigation';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { getErrorMessage } from '@/lib/utils';
+} from "./create-tricycle-provider";
+import FormBottomNavigation from "./form-bottom-navigation";
+import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getErrorMessage } from "@/lib/utils";
 
 export default function FormReview() {
   const { formData } = useCreateTricycle();
@@ -27,13 +27,12 @@ export default function FormReview() {
 
   const onSubmit = async () => {
     try {
-      const { data: tricycle } = await createTricycleMutation.mutateAsync(
-        formData
-      );
+      const { data: tricycle } =
+        await createTricycleMutation.mutateAsync(formData);
       await uploadTricycleDocument(tricycle.id, formData.attachmentDetails!);
-      queryClient.invalidateQueries({ queryKey: ['tricycles'] });
+      queryClient.invalidateQueries({ queryKey: ["tricycles"] });
       toast.success(`Tricycle ${tricycle.plate_number} created successfully!`);
-      router.push('/tricycles');
+      router.push("/tricycles");
     } catch (error) {
       toast.error(getErrorMessage(error));
     }
@@ -41,7 +40,7 @@ export default function FormReview() {
 
   return (
     <div>
-      <div className="flex flex-col gap-4 mb-24">
+      <div className="mb-24 flex flex-col gap-4">
         <TricycleDetailsForm />
         <TricycleComplianceForm />
         <TricycleMaintenanceForm />

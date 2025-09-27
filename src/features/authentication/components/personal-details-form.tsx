@@ -1,14 +1,14 @@
-'use client';
-import FormBottomNavigation from '@/components/private/form-bottom-navigation';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+"use client";
+import FormBottomNavigation from "@/components/private/form-bottom-navigation";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -16,42 +16,43 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { dial_code } from '@/lib/constants';
-import { cn } from '@/lib/utils';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { PersonalDetailsSchema } from '../schemas/authentication';
-import { useCreateOperator } from './create-operator-provider';
+} from "@/components/ui/select";
+import { dial_code } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { PersonalDetailsSchema } from "../schemas/authentication";
+import { useCreateOperator } from "./create-operator-provider";
 
 export default function PersonalDetailsForm() {
   const { step, nextStep, formData, setData, readonly } = useCreateOperator();
 
   const form = useForm<z.infer<typeof PersonalDetailsSchema>>({
     resolver: zodResolver(PersonalDetailsSchema),
-    mode: 'onBlur',
+    mode: "onBlur",
     defaultValues: {
-      first_name: formData.personalDetails?.first_name || '',
-      last_name: formData.personalDetails?.last_name || '',
+      first_name: formData.personalDetails?.first_name || "",
+      last_name: formData.personalDetails?.last_name || "",
       birth_date: formData.personalDetails?.birth_date || undefined,
-      phone_number: formData.personalDetails?.phone_number || '',
-      dial_code: formData.personalDetails?.dial_code || '',
+      coop_name: formData.personalDetails?.coop_name || "",
+      phone_number: formData.personalDetails?.phone_number || "",
+      dial_code: formData.personalDetails?.dial_code || "",
     },
   });
 
@@ -73,7 +74,7 @@ export default function PersonalDetailsForm() {
         <CardContent>
           <Form {...form}>
             <form
-              className="space-y-6 w-full"
+              className="w-full space-y-6"
               onSubmit={form.handleSubmit(onSubmit)}
               id="personal-form"
             >
@@ -119,6 +120,27 @@ export default function PersonalDetailsForm() {
 
               <FormField
                 control={form.control}
+                name="coop_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Cooperation Name (leave blank if none)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        {...field}
+                        readOnly={readonly}
+                        className="h-12"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="birth_date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
@@ -126,19 +148,19 @@ export default function PersonalDetailsForm() {
                     <Popover>
                       <PopoverTrigger
                         asChild
-                        className="h-12 bg-transparent rounded-md border shadow-xs outline-none border-muted-foreground/40 hover:bg-transparent"
+                        className="border-muted-foreground/40 h-12 rounded-md border bg-transparent shadow-xs outline-none hover:bg-transparent"
                         disabled={readonly}
                       >
                         <FormControl>
                           <Button
-                            variant={'outline'}
+                            variant={"outline"}
                             className={cn(
-                              'w-full pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
+                              "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground",
                             )}
                           >
                             {field.value ? (
-                              format(field.value, 'PPP')
+                              format(field.value, "PPP")
                             ) : (
                               <span>Pick a date</span>
                             )}
@@ -152,7 +174,7 @@ export default function PersonalDetailsForm() {
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={(date) =>
-                            date > new Date() || date < new Date('1900-01-01')
+                            date > new Date() || date < new Date("1900-01-01")
                           }
                           captionLayout="dropdown"
                         />
@@ -162,7 +184,7 @@ export default function PersonalDetailsForm() {
                   </FormItem>
                 )}
               />
-              <div className="flex items-center gap-6 w-full">
+              <div className="flex w-full items-center gap-6">
                 <FormField
                   control={form.control}
                   name="dial_code"
@@ -175,7 +197,7 @@ export default function PersonalDetailsForm() {
                         defaultValue={formData.personalDetails?.dial_code}
                       >
                         <FormControl>
-                          <SelectTrigger className="py-6 w-full">
+                          <SelectTrigger className="w-full py-6">
                             <SelectValue placeholder="Dail code" />
                           </SelectTrigger>
                         </FormControl>

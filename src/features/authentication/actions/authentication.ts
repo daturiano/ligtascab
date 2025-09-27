@@ -124,6 +124,7 @@ export async function createNewOperator(
       last_name: personalDetails.last_name,
       phone_number: personalDetails.dial_code + personalDetails.phone_number,
       birth_date: personalDetails.birth_date,
+      coop_name: personalDetails.coop_name,
       address: {
         address: addressDetails.address,
         province: addressDetails.province,

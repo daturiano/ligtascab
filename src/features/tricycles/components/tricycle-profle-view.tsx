@@ -74,7 +74,6 @@ export default function TricycleProfileView({
                   alt="document image"
                   width={80}
                   height={80}
-                  placeholder="blur"
                   loading="lazy"
                 />
               </div>
@@ -97,7 +96,6 @@ export default function TricycleProfileView({
                   alt="license"
                   width={60}
                   height={60}
-                  placeholder="blur"
                   loading="lazy"
                 />
               </div>

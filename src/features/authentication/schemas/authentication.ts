@@ -21,6 +21,7 @@ export const PersonalDetailsSchema = z.object({
   first_name: z.string().min(2, "First name is required"),
   last_name: z.string().min(2, "Last name is required"),
   birth_date: z.date({ message: "Birth date is required" }),
+  coop_name: z.string().optional(),
   phone_number: z.string().min(10, "Phone number is required").max(
     10,
     "Phone number is required",

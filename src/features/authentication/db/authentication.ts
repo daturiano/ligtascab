@@ -1,5 +1,3 @@
-"use server";
-
 import { createClient } from "@/supabase/server";
 import { CreateOperator } from "../schemas/authentication";
 
