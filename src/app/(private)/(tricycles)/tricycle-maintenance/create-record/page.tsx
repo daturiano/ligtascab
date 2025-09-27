@@ -1,17 +1,22 @@
-'use client';
+"use client";
 
-import LogoWithName from '@/components/ui/logo-with-name';
-import MaintenanceRecordForm from '@/features/tricycles/components/maintenance-record-form';
-import { X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import React from 'react';
+import LogoWithName from "@/components/ui/logo-with-name";
+import { X } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import React from "react";
+
+const MaintenanceRecordForm = dynamic(
+  () => import("@/features/tricycles/components/maintenance-record-form"),
+  { ssr: false },
+);
 
 export default function CreateRecordPage() {
   const router = useRouter();
   return (
-    <div className="flex flex-col space-y-12 min-h-screen inset-0 absolute z-50 overflow-x-hidden bg-background">
-      <div className="py-6 bg-white">
-        <div className="flex flex-row justify-between items-center max-w-screen-xl mx-auto">
+    <div className="bg-background absolute inset-0 z-50 flex min-h-screen flex-col space-y-12 overflow-x-hidden">
+      <div className="bg-white py-6">
+        <div className="mx-auto flex max-w-screen-xl flex-row items-center justify-between">
           <LogoWithName />
           <X onClick={() => router.back()} className="cursor-pointer" />
         </div>

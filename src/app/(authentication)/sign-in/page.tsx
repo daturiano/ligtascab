@@ -1,14 +1,23 @@
+"use client";
+
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import GoogleButton from '@/features/authentication/components/google-btn';
-import SignInForm from '@/features/authentication/components/sign-in-form';
-import Link from 'next/link';
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import GoogleButton from "@/features/authentication/components/google-btn";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+
+const SignInForm = dynamic(
+  () => import("@/features/authentication/components/sign-in-form"),
+  {
+    ssr: false,
+  },
+);
 
 export default function SignInPage() {
   return (
@@ -28,8 +37,8 @@ export default function SignInPage() {
       <CardFooter>
         <div className="flex items-center gap-2">
           <p className="text-xs lg:text-sm">Need to create an account?</p>
-          <Link href={'/sign-up'}>
-            <p className="text-blue-400 text-xs lg:text-sm">Sign up</p>
+          <Link href={"/sign-up"}>
+            <p className="text-xs text-blue-400 lg:text-sm">Sign up</p>
           </Link>
         </div>
       </CardFooter>

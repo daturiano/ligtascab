@@ -1,11 +1,36 @@
 "use client";
 
-import ActiveDriversCard from "@/features/home/components/active-drivers-card";
-import ActiveShifts from "@/features/home/components/active-shifts";
-import ActiveTricycleCard from "@/features/home/components/active-tricycles.card";
-import DashboardHeader from "@/features/home/components/dashboard-header";
-import RecentActivities from "@/features/home/components/recent-activities";
-import TodaysRevenue from "@/features/home/components/todays-revenue";
+import dynamic from "next/dynamic";
+
+const ActiveDriversCard = dynamic(
+  () => import("@/features/home/components/active-drivers-card"),
+  { ssr: false },
+);
+
+const ActiveShifts = dynamic(
+  () => import("@/features/home/components/active-shifts"),
+  { ssr: false },
+);
+
+const ActiveTricycleCard = dynamic(
+  () => import("@/features/home/components/active-tricycles.card"),
+  { ssr: false },
+);
+
+const DashboardHeader = dynamic(
+  () => import("@/features/home/components/dashboard-header"),
+  { ssr: false },
+);
+
+const RecentActivities = dynamic(
+  () => import("@/features/home/components/recent-activities"),
+  { ssr: false },
+);
+
+const TodaysRevenue = dynamic(
+  () => import("@/features/home/components/todays-revenue"),
+  { ssr: false },
+);
 
 export default function HomePage() {
   return (

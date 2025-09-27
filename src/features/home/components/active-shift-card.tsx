@@ -8,7 +8,7 @@ type ActiveShiftCardProps = {
 };
 
 export default function ActiveShiftCard({ shift }: ActiveShiftCardProps) {
-  const duration = useElapsedTime(shift.created_at);
+  const duration = useElapsedTime(shift.created_at!);
   return (
     <div className="bg-background flex w-full justify-between rounded-md p-3">
       <div className="flex flex-row items-center gap-4">
@@ -23,7 +23,7 @@ export default function ActiveShiftCard({ shift }: ActiveShiftCardProps) {
       <div className="flex flex-col gap-2 text-end">
         <p className="text-sm">{duration}</p>
         <p className="text-muted-foreground text-sm">
-          Started {extractTime(shift.created_at)}
+          Started {extractTime(shift.created_at!)}
         </p>
       </div>
     </div>

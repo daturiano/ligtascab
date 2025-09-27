@@ -1,18 +1,37 @@
-'use client';
+"use client";
 
-import LogoWithName from '@/components/ui/logo-with-name';
-import UpdateFranchiseForm from '@/features/tricycles/components/update-franchise-form';
-import UpdateMaintenanceForm from '@/features/tricycles/components/update-maintenance-form';
-import UpdateReceiptForm from '@/features/tricycles/components/update-receipt-form';
-import UpdateRegistrationForm from '@/features/tricycles/components/update-registration-form';
-import { X } from 'lucide-react';
-import { useSearchParams, useParams, useRouter } from 'next/navigation';
+import LogoWithName from "@/components/ui/logo-with-name";
+import { X } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useSearchParams, useParams, useRouter } from "next/navigation";
 
-const formMap: Record<string, React.ComponentType<{ tricycleId: string }>> = {
-  'update-registration': UpdateRegistrationForm,
-  'update-or': UpdateReceiptForm,
-  'update-franchise': UpdateFranchiseForm,
-  'update-maintenance': UpdateMaintenanceForm,
+type FormProps = { tricycleId: string };
+
+const UpdateFranchiseForm = dynamic<FormProps>(
+  () => import("@/features/tricycles/components/update-franchise-form"),
+  { ssr: false },
+);
+
+const UpdateMaintenanceForm = dynamic<FormProps>(
+  () => import("@/features/tricycles/components/update-maintenance-form"),
+  { ssr: false },
+);
+
+const UpdateReceiptForm = dynamic<FormProps>(
+  () => import("@/features/tricycles/components/update-receipt-form"),
+  { ssr: false },
+);
+
+const UpdateRegistrationForm = dynamic<FormProps>(
+  () => import("@/features/tricycles/components/update-registration-form"),
+  { ssr: false },
+);
+
+const formMap: Record<string, React.ComponentType<FormProps>> = {
+  "update-registration": UpdateRegistrationForm,
+  "update-or": UpdateReceiptForm,
+  "update-franchise": UpdateFranchiseForm,
+  "update-maintenance": UpdateMaintenanceForm,
 };
 
 export default function UpdateDocumentPage() {
@@ -21,21 +40,21 @@ export default function UpdateDocumentPage() {
   const router = useRouter();
 
   const tricycleId = params.id as string;
-  const type = searchParams.get('type');
+  const type = searchParams.get("type");
 
   const FormComponent = type ? formMap[type] : null;
 
   if (!FormComponent) return <div>Not found</div>;
 
   return (
-    <div className="flex flex-col space-y-12 min-h-screen min-w-screen inset-0 absolute z-50 bg-background">
-      <div className="p-6 bg-white">
-        <div className="flex flex-row justify-between items-center max-w-screen-xl mx-auto">
+    <div className="bg-background absolute inset-0 z-50 flex min-h-screen min-w-screen flex-col space-y-12">
+      <div className="bg-white p-6">
+        <div className="mx-auto flex max-w-screen-xl flex-row items-center justify-between">
           <LogoWithName />
           <X onClick={() => router.back()} className="cursor-pointer" />
         </div>
       </div>
-      <div className="flex flex-1 mx-auto gap-8 px-2 items-start">
+      <div className="mx-auto flex flex-1 items-start gap-8 px-2">
         <FormComponent tricycleId={tricycleId} />
       </div>
     </div>

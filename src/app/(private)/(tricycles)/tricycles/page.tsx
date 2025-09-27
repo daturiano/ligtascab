@@ -1,45 +1,55 @@
-'use client';
+"use client";
 
-import emptyImage from '@/app/public/empty.svg';
-import SkeletonPage from '@/components/private/page-skeleton';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { fetchAllTricyclesFromOperator } from '@/features/tricycles/actions/tricycles';
-import TricycleCard from '@/features/tricycles/components/tricycle-card';
-import TricycleCardMobile from '@/features/tricycles/components/tricycle-card-mobile';
-import { useMobile } from '@/hooks/useMobile';
-import { Tricycle } from '@/lib/types';
-import { useQuery } from '@tanstack/react-query';
-import { ChevronDown, Search, SortDesc } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
+import emptyImage from "@/app/public/empty.svg";
+import SkeletonPage from "@/components/private/page-skeleton";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { fetchAllTricyclesFromOperator } from "@/features/tricycles/actions/tricycles";
+import { useMobile } from "@/hooks/useMobile";
+import { Tricycle } from "@/lib/types";
+import { useQuery } from "@tanstack/react-query";
+import { Search, SortDesc } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+
+const ToggleStatus = dynamic(() => import("@/components/ui/toggle-status"), {
+  ssr: false,
+});
+
+const TricycleCard = dynamic(
+  () => import("@/features/tricycles/components/tricycle-card"),
+  {
+    ssr: false,
+  },
+);
+
+const TricycleCardMobile = dynamic(
+  () => import("@/features/tricycles/components/tricycle-card-mobile"),
+  {
+    ssr: false,
+  },
+);
 
 export default function TricyclesPage() {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [isSorted, setIsSorted] = useState(false);
-  const [statusSort, setStatusSort] = useState<string[]>(['all']);
+  const [statusSort, setStatusSort] = useState<string[]>(["all"]);
 
   const isSmallScreen = useMobile({ max: 960 });
-  const statusOptions = ['active', 'inactive', 'maintenance'];
+  const statusOptions = ["active", "inactive", "maintenance"];
 
   const toggleStatus = (status: string) => {
-    if (status === 'all') {
-      setStatusSort(['all']);
+    if (status === "all") {
+      setStatusSort(["all"]);
     } else {
       let newStatuses = statusSort.includes(status)
         ? statusSort.filter((s) => s !== status)
-        : [...statusSort.filter((s) => s !== 'all'), status];
+        : [...statusSort.filter((s) => s !== "all"), status];
 
-      // If none selected, default to 'all'
       if (newStatuses.length === 0) {
-        newStatuses = ['all'];
+        newStatuses = ["all"];
       }
 
       setStatusSort(newStatuses);
@@ -52,8 +62,8 @@ export default function TricyclesPage() {
 
   const resetHandler = () => {
     setIsSorted(false);
-    setStatusSort(['all']);
-    setSearch('');
+    setStatusSort(["all"]);
+    setSearch("");
   };
 
   const {
@@ -61,7 +71,7 @@ export default function TricyclesPage() {
     error,
     isLoading,
   } = useQuery({
-    queryKey: ['tricycles'],
+    queryKey: ["tricycles"],
     queryFn: fetchAllTricyclesFromOperator,
   });
 
@@ -75,10 +85,10 @@ export default function TricyclesPage() {
 
   const filteredTricycles = tricycles.data
     ?.filter((tricycle: Tricycle) =>
-      tricycle.plate_number.toLowerCase().includes(search.toLowerCase())
+      tricycle.plate_number.toLowerCase().includes(search.toLowerCase()),
     )
     ?.filter((tricycle: Tricycle) => {
-      if (statusSort.includes('all')) return true;
+      if (statusSort.includes("all")) return true;
       if (!tricycle.status) return null;
       return statusSort.includes(tricycle.status.toLowerCase());
     })
@@ -89,29 +99,29 @@ export default function TricyclesPage() {
     });
 
   return (
-    <div className="space-y-4 gap-4 mx-auto mb-12">
+    <div className="mx-auto mb-12 gap-4 space-y-4">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Tricycles</h1>
           {tricycles.data && (
             <Button>
-              <Link href={'/create-tricycle'}>Create a tricycle</Link>
+              <Link href={"/create-tricycle"}>Create a tricycle</Link>
             </Button>
           )}
         </div>
-        <div className="w-full flex flex-col gap-2 items-center lg:flex-row lg:gap-6">
+        <div className="flex w-full flex-col items-center gap-2 lg:flex-row lg:gap-6">
           <Input
             startIcon={Search}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by plate number"
-            className="bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
+            className="bg-card placeholder:text-muted-foreground rounded-3xl placeholder:tracking-wide"
           />
-          <div className="h-13 w-full px-2 bg-card rounded-xl flex items-center justify-between">
-            <div className="flex gap-2 items-center">
+          <div className="bg-card flex h-13 w-full items-center justify-between rounded-xl px-2">
+            <div className="flex items-center gap-2">
               <button
-                className={`flex gap-1 py-2 px-4 border shadow-xs rounded-full cursor-pointer bg-card text-xs ${
-                  isSorted ? 'bg-primary text-background' : ''
+                className={`bg-card flex cursor-pointer gap-1 rounded-full border px-4 py-2 text-xs shadow-xs ${
+                  isSorted ? "bg-primary text-background" : ""
                 }`}
                 onClick={SetIsSortedHandler}
               >
@@ -120,50 +130,20 @@ export default function TricyclesPage() {
                 </p>
                 <SortDesc size={14} />
               </button>
-              <Popover>
-                <PopoverTrigger className="rounded-full cursor-pointer px-2 border py-2 text-xs bg-card flex gap-2 items-center justify-center">
-                  <p className="text-popover-foreground">Status</p>
-                  <ChevronDown size={14} />
-                </PopoverTrigger>
-                <PopoverContent align="start">
-                  <div className="flex flex-col space-y-6">
-                    <div className="flex items-center space-x-4">
-                      <Checkbox
-                        id="all"
-                        checked={statusSort.includes('all')}
-                        onCheckedChange={() => toggleStatus('all')}
-                      />
-                      <label htmlFor="all" className="text-sm capitalize">
-                        All
-                      </label>
-                    </div>
-                    {statusOptions.map((status) => (
-                      <div key={status} className="flex items-center space-x-4">
-                        <Checkbox
-                          id={status}
-                          checked={statusSort.includes(status)}
-                          onCheckedChange={() => toggleStatus(status)}
-                        />
-                        <label
-                          htmlFor={status}
-                          className={`text-sm font-medium capitalize`}
-                        >
-                          {status}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
+              <ToggleStatus
+                statusSort={statusSort}
+                toggleStatus={toggleStatus}
+                statusOptions={statusOptions}
+              />
             </div>
             <div className="ml-6 flex items-center">
-              <div className="border-[0.5px] border-r-muted-foreground/20 h-4"></div>
-              <Button variant={'ghost'} onClick={resetHandler}>
+              <div className="border-r-muted-foreground/20 h-4 border-[0.5px]"></div>
+              <Button variant={"ghost"} onClick={resetHandler}>
                 <p
                   className={`text-xs ${
-                    isSorted || search !== '' || statusSort[0] !== 'all'
-                      ? 'font-medium'
-                      : 'font-light text-muted-foreground'
+                    isSorted || search !== "" || statusSort[0] !== "all"
+                      ? "font-medium"
+                      : "text-muted-foreground font-light"
                   }`}
                 >
                   Reset
@@ -173,11 +153,17 @@ export default function TricyclesPage() {
           </div>
         </div>
       </div>
-      <div className="min-w-full border-[0.3px] rounded-2xl max-h-[37rem] overflow-y-auto bg-card">
+      <div className="bg-card max-h-[37rem] min-w-full overflow-y-auto rounded-2xl border-[0.3px]">
         {filteredTricycles.length <= 0 ? (
-          <div className="flex items-center justify-center flex-col py-12">
-            <Image src={emptyImage} alt="empty image" className="size-36" />
-            <div className="flex flex-col space-y-4 text-center mb-8">
+          <div className="flex flex-col items-center justify-center py-12">
+            <Image
+              src={emptyImage}
+              alt="empty image"
+              className="size-36"
+              placeholder="blur"
+              loading="lazy"
+            />
+            <div className="mb-8 flex flex-col space-y-4 text-center">
               <h2 className="text-xl font-medium">
                 Your tricycles will appear here
               </h2>
@@ -186,7 +172,7 @@ export default function TricyclesPage() {
               </h3>
             </div>
             <Button>
-              <Link href={'/create-tricycle'}>Create a vehicle</Link>
+              <Link href={"/create-tricycle"}>Create a vehicle</Link>
             </Button>
           </div>
         ) : (

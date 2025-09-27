@@ -1,10 +1,33 @@
-'use client';
+"use client";
 
-import AddressForm from '@/features/authentication/components/address-form';
-import { useCreateOperator } from '@/features/authentication/components/create-operator-provider';
-import FormReview from '@/features/authentication/components/form-review';
-import OperatorDocumentsUpload from '@/features/authentication/components/operator-documents-upload';
-import PersonalDetailsForm from '@/features/authentication/components/personal-details-form';
+import { useCreateOperator } from "@/features/authentication/components/create-operator-provider";
+import dynamic from "next/dynamic";
+
+const PersonalDetailsForm = dynamic(
+  () => import("@/features/authentication/components/personal-details-form"),
+  {
+    ssr: false,
+  },
+);
+const OperatorDocumentsUpload = dynamic(
+  () =>
+    import("@/features/authentication/components/operator-documents-upload"),
+  {
+    ssr: false,
+  },
+);
+const FormReview = dynamic(
+  () => import("@/features/authentication/components/form-review"),
+  {
+    ssr: false,
+  },
+);
+const AddressForm = dynamic(
+  () => import("@/features/authentication/components/address-form"),
+  {
+    ssr: false,
+  },
+);
 
 export default function AccountSetupPage() {
   const { step } = useCreateOperator();

@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getOperator } from "@/db/db";
 import { useQuery } from "@tanstack/react-query";
 import { HelpCircle, House } from "lucide-react";
+import Image from "next/image";
 
 export default function DashboardHeader() {
   const { data: operator, isLoading } = useQuery({
@@ -23,16 +24,18 @@ export default function DashboardHeader() {
   if (!operator) return null;
 
   return (
-    <Card
-      className="rounded-md shadow-none"
-      style={{
-        backgroundImage: `url(${cover.src})`,
-        backgroundSize: "cover",
-        backgroundPosition: "bottom",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <CardContent className="flex flex-col gap-10">
+    <Card className="relative min-h-[250px] overflow-hidden rounded-md shadow-none">
+      <Image
+        src={cover}
+        alt="Dashboard header background"
+        fill
+        className="object-cover object-bottom"
+        placeholder="blur"
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+        priority={false}
+      />
+      <CardContent className="relative z-10 flex flex-col gap-10">
         <div className="hidden flex-row justify-between md:flex">
           <div className="flex items-center gap-2 text-sm font-medium text-white">
             <House size={16} />
@@ -45,6 +48,7 @@ export default function DashboardHeader() {
             <p>Help & Feedback</p>
           </div>
         </div>
+
         <Card className="max-w-[410px] rounded-md py-4 shadow-none">
           <CardContent className="flex flex-col space-y-2 px-0 text-sm">
             <div className="flex flex-col gap-2 px-4">

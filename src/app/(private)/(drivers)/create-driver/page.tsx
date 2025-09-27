@@ -1,10 +1,35 @@
-'use client';
+"use client";
 
-import { useCreateDriver } from '@/features/drivers/components/create-driver-provider';
-import DriverDetailsForm from '@/features/drivers/components/driver-details-form';
-import DriverLicenseForm from '@/features/drivers/components/driver-license-form';
-import DriverSignUpForm from '@/features/drivers/components/driver-sign-up-form';
-import FormReview from '@/features/drivers/components/form-review';
+import { useCreateDriver } from "@/features/drivers/components/create-driver-provider";
+import dynamic from "next/dynamic";
+
+const DriverDetailsForm = dynamic(
+  () => import("@/features/drivers/components/driver-details-form"),
+  {
+    ssr: false,
+  },
+);
+
+const DriverLicenseForm = dynamic(
+  () => import("@/features/drivers/components/driver-license-form"),
+  {
+    ssr: false,
+  },
+);
+
+const DriverSignUpForm = dynamic(
+  () => import("@/features/drivers/components/driver-sign-up-form"),
+  {
+    ssr: false,
+  },
+);
+
+const FormReview = dynamic(
+  () => import("@/features/drivers/components/form-review"),
+  {
+    ssr: false,
+  },
+);
 
 export default function CreateDriverPage() {
   const { step } = useCreateDriver();

@@ -79,7 +79,7 @@ export const convertImageToJPG = (
       canvas.height = img.height;
 
       // Draw the image on canvas
-      ctx.drawImage(img, 0, 0);
+      ctx!.drawImage(img, 0, 0);
 
       // Convert to blob as JPG
       canvas.toBlob(

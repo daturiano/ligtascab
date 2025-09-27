@@ -1,15 +1,22 @@
-'use client';
+"use client";
 
-import EditProfileForm from '@/features/drivers/components/edit-profile-form';
-import { getDriverById } from '@/features/drivers/db/drivers';
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { getDriverById } from "@/features/drivers/db/drivers";
+import { useQuery } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
+import { useParams } from "next/navigation";
+
+const EditProfileForm = dynamic(
+  () => import("@/features/drivers/components/edit-profile-form"),
+  {
+    ssr: false,
+  },
+);
 
 export default function EditProfilePage() {
   const { driverId } = useParams();
 
   const { data: driver, error } = useQuery({
-    queryKey: ['driver_profile', driverId],
+    queryKey: ["driver_profile", driverId],
     queryFn: () => getDriverById(driverId as string),
     enabled: !!driverId,
   });
@@ -19,9 +26,9 @@ export default function EditProfilePage() {
   if (!driver) return null;
 
   return (
-    <div className="flex flex-col gap-6 flex-1 max-w-screen-xl mx-auto">
+    <div className="mx-auto flex max-w-screen-xl flex-1 flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="lg:text-3xl text-xl font-semibold">
+        <h1 className="text-xl font-semibold lg:text-3xl">
           Update your driver&apos;s information
         </h1>
         <p className="text-muted-foreground text-sm lg:text-lg">
