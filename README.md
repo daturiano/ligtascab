@@ -17,25 +17,37 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://github.com/daturiano/ligtascab)
 
-LigtasCab aims to modernize Naga City’s tricycle sector by addressing safety, efficiency, and regulatory challenges. It provides commuters with safer and more transparent rides, helps operators manage fleets and maintenance, and gives authorities better tools for monitoring and regulation.
+LigtasCab is a fleet management web application built specifically for tricycle operators and cooperatives in Naga City. This platform modernizes traditional fleet operations by providing digital tools for driver management, vehicle monitoring, and regulatory compliance.
 
-Key Stakeholders:
+Target Users: Fleet owners, tricycle cooperatives, and transportation operators who manage multiple vehicles and drivers in Naga City's tricycle sector.
 
-- Commuters – gain safer, more reliable rides, fare transparency, and an easy way to report issues.
+The application addresses critical operational challenges including driver accountability, vehicle maintenance tracking, permit management, and real-time fleet oversight, ultimately improving safety standards and operational efficiency for transportation businesses.
 
-- Operators – benefit from fleet management tools, QR-based driver logging, digital record-keeping, and maintenance reminders.
+## Technical Highlights
 
-- Authorities – get real-time data for better regulation, monitoring, and complaint handling.
+Authentication & Security
 
-## Features
+- OAuth Integration - Google login support
 
-- Verified tricycle & driver details for commuter safety
+- Supabase Row Level Security (RLS) - Ensures users can only access authorized data
 
-- Real-time fleet and driver monitoring
+- Protected Routes - Role-based access control on the client
 
-- QR-based shift logging system
+Frontend Architecture
 
-- Automated reminders for permits and maintenance
+- Feature-based Project Structure - Scalable and maintainable codebase
+
+- TypeScript - Strong typing for safer, faster development
+
+- React Query - Advanced server state management
+
+- Zod Validation - Runtime type checking and schema validation
+
+Database & Backend
+
+- Supabase Storage - File upload and management (driver photos, documents)
+
+- Database Triggers & Functions - Custom PostgreSQL business logic
 
 ### Built With
 
@@ -50,7 +62,9 @@ Key Stakeholders:
 
 ## Contact
 
-Daniel Joshua Turiano - dturiano.r@gmail.com - If you’d like to see the project in action, feel free to reach out. I can walk you through a demo showcasing ligtascab web application.
+Email: [dturiano.r@gmail.com](mailto:dturiano.r@gmail.com)
+
+If you’d like to see the project in action, feel free to reach out. I can walk you through a demo showcasing ligtascab web application.
 
 <!-- ACKNOWLEDGMENTS -->
 <!-- MARKDOWN LINKS & IMAGES -->
