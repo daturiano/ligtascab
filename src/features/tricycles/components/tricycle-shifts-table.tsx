@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { columns } from '@/components/private/columns';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { columns } from "@/components/private/columns";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -17,8 +17,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { useQuery } from '@tanstack/react-query';
+} from "@/components/ui/table";
+import { useQuery } from "@tanstack/react-query";
 import {
   ColumnFiltersState,
   flexRender,
@@ -29,10 +29,10 @@ import {
   SortingState,
   useReactTable,
   VisibilityState,
-} from '@tanstack/react-table';
-import { ChevronDown, Search } from 'lucide-react';
-import React from 'react';
-import { fetchAllTricycleShiftLogs } from '../actions/tricycles';
+} from "@tanstack/react-table";
+import { ChevronDown, Search } from "lucide-react";
+import React from "react";
+import { fetchAllTricycleShiftLogs } from "../actions/tricycles";
 
 type TricycleShiftsTableProps = {
   id: string;
@@ -41,7 +41,7 @@ type TricycleShiftsTableProps = {
 export function TricycleShiftsTable({ id }: TricycleShiftsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -49,7 +49,7 @@ export function TricycleShiftsTable({ id }: TricycleShiftsTableProps) {
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 4,
+    pageSize: 2,
   });
 
   const { data: tricycle_logs } = useQuery({
@@ -80,27 +80,27 @@ export function TricycleShiftsTable({ id }: TricycleShiftsTableProps) {
   });
 
   return (
-    <Card className="w-full h-full">
+    <Card className="h-full w-full">
       <CardContent>
         <div className="flex">
           <div className="w-full">
             <h1 className="font-semibold">Driver Attendance</h1>
             <div className="flex items-center py-4">
-              <div className="flex gap-2 w-full">
+              <div className="flex w-full gap-2">
                 <Input
                   placeholder={`Search by plate number...`}
                   startIcon={Search}
                   value={
                     (table
-                      .getColumn('plate_number')
-                      ?.getFilterValue() as string) ?? ''
+                      .getColumn("plate_number")
+                      ?.getFilterValue() as string) ?? ""
                   }
                   onChange={(event) =>
                     table
-                      .getColumn('plate_number')
+                      .getColumn("plate_number")
                       ?.setFilterValue(event.target.value)
                   }
-                  className="py-2 max-w-[200px] lg:max-w-sm bg-card rounded-3xl placeholder:tracking-wide placeholder:text-muted-foreground"
+                  className="bg-card placeholder:text-muted-foreground max-w-[200px] rounded-3xl py-2 placeholder:tracking-wide lg:max-w-sm"
                 />
               </div>
               <div className="flex gap-2">
@@ -132,7 +132,7 @@ export function TricycleShiftsTable({ id }: TricycleShiftsTableProps) {
                 </DropdownMenu>
               </div>
             </div>
-            <div className="rounded-md border overflow-x-auto max-w-full">
+            <div className="max-w-full overflow-x-auto rounded-md border">
               <Table>
                 <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
@@ -144,7 +144,7 @@ export function TricycleShiftsTable({ id }: TricycleShiftsTableProps) {
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
                           </TableHead>
                         );
@@ -157,13 +157,13 @@ export function TricycleShiftsTable({ id }: TricycleShiftsTableProps) {
                     table.getRowModel().rows.map((row) => (
                       <TableRow
                         key={row.id}
-                        data-state={row.getIsSelected() && 'selected'}
+                        data-state={row.getIsSelected() && "selected"}
                       >
                         {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>
                             {flexRender(
                               cell.column.columnDef.cell,
-                              cell.getContext()
+                              cell.getContext(),
                             )}
                           </TableCell>
                         ))}
@@ -183,8 +183,8 @@ export function TricycleShiftsTable({ id }: TricycleShiftsTableProps) {
               </Table>
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
-              <div className="flex-1 text-sm text-muted-foreground">
-                {table.getFilteredSelectedRowModel().rows.length} of{' '}
+              <div className="text-muted-foreground flex-1 text-sm">
+                {table.getFilteredSelectedRowModel().rows.length} of{" "}
                 {table.getFilteredRowModel().rows.length} row(s) selected.
               </div>
               <div className="space-x-2">
