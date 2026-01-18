@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -9,17 +9,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { getErrorMessage, getFormattedDate } from '@/lib/utils';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { WarningCircle } from '@phosphor-icons/react';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
-import { registerDriverWithPhone } from '../actions/drivers';
-import { DriverCredentialsSchema } from '../schemas/drivers';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { getErrorMessage, getFormattedDate } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { WarningCircle } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { registerDriverWithPhone } from "../actions/drivers";
+import { DriverCredentialsSchema } from "../schemas/drivers";
 
 export default function DriverSetupAccountForm({
   driver_id,
@@ -29,11 +29,11 @@ export default function DriverSetupAccountForm({
   const router = useRouter();
   const form = useForm<z.infer<typeof DriverCredentialsSchema>>({
     resolver: zodResolver(DriverCredentialsSchema),
-    mode: 'onBlur',
+    mode: "onBlur",
     defaultValues: {
-      phone: '',
-      password: '',
-      confirm_password: '',
+      phone: "",
+      password: "",
+      confirm_password: "",
     },
   });
 
@@ -41,7 +41,7 @@ export default function DriverSetupAccountForm({
     try {
       const user = await registerDriverWithPhone(data, driver_id);
       if (user) {
-        router.push('/drivers');
+        router.push("/drivers");
       }
     } catch (error) {
       toast.error(getErrorMessage(error), {
@@ -53,7 +53,7 @@ export default function DriverSetupAccountForm({
   const isDirty = form.formState.isDirty;
   return (
     <div>
-      <Card className="min-w-[350px] lg:min-w-[650px] lg:max-w-[650px] w-full">
+      <Card className="w-full min-w-[350px] lg:max-w-[650px] lg:min-w-[650px]">
         <CardHeader>
           <CardTitle className="text-sm font-medium">
             Driver Credentials
@@ -63,7 +63,7 @@ export default function DriverSetupAccountForm({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6 max-w-3xl mx-auto"
+              className="mx-auto max-w-3xl space-y-6"
               id="driver-account-setup-form"
             >
               <FormField
@@ -71,7 +71,7 @@ export default function DriverSetupAccountForm({
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email address*</FormLabel>
+                    <FormLabel>Phone Number*</FormLabel>
                     <FormControl>
                       <Input placeholder="+639391234567" type="text" {...field}>
                         {form.formState.errors.phone?.message && (
@@ -136,11 +136,11 @@ export default function DriverSetupAccountForm({
         </CardContent>
       </Card>
       <div
-        className={`min-w-screen px-4 bg-card h-16 flex items-center fixed bottom-0 left-0`}
+        className={`bg-card fixed bottom-0 left-0 flex h-16 min-w-screen items-center px-4`}
       >
-        <div className="mx-auto flex justify-end max-w-screen-xl w-full">
+        <div className="mx-auto flex w-full max-w-screen-xl justify-end">
           <Button
-            size={'lg'}
+            size={"lg"}
             className="text-xs lg:text-sm"
             form="driver-account-setup-form"
             disabled={!isDirty}

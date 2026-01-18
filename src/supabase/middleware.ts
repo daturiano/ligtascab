@@ -52,16 +52,30 @@ export async function updateSession(request: NextRequest) {
     !pathname.startsWith("/authority")
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/authority";
+    url.pathname = "/authority/dashboard";
     return NextResponse.redirect(url);
   }
 
+  // Allow access to authority login page without auth
+  if (!user && pathname === "/authority/login") {
+    return supabaseResponse;
+  }
+
+  // Redirect unauthenticated users from authority dashboard to login
+  if (!user && pathname.startsWith("/authority")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/authority/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect non-authority users away from authority routes
   if (
-    user?.user_metadata?.role !== "authority" &&
+    user &&
+    user.user_metadata?.role !== "authority" &&
     pathname.startsWith("/authority")
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/authority";
+    url.pathname = "/home";
     return NextResponse.redirect(url);
   }
 
