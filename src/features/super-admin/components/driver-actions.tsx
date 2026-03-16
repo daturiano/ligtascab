@@ -17,22 +17,32 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
-  suspendUserAction,
-  unsuspendUserAction,
+  suspendUserAction as superAdminSuspend,
+  unsuspendUserAction as superAdminUnsuspend,
 } from "../actions/user-management";
 import { deleteDriverAction } from "../actions/super-admin";
 import { getErrorMessage, getFormattedDate } from "@/lib/utils";
+
+export type AdminRole = "super_admin" | "authority";
 
 interface DriverActionsProps {
   driverId: string;
   userId?: string;
   currentStatus?: string;
+  role?: AdminRole;
+  basePath?: string;
+  suspendAction?: (data: { userId: string }) => Promise<{ error: unknown }>;
+  unsuspendAction?: (userId: string) => Promise<{ error: unknown }>;
 }
 
 export default function DriverActions({
   driverId,
   userId,
   currentStatus,
+  role = "super_admin",
+  basePath = "/super-admin",
+  suspendAction = superAdminSuspend,
+  unsuspendAction = superAdminUnsuspend,
 }: DriverActionsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -44,7 +54,7 @@ export default function DriverActions({
     }
     setIsLoading(true);
     try {
-      const { error } = await suspendUserAction({ userId });
+      const { error } = await suspendAction({ userId });
       if (error) {
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
@@ -65,7 +75,7 @@ export default function DriverActions({
     }
     setIsLoading(true);
     try {
-      const { error } = await unsuspendUserAction(userId);
+      const { error } = await unsuspendAction(userId);
       if (error) {
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
@@ -87,7 +97,7 @@ export default function DriverActions({
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
         toast.success("Driver deleted successfully");
-        router.push("/super-admin/dashboard");
+        router.push(`${basePath}/dashboard`);
       }
     } catch (error) {
       toast.error(getErrorMessage(error), { description: getFormattedDate() });
@@ -120,28 +130,30 @@ export default function DriverActions({
         </>
       )}
 
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="destructive" disabled={isLoading}>
-            <Trash2 className="mr-2 h-4 w-4" /> Delete
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Driver</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this driver? This will permanently
-              remove the driver record
-              {userId && " and their authentication account"}. This action
-              cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {role === "super_admin" && (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" disabled={isLoading}>
+              <Trash2 className="mr-2 h-4 w-4" /> Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Driver</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this driver? This will permanently
+                remove the driver record
+                {userId && " and their authentication account"}. This action
+                cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 }

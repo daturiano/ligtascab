@@ -41,6 +41,8 @@ interface AuditLog extends Log {
 
 type OperatorWithStatus = Operator & { status?: string; coop_name?: string };
 
+export type AdminRole = "super_admin" | "authority";
+
 const getEventBadge = (event: string) => {
   if (event.includes("create")) {
     return <Badge variant="default">Create</Badge>;
@@ -224,10 +226,7 @@ export default function AuditLogsTable({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={5} className="h-24 text-center">
                     No audit logs found.
                   </TableCell>
                 </TableRow>

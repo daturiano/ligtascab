@@ -42,6 +42,8 @@ type TricycleWithOperator = Tricycle & {
 
 type OperatorWithStatus = Operator & { status?: string; coop_name?: string };
 
+export type AdminRole = "super_admin" | "authority";
+
 const getStatusBadge = (status?: string) => {
   switch (status) {
     case "active":
@@ -55,70 +57,76 @@ const getStatusBadge = (status?: string) => {
   }
 };
 
-const columns: ColumnDef<TricycleWithOperator>[] = [
-  {
-    accessorKey: "plate_number",
-    header: "Plate Number",
-    cell: ({ row }) => (
-      <div className="font-medium">{row.original.plate_number}</div>
-    ),
-  },
-  {
-    accessorKey: "operator_id",
-    header: "Operator",
-    cell: ({ row }) =>
-      row.original.operators
-        ? `${row.original.operators.first_name} ${row.original.operators.last_name}`
-        : "-",
-    filterFn: (row, columnId, filterValue) => {
-      if (!filterValue || filterValue === "all") return true;
-      return row.original.operator_id === filterValue;
+const getColumns = (role: AdminRole): ColumnDef<TricycleWithOperator>[] => {
+  const basePath = role === "super_admin" ? "/super-admin" : "/authority";
+
+  return [
+    {
+      accessorKey: "plate_number",
+      header: "Plate Number",
+      cell: ({ row }) => (
+        <div className="font-medium">{row.original.plate_number}</div>
+      ),
     },
-  },
-  {
-    accessorKey: "model",
-    header: "Model",
-    cell: ({ row }) => row.original.tricycle_details?.model || "-",
-  },
-  {
-    accessorKey: "body_number",
-    header: "Body #",
-    cell: ({ row }) => row.original.tricycle_details?.body_number || "-",
-  },
-  {
-    accessorKey: "registration_expiration",
-    header: "Reg. Exp.",
-    cell: ({ row }) =>
-      row.original.registration_expiration
-        ? new Date(row.original.registration_expiration).toLocaleDateString()
-        : "-",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => getStatusBadge(row.original.status),
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => (
-      <Link href={`/super-admin/tricycles/${row.original.id}`}>
-        <Button variant="outline" size="sm">
-          <Eye className="h-4 w-4" />
-        </Button>
-      </Link>
-    ),
-  },
-];
+    {
+      accessorKey: "operator_id",
+      header: "Operator",
+      cell: ({ row }) =>
+        row.original.operators
+          ? `${row.original.operators.first_name} ${row.original.operators.last_name}`
+          : "-",
+      filterFn: (row, columnId, filterValue) => {
+        if (!filterValue || filterValue === "all") return true;
+        return row.original.operator_id === filterValue;
+      },
+    },
+    {
+      accessorKey: "model",
+      header: "Model",
+      cell: ({ row }) => row.original.tricycle_details?.model || "-",
+    },
+    {
+      accessorKey: "body_number",
+      header: "Body #",
+      cell: ({ row }) => row.original.tricycle_details?.body_number || "-",
+    },
+    {
+      accessorKey: "registration_expiration",
+      header: "Reg. Exp.",
+      cell: ({ row }) =>
+        row.original.registration_expiration
+          ? new Date(row.original.registration_expiration).toLocaleDateString()
+          : "-",
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => getStatusBadge(row.original.status),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => (
+        <Link href={`${basePath}/tricycles/${row.original.id}`}>
+          <Button variant="outline" size="sm">
+            <Eye className="h-4 w-4" />
+          </Button>
+        </Link>
+      ),
+    },
+  ];
+};
 
 interface TricyclesTableProps {
   data: TricycleWithOperator[];
   operators: OperatorWithStatus[];
+  role?: AdminRole;
 }
 
 export default function TricyclesTable({
   data,
   operators,
+  role = "super_admin",
 }: TricyclesTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -133,6 +141,8 @@ export default function TricyclesTable({
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const columns = getColumns(role);
 
   const table = useReactTable({
     data,

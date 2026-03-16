@@ -17,20 +17,30 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
-  suspendUserAction,
-  unsuspendUserAction,
+  suspendUserAction as superAdminSuspend,
+  unsuspendUserAction as superAdminUnsuspend,
 } from "../actions/user-management";
 import { deleteOperatorAction } from "../actions/super-admin";
 import { getErrorMessage, getFormattedDate } from "@/lib/utils";
 
+export type AdminRole = "super_admin" | "authority";
+
 interface OperatorActionsProps {
   operatorId: string;
   currentStatus?: string;
+  role?: AdminRole;
+  basePath?: string;
+  suspendAction?: (data: { userId: string }) => Promise<{ error: unknown }>;
+  unsuspendAction?: (userId: string) => Promise<{ error: unknown }>;
 }
 
 export default function OperatorActions({
   operatorId,
   currentStatus,
+  role = "super_admin",
+  basePath = "/super-admin",
+  suspendAction = superAdminSuspend,
+  unsuspendAction = superAdminUnsuspend,
 }: OperatorActionsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -38,7 +48,7 @@ export default function OperatorActions({
   const handleSuspend = async () => {
     setIsLoading(true);
     try {
-      const { error } = await suspendUserAction({ userId: operatorId });
+      const { error } = await suspendAction({ userId: operatorId });
       if (error) {
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
@@ -55,7 +65,7 @@ export default function OperatorActions({
   const handleUnsuspend = async () => {
     setIsLoading(true);
     try {
-      const { error } = await unsuspendUserAction(operatorId);
+      const { error } = await unsuspendAction(operatorId);
       if (error) {
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
@@ -77,7 +87,7 @@ export default function OperatorActions({
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
         toast.success("Operator deleted successfully");
-        router.push("/super-admin/dashboard");
+        router.push(`${basePath}/dashboard`);
       }
     } catch (error) {
       toast.error(getErrorMessage(error), { description: getFormattedDate() });
@@ -102,27 +112,29 @@ export default function OperatorActions({
         </Button>
       )}
 
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="destructive" disabled={isLoading}>
-            <Trash2 className="mr-2 h-4 w-4" /> Delete
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Operator</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this operator? This will
-              permanently remove the operator and their authentication account.
-              This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {role === "super_admin" && (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" disabled={isLoading}>
+              <Trash2 className="mr-2 h-4 w-4" /> Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Operator</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this operator? This will
+                permanently remove the operator and their authentication account.
+                This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 }

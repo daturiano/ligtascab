@@ -37,6 +37,8 @@ import { getErrorMessage, getFormattedDate } from "@/lib/utils";
 
 type OperatorWithStatus = Operator & { status?: string };
 
+export type AdminRole = "super_admin" | "authority";
+
 const getStatusBadge = (status?: string) => {
   switch (status) {
     case "active":
@@ -52,13 +54,24 @@ const getStatusBadge = (status?: string) => {
   }
 };
 
-function ActionCell({ operator }: { operator: OperatorWithStatus }) {
+function ActionCell({
+  operator,
+  role,
+  suspendAction,
+  unsuspendAction,
+}: {
+  operator: OperatorWithStatus;
+  role: AdminRole;
+  suspendAction: (data: { userId: string }) => Promise<{ error: unknown }>;
+  unsuspendAction: (userId: string) => Promise<{ error: unknown }>;
+}) {
   const [loading, setLoading] = useState(false);
+  const basePath = role === "super_admin" ? "/super-admin" : "/authority";
 
   const handleSuspend = async () => {
     setLoading(true);
     try {
-      const { error } = await suspendUserAction({ userId: operator.id });
+      const { error } = await suspendAction({ userId: operator.id });
       if (error) {
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
@@ -74,7 +87,7 @@ function ActionCell({ operator }: { operator: OperatorWithStatus }) {
   const handleUnsuspend = async () => {
     setLoading(true);
     try {
-      const { error } = await unsuspendUserAction(operator.id);
+      const { error } = await unsuspendAction(operator.id);
       if (error) {
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
@@ -89,7 +102,7 @@ function ActionCell({ operator }: { operator: OperatorWithStatus }) {
 
   return (
     <div className="flex items-center gap-2">
-      <Link href={`/super-admin/operators/${operator.id}`}>
+      <Link href={`${basePath}/operators/${operator.id}`}>
         <Button variant="outline" size="sm">
           <Eye className="h-4 w-4" />
         </Button>
@@ -117,7 +130,11 @@ function ActionCell({ operator }: { operator: OperatorWithStatus }) {
   );
 }
 
-const columns: ColumnDef<OperatorWithStatus>[] = [
+const getColumns = (
+  role: AdminRole,
+  suspendAction: (data: { userId: string }) => Promise<{ error: unknown }>,
+  unsuspendAction: (userId: string) => Promise<{ error: unknown }>
+): ColumnDef<OperatorWithStatus>[] => [
   {
     accessorKey: "name",
     header: "Name",
@@ -150,15 +167,30 @@ const columns: ColumnDef<OperatorWithStatus>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => <ActionCell operator={row.original} />,
+    cell: ({ row }) => (
+      <ActionCell
+        operator={row.original}
+        role={role}
+        suspendAction={suspendAction}
+        unsuspendAction={unsuspendAction}
+      />
+    ),
   },
 ];
 
 interface OperatorsTableProps {
   data: OperatorWithStatus[];
+  role?: AdminRole;
+  suspendAction?: (data: { userId: string }) => Promise<{ error: unknown }>;
+  unsuspendAction?: (userId: string) => Promise<{ error: unknown }>;
 }
 
-export default function OperatorsTable({ data }: OperatorsTableProps) {
+export default function OperatorsTable({
+  data,
+  role = "super_admin",
+  suspendAction = suspendUserAction,
+  unsuspendAction = unsuspendUserAction,
+}: OperatorsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -171,6 +203,8 @@ export default function OperatorsTable({ data }: OperatorsTableProps) {
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const columns = getColumns(role, suspendAction, unsuspendAction);
 
   const table = useReactTable({
     data,

@@ -48,6 +48,8 @@ type DriverWithOperator = Driver & {
 
 type OperatorWithStatus = Operator & { status?: string; coop_name?: string };
 
+export type AdminRole = "super_admin" | "authority";
+
 const getStatusBadge = (status?: string) => {
   switch (status) {
     case "active":
@@ -61,8 +63,19 @@ const getStatusBadge = (status?: string) => {
   }
 };
 
-function ActionCell({ driver }: { driver: DriverWithOperator }) {
+function ActionCell({
+  driver,
+  role,
+  suspendAction,
+  unsuspendAction,
+}: {
+  driver: DriverWithOperator;
+  role: AdminRole;
+  suspendAction: (data: { userId: string }) => Promise<{ error: unknown }>;
+  unsuspendAction: (userId: string) => Promise<{ error: unknown }>;
+}) {
   const [loading, setLoading] = useState(false);
+  const basePath = role === "super_admin" ? "/super-admin" : "/authority";
 
   const handleSuspend = async () => {
     if (!driver.user_id) {
@@ -71,7 +84,7 @@ function ActionCell({ driver }: { driver: DriverWithOperator }) {
     }
     setLoading(true);
     try {
-      const { error } = await suspendUserAction({ userId: driver.user_id });
+      const { error } = await suspendAction({ userId: driver.user_id });
       if (error) {
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
@@ -91,7 +104,7 @@ function ActionCell({ driver }: { driver: DriverWithOperator }) {
     }
     setLoading(true);
     try {
-      const { error } = await unsuspendUserAction(driver.user_id);
+      const { error } = await unsuspendAction(driver.user_id);
       if (error) {
         toast.error(getErrorMessage(error), { description: getFormattedDate() });
       } else {
@@ -106,7 +119,7 @@ function ActionCell({ driver }: { driver: DriverWithOperator }) {
 
   return (
     <div className="flex items-center gap-2">
-      <Link href={`/super-admin/drivers/${driver.id}`}>
+      <Link href={`${basePath}/drivers/${driver.id}`}>
         <Button variant="outline" size="sm">
           <Eye className="h-4 w-4" />
         </Button>
@@ -138,7 +151,11 @@ function ActionCell({ driver }: { driver: DriverWithOperator }) {
   );
 }
 
-const columns: ColumnDef<DriverWithOperator>[] = [
+const getColumns = (
+  role: AdminRole,
+  suspendAction: (data: { userId: string }) => Promise<{ error: unknown }>,
+  unsuspendAction: (userId: string) => Promise<{ error: unknown }>
+): ColumnDef<DriverWithOperator>[] => [
   {
     accessorKey: "name",
     header: "Name",
@@ -177,16 +194,32 @@ const columns: ColumnDef<DriverWithOperator>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => <ActionCell driver={row.original} />,
+    cell: ({ row }) => (
+      <ActionCell
+        driver={row.original}
+        role={role}
+        suspendAction={suspendAction}
+        unsuspendAction={unsuspendAction}
+      />
+    ),
   },
 ];
 
 interface DriversTableProps {
   data: DriverWithOperator[];
   operators: OperatorWithStatus[];
+  role?: AdminRole;
+  suspendAction?: (data: { userId: string }) => Promise<{ error: unknown }>;
+  unsuspendAction?: (userId: string) => Promise<{ error: unknown }>;
 }
 
-export default function DriversTable({ data, operators }: DriversTableProps) {
+export default function DriversTable({
+  data,
+  operators,
+  role = "super_admin",
+  suspendAction = suspendUserAction,
+  unsuspendAction = unsuspendUserAction,
+}: DriversTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -200,6 +233,8 @@ export default function DriversTable({ data, operators }: DriversTableProps) {
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const columns = getColumns(role, suspendAction, unsuspendAction);
 
   const table = useReactTable({
     data,
