@@ -13,10 +13,16 @@ import {
 import { signOut } from "@/features/authentication/actions/authentication";
 
 export default function UserProfile() {
-  const { data: operator } = useQuery({
+  const { data: operator, isLoading } = useQuery({
     queryKey: ["operator"],
     queryFn: getOperator,
   });
+
+  if (isLoading) {
+    return (
+      <div className="bg-muted-foreground/10 size-10 animate-pulse rounded-full" />
+    );
+  }
 
   if (!operator) return null;
   return (

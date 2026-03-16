@@ -1,7 +1,7 @@
 'use client';
 
 import SecondaryNavigation from '@/components/private/secondary-navigation';
-import { SquarePlus, Users } from 'lucide-react';
+import { SquarePlus, Upload, Users } from 'lucide-react';
 import { ReactNode } from 'react';
 
 const data = [
@@ -16,6 +16,12 @@ const data = [
     url: '/create-driver',
     pathname: '/create-driver',
     icon: SquarePlus,
+  },
+  {
+    title: 'Batch Upload',
+    url: '/drivers/batch-upload',
+    pathname: '/drivers/batch-upload',
+    icon: Upload,
   },
 ];
 export default function DriversLayout({ children }: { children: ReactNode }) {

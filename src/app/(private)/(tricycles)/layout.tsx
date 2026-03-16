@@ -1,7 +1,7 @@
 'use client';
 
 import SecondaryNavigation from '@/components/private/secondary-navigation';
-import { CarFront, FolderCog, SquarePlus } from 'lucide-react';
+import { CarFront, FolderCog, SquarePlus, Upload } from 'lucide-react';
 import { ReactNode } from 'react';
 
 const data = [
@@ -22,6 +22,12 @@ const data = [
     url: '/tricycle-maintenance',
     pathname: '/tricycle-maintenance',
     icon: FolderCog,
+  },
+  {
+    title: 'Batch Upload',
+    url: '/tricycles/batch-upload',
+    pathname: '/tricycles/batch-upload',
+    icon: Upload,
   },
 ];
 

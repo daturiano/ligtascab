@@ -1,0 +1,21 @@
+first_name,last_name,birth_date,address,emergency_contact_name,emergency_contact_number,license_number,license_expiration,phone_number
+Juan,Dela Cruz,1990-05-15,123 Main St Naga City,Maria Dela Cruz,09171234567,N01-12-345001,2027-12-31,+639171234501
+Pedro,Santos,1985-08-22,456 Rizal Ave Naga City,Ana Santos,09181234567,N01-12-345002,2026-06-30,+639171234502
+Jose,Reyes,1992-03-10,789 Mabini St Naga City,Rosa Reyes,09191234567,N01-12-345003,2027-08-15,+639171234503
+Antonio,Garcia,1988-11-25,321 Luna St Naga City,Carmen Garcia,09201234567,N01-12-345004,2026-09-20,+639171234504
+Manuel,Rodriguez,1995-07-08,654 Bonifacio St Naga City,Elena Rodriguez,09211234567,N01-12-345005,2027-03-12,+639171234505
+Roberto,Martinez,1983-02-14,987 Aguinaldo St Naga City,Sofia Martinez,09221234567,N01-12-345006,2026-11-28,+639171234506
+Carlos,Lopez,1991-09-30,147 Del Pilar St Naga City,Teresa Lopez,09231234567,N01-12-345007,2027-05-22,+639171234507
+Miguel,Gonzales,1987-04-18,258 Quezon Ave Naga City,Linda Gonzales,09241234567,N01-12-345008,2026-07-14,+639171234508
+Ricardo,Hernandez,1994-12-05,369 Osmena Blvd Naga City,Patricia Hernandez,09251234567,N01-12-345009,2027-10-08,+639171234509
+Fernando,Ramos,1986-06-22,741 Roxas St Naga City,Gloria Ramos,09261234567,N01-12-345010,2026-04-16,+639171234510
+Eduardo,Torres,1993-01-17,852 Magsaysay Ave Naga City,Cristina Torres,09271234567,N01-12-345011,2027-02-25,+639171234511
+Andres,Flores,1989-08-09,963 Marcos St Naga City,Beatriz Flores,09281234567,N01-12-345012,2026-12-03,+639171234512
+Ramon,Cruz,1996-10-28,159 Aquino Blvd Naga City,Lucia Cruz,09291234567,N01-12-345013,2027-07-19,+639171234513
+Francisco,Villanueva,1984-05-03,357 Laurel St Naga City,Angela Villanueva,09301234567,N01-12-345014,2026-08-27,+639171234514
+Luis,Mendoza,1990-11-12,468 Recto Ave Naga City,Dolores Mendoza,09311234567,N01-12-345015,2027-01-09,+639171234515
+Jorge,Castro,1988-07-26,579 Taft Ave Naga City,Esperanza Castro,09321234567,N01-12-345016,2026-10-21,+639171234516
+Rafael,Bautista,1992-02-19,681 España Blvd Naga City,Rosario Bautista,09331234567,N01-12-345017,2027-04-30,+639171234517
+Ernesto,Aquino,1985-09-08,792 Espana St Naga City,Felicidad Aquino,09341234567,N01-12-345018,2026-05-17,+639171234518
+Arturo,Pascual,1994-04-14,813 Aurora Blvd Naga City,Milagros Pascual,09351234567,N01-12-345019,2027-09-06,+639171234519
+Vicente,Salvador,1987-12-31,924 Edsa Ave Naga City,Remedios Salvador,09361234567,N01-12-345020,2026-02-13,+639171234520

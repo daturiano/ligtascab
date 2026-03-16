@@ -127,3 +127,13 @@ export type Log = {
   operator_id: string;
   created_at: Date;
 };
+
+export type PendingRequest = {
+  id: string;
+  action_type: string;
+  status: string;
+  target_id: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload: any;
+  created_at: string;
+};
