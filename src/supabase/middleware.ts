@@ -47,6 +47,41 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // --- Super Admin Route Protection ---
+  // Allow access to super-admin login without auth
+  if (!user && pathname === "/super-admin/login") {
+    return supabaseResponse;
+  }
+
+  // Redirect unauthenticated users from super-admin routes to login
+  if (!user && pathname.startsWith("/super-admin")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/super-admin/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect super_admin users to their dashboard from non-super-admin routes
+  if (
+    user?.user_metadata?.role === "super_admin" &&
+    !pathname.startsWith("/super-admin")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/super-admin/dashboard";
+    return NextResponse.redirect(url);
+  }
+
+  // Block non-super-admin users from super-admin routes
+  if (
+    user &&
+    user.user_metadata?.role !== "super_admin" &&
+    pathname.startsWith("/super-admin")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/home";
+    return NextResponse.redirect(url);
+  }
+
+  // --- Authority Route Protection ---
   if (
     user?.user_metadata?.role === "authority" &&
     !pathname.startsWith("/authority")

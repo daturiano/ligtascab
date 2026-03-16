@@ -137,3 +137,23 @@ export type PendingRequest = {
   payload: any;
   created_at: string;
 };
+
+export type SuperAdminStats = {
+  totalOperators: number;
+  suspendedOperators: number;
+  totalDrivers: number;
+  suspendedDrivers: number;
+  totalTricycles: number;
+  totalLogs: number;
+};
+
+export type AuthorityUser = {
+  id: string;
+  email: string;
+  created_at: string;
+  last_sign_in_at?: string;
+  user_metadata: {
+    role: string;
+  };
+  banned_until?: string;
+};
